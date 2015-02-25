@@ -24,8 +24,8 @@ MSG: std_msgs/Header
 # sequence ID: consecutively increasing ID 
 uint32 seq
 #Two-integer timestamp that is expressed as:
-# * stamp.secs: seconds (stamp_secs) since epoch
-# * stamp.nsecs: nanoseconds since stamp_secs
+# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')
+# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')
 # time-handling sugar is provided by the client library
 time stamp
 #Frame this data is associated with
@@ -87,7 +87,10 @@ string frame_id
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
         length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      if python3:
+        buff.write(struct.pack('<I%sB'%length, length, *_x))
+      else:
+        buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
       buff.write(_struct_3f.pack(_x.yaw, _x.pitch, _x.roll))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
@@ -138,7 +141,10 @@ string frame_id
       if python3 or type(_x) == unicode:
         _x = _x.encode('utf-8')
         length = len(_x)
-      buff.write(struct.pack('<I%ss'%length, length, _x))
+      if python3:
+        buff.write(struct.pack('<I%sB'%length, length, *_x))
+      else:
+        buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
       buff.write(_struct_3f.pack(_x.yaw, _x.pitch, _x.roll))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))

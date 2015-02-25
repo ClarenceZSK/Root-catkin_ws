@@ -31,6 +31,9 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
 # The top-level source directory on which CMake was run.
 CMAKE_SOURCE_DIR = /root/catkin_ws/src
 
@@ -45,21 +48,21 @@ include sar_localization/CMakeFiles/sar_localization_generate_messages_cpp.dir/p
 sar_localization/CMakeFiles/sar_localization_generate_messages_cpp: /root/catkin_ws/devel/include/sar_localization/Csi.h
 sar_localization/CMakeFiles/sar_localization_generate_messages_cpp: /root/catkin_ws/devel/include/sar_localization/Imu.h
 
-/root/catkin_ws/devel/include/sar_localization/Csi.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/root/catkin_ws/devel/include/sar_localization/Csi.h: /opt/ros/indigo/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /root/catkin_ws/devel/include/sar_localization/Csi.h: /root/catkin_ws/src/sar_localization/msg/Csi.msg
-/root/catkin_ws/devel/include/sar_localization/Csi.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/root/catkin_ws/devel/include/sar_localization/Csi.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+/root/catkin_ws/devel/include/sar_localization/Csi.h: /opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg
+/root/catkin_ws/devel/include/sar_localization/Csi.h: /opt/ros/indigo/share/gencpp/cmake/../msg.h.template
 	$(CMAKE_COMMAND) -E cmake_progress_report /root/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from sar_localization/Csi.msg"
-	cd /root/catkin_ws/build/sar_localization && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /root/catkin_ws/src/sar_localization/msg/Csi.msg -Isar_localization:/root/catkin_ws/src/sar_localization/msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p sar_localization -o /root/catkin_ws/devel/include/sar_localization -e /opt/ros/hydro/share/gencpp/cmake/..
+	cd /root/catkin_ws/build/sar_localization && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/indigo/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /root/catkin_ws/src/sar_localization/msg/Csi.msg -Isar_localization:/root/catkin_ws/src/sar_localization/msg -Istd_msgs:/opt/ros/indigo/share/std_msgs/cmake/../msg -p sar_localization -o /root/catkin_ws/devel/include/sar_localization -e /opt/ros/indigo/share/gencpp/cmake/..
 
-/root/catkin_ws/devel/include/sar_localization/Imu.h: /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
+/root/catkin_ws/devel/include/sar_localization/Imu.h: /opt/ros/indigo/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py
 /root/catkin_ws/devel/include/sar_localization/Imu.h: /root/catkin_ws/src/sar_localization/msg/Imu.msg
-/root/catkin_ws/devel/include/sar_localization/Imu.h: /opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg
-/root/catkin_ws/devel/include/sar_localization/Imu.h: /opt/ros/hydro/share/gencpp/cmake/../msg.h.template
+/root/catkin_ws/devel/include/sar_localization/Imu.h: /opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg
+/root/catkin_ws/devel/include/sar_localization/Imu.h: /opt/ros/indigo/share/gencpp/cmake/../msg.h.template
 	$(CMAKE_COMMAND) -E cmake_progress_report /root/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating C++ code from sar_localization/Imu.msg"
-	cd /root/catkin_ws/build/sar_localization && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/hydro/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /root/catkin_ws/src/sar_localization/msg/Imu.msg -Isar_localization:/root/catkin_ws/src/sar_localization/msg -Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg -p sar_localization -o /root/catkin_ws/devel/include/sar_localization -e /opt/ros/hydro/share/gencpp/cmake/..
+	cd /root/catkin_ws/build/sar_localization && ../catkin_generated/env_cached.sh /usr/bin/python /opt/ros/indigo/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /root/catkin_ws/src/sar_localization/msg/Imu.msg -Isar_localization:/root/catkin_ws/src/sar_localization/msg -Istd_msgs:/opt/ros/indigo/share/std_msgs/cmake/../msg -p sar_localization -o /root/catkin_ws/devel/include/sar_localization -e /opt/ros/indigo/share/gencpp/cmake/..
 
 sar_localization_generate_messages_cpp: sar_localization/CMakeFiles/sar_localization_generate_messages_cpp
 sar_localization_generate_messages_cpp: /root/catkin_ws/devel/include/sar_localization/Csi.h

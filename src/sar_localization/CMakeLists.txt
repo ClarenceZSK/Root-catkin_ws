@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sar_localization)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -12,10 +11,10 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+#find_package(Eigen REQUIRED)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(Eigen REQUIRED)
-
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -51,7 +50,6 @@ find_package(Eigen REQUIRED)
  add_message_files(
    FILES
    Imu.msg
-   #   Complex.msg
    Csi.msg
  )
 
@@ -87,9 +85,8 @@ find_package(Eigen REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES sar_localization
-   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
-
 )
 
 ###########
@@ -102,7 +99,9 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
 include_directories(${EIGEN_INCLUDE_DIRS})
+
 ## Declare a cpp library
 # add_library(sar_localization
 #   src/${PROJECT_NAME}/sar_localization.cpp
@@ -168,7 +167,6 @@ include_directories(${EIGEN_INCLUDE_DIRS})
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(serial_message src/serial_message.cpp)
 target_link_libraries(serial_message ${catkin_LIBRARIES})
@@ -184,3 +182,4 @@ add_dependencies(2D_listener sar_localization_generate_messages_cpp)
 add_executable(log_csi_stream src/log_csi_stream.cpp)
 target_link_libraries(log_csi_stream ${catkin_LIBRARIES})
 add_dependencies(log_csi_stream sar_localization_generate_messages_cpp)
+

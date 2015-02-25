@@ -8,16 +8,6 @@ SET(CMAKE_RELATIVE_PATH_TOP_BINARY "/root/catkin_ws/build")
 # Force unix paths in dependencies.
 SET(CMAKE_FORCE_UNIX_PATHS 1)
 
-# The C and CXX include file search paths:
-SET(CMAKE_C_INCLUDE_PATH
-  "/root/catkin_ws/devel/include"
-  "/opt/ros/hydro/include"
-  "/usr/local/include/eigen3"
-  "/root/catkin_ws/src/sar_localization/include"
-  )
-SET(CMAKE_CXX_INCLUDE_PATH ${CMAKE_C_INCLUDE_PATH})
-SET(CMAKE_Fortran_INCLUDE_PATH ${CMAKE_C_INCLUDE_PATH})
-SET(CMAKE_ASM_INCLUDE_PATH ${CMAKE_C_INCLUDE_PATH})
 
 # The C and CXX include file regular expressions for this directory.
 SET(CMAKE_C_INCLUDE_REGEX_SCAN "^.*$")

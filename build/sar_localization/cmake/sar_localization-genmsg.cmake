@@ -2,7 +2,7 @@
 
 message(STATUS "sar_localization: 2 messages, 0 services")
 
-set(MSG_I_FLAGS "-Isar_localization:/root/catkin_ws/src/sar_localization/msg;-Istd_msgs:/opt/ros/hydro/share/std_msgs/cmake/../msg")
+set(MSG_I_FLAGS "-Isar_localization:/root/catkin_ws/src/sar_localization/msg;-Istd_msgs:/opt/ros/indigo/share/std_msgs/cmake/../msg")
 
 # Find all generators
 find_package(gencpp REQUIRED)
@@ -10,6 +10,20 @@ find_package(genlisp REQUIRED)
 find_package(genpy REQUIRED)
 
 add_custom_target(sar_localization_generate_messages ALL)
+
+# verify that message/service dependencies have not changed since configure
+
+
+
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
+add_custom_target(_sar_localization_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "sar_localization" "/root/catkin_ws/src/sar_localization/msg/Imu.msg" "std_msgs/Header"
+)
+
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
+add_custom_target(_sar_localization_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "sar_localization" "/root/catkin_ws/src/sar_localization/msg/Csi.msg" "std_msgs/Header"
+)
 
 #
 #  langs = gencpp;genlisp;genpy
@@ -20,13 +34,13 @@ add_custom_target(sar_localization_generate_messages ALL)
 _generate_msg_cpp(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Csi.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/sar_localization
 )
 _generate_msg_cpp(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Imu.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/sar_localization
 )
 
@@ -43,6 +57,12 @@ add_custom_target(sar_localization_generate_messages_cpp
 )
 add_dependencies(sar_localization_generate_messages sar_localization_generate_messages_cpp)
 
+# add dependencies to all check dependencies targets
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
+add_dependencies(sar_localization_generate_messages_cpp _sar_localization_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
+add_dependencies(sar_localization_generate_messages_cpp _sar_localization_generate_messages_check_deps_${_filename})
+
 # target for backward compatibility
 add_custom_target(sar_localization_gencpp)
 add_dependencies(sar_localization_gencpp sar_localization_generate_messages_cpp)
@@ -55,13 +75,13 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS sar_localization_generate_messages_
 _generate_msg_lisp(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Csi.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/sar_localization
 )
 _generate_msg_lisp(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Imu.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/sar_localization
 )
 
@@ -78,6 +98,12 @@ add_custom_target(sar_localization_generate_messages_lisp
 )
 add_dependencies(sar_localization_generate_messages sar_localization_generate_messages_lisp)
 
+# add dependencies to all check dependencies targets
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
+add_dependencies(sar_localization_generate_messages_lisp _sar_localization_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
+add_dependencies(sar_localization_generate_messages_lisp _sar_localization_generate_messages_check_deps_${_filename})
+
 # target for backward compatibility
 add_custom_target(sar_localization_genlisp)
 add_dependencies(sar_localization_genlisp sar_localization_generate_messages_lisp)
@@ -90,13 +116,13 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS sar_localization_generate_messages_
 _generate_msg_py(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Csi.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/sar_localization
 )
 _generate_msg_py(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Imu.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/hydro/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/sar_localization
 )
 
@@ -112,6 +138,12 @@ add_custom_target(sar_localization_generate_messages_py
   DEPENDS ${ALL_GEN_OUTPUT_FILES_py}
 )
 add_dependencies(sar_localization_generate_messages sar_localization_generate_messages_py)
+
+# add dependencies to all check dependencies targets
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
+add_dependencies(sar_localization_generate_messages_py _sar_localization_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
+add_dependencies(sar_localization_generate_messages_py _sar_localization_generate_messages_check_deps_${_filename})
 
 # target for backward compatibility
 add_custom_target(sar_localization_genpy)

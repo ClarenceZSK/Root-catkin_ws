@@ -23,10 +23,14 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include <Eigen/Dense>
+#include "/opt/eigen/Eigen/Dense"
 #include <complex>
 #include <vector>
 #include <math.h>
+
+#define CN_NETLINK_USERS		11	/* Highest index + 1 */
+#define CN_IDX_IWLAGN   (CN_NETLINK_USERS + 0xf)
+#define CN_VAL_IWLAGN   0x1
 
 #define MAX_PAYLOAD 2048
 #define SLOW_MSG_CNT 1
