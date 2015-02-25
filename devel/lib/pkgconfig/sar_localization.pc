@@ -1,0 +1,8 @@
+prefix=/root/catkin_ws/devel
+
+Name: sar_localization
+Description: Description of sar_localization
+Version: 0.0.0
+Cflags: -I/root/catkin_ws/devel/include
+Libs: -L/root/catkin_ws/devel/lib 
+Requires: roscpp rospy std_msgs message_runtime

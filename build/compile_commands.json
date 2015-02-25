@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/root/catkin_ws/build/gtest",
+  "command": "/usr/bin/c++   -Dgtest_EXPORTS -DGTEST_CREATE_SHARED_LIBRARY=1 -g -fPIC -I/usr/src/gtest/include -I/usr/src/gtest     -Wall -Wshadow -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /usr/src/gtest/src/gtest-all.cc",
+  "file": "/usr/src/gtest/src/gtest-all.cc"
+},
+{
+  "directory": "/root/catkin_ws/build/gtest",
+  "command": "/usr/bin/c++   -Dgtest_main_EXPORTS -DGTEST_CREATE_SHARED_LIBRARY=1 -g -fPIC -I/usr/src/gtest/include -I/usr/src/gtest     -Wall -Wshadow -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /usr/src/gtest/src/gtest_main.cc",
+  "file": "/usr/src/gtest/src/gtest_main.cc"
+},
+{
+  "directory": "/root/catkin_ws/build/sar_localization",
+  "command": "/usr/bin/c++   -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"sar_localization\\\" -DROSCONSOLE_BACKEND_LOG4CXX -g -I/root/catkin_ws/devel/include -I/opt/ros/hydro/include -I/usr/local/include/eigen3 -I/root/catkin_ws/src/sar_localization/include    -o CMakeFiles/2D_listener.dir/src/2D_listener.cpp.o -c /root/catkin_ws/src/sar_localization/src/2D_listener.cpp",
+  "file": "/root/catkin_ws/src/sar_localization/src/2D_listener.cpp"
+},
+{
+  "directory": "/root/catkin_ws/build/sar_localization",
+  "command": "/usr/bin/c++   -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"sar_localization\\\" -DROSCONSOLE_BACKEND_LOG4CXX -g -I/root/catkin_ws/devel/include -I/opt/ros/hydro/include -I/usr/local/include/eigen3 -I/root/catkin_ws/src/sar_localization/include    -o CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o -c /root/catkin_ws/src/sar_localization/src/log_csi_stream.cpp",
+  "file": "/root/catkin_ws/src/sar_localization/src/log_csi_stream.cpp"
+},
+{
+  "directory": "/root/catkin_ws/build/sar_localization",
+  "command": "/usr/bin/c++   -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"sar_localization\\\" -DROSCONSOLE_BACKEND_LOG4CXX -g -I/root/catkin_ws/devel/include -I/opt/ros/hydro/include -I/usr/local/include/eigen3 -I/root/catkin_ws/src/sar_localization/include    -o CMakeFiles/serial_message.dir/src/serial_message.cpp.o -c /root/catkin_ws/src/sar_localization/src/serial_message.cpp",
+  "file": "/root/catkin_ws/src/sar_localization/src/serial_message.cpp"
+}
+]
