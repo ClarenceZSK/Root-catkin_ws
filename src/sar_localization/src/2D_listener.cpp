@@ -46,12 +46,15 @@ complex<double> csi2;
 
 Eigen::VectorXd multipathProfile(360);
 
-double landa = 0.06;					//The aperture size is 6cm
-double r = 0.116;							//The radius (antenna interval)
+double landa = 0.06;			//The aperture size is 6cm
+double r = 0.116;			//The radius (antenna interval)
 
 int dataIndex = 0;
 int count_d = 0;
 bool start = false;
+
+int AP_ID = 0;		//The associated AP ID
+int AP_NUM = 2;		//The number of available APs
 
 //for debug
 int preIdx = 0;
@@ -161,20 +164,20 @@ int SAR_Profile_2D()
 // %Tag(CALLBACK)%
 void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 { 
-  t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
-  yaw = msg->yaw;
+  	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
+  	yaw = msg->yaw;
 	yaw = yaw*PI/180.0;
-  imu_ready = true;
+  	imu_ready = true;
 }
 
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
-  t_stamp_csi = msg->header.stamp.toNSec()*1e-6;
-  complex<double> csi1tmp (msg->csi1_real, msg->csi1_image);
-  csi1 = csi1tmp; 
-  complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
-  csi2 = csi2tmp; 
-  csi_ready = true;
+  	t_stamp_csi = msg->header.stamp.toNSec()*1e-6;
+  	complex<double> csi1tmp (msg->csi1_real, msg->csi1_image);
+  	csi1 = csi1tmp; 
+  	complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
+  	csi2 = csi2tmp; 
+  	csi_ready = true;
 }   
 // %EndTag(CALLBACK)%
 
@@ -201,17 +204,17 @@ int main(int argc, char **argv)
 	printf("iwconfig to TP5G1\n");
 
 	system("dhclient wlan0");
-	printf("dhclient wlan0 completed\n");
+	printf("dhclient from TP5G1 completed\n");
 
 	system("iwconfig wlan0 essid TP5G2");
 	printf("iwconfig to TP5G2\n");
 
 	system("dhclient wlan0");
-        printf("dhclient wlan0 completed\n");
+        printf("dhclient from TP5G2 completed\n");
 	
 	//fork ping process
-	pid_t pID = fork();
-	if(pID == 0)		//child
+	pid_t pid = fork();
+	if(pid == 0)		//child
 	{
 		//Code only executed by child process
 		system("iwconfig wlan0 essid TP5G1");
@@ -219,7 +222,7 @@ int main(int argc, char **argv)
 		system("ping -n -i 0.05 192.168.0.2");
 		
 	}
-	else if(pID < 0)	//failed to fork
+	else if(pid < 0)	//failed to fork
 	{
 		cerr << "Failed to fork ping" <<endl;
 		exit(1);
@@ -227,23 +230,61 @@ int main(int argc, char **argv)
 	else
 	{
 		//Code only executed by parent process
-		
-	}
-	myfile.open("power.txt");
-	
-	// %Tag(SPIN)%
-	while (n.ok())
-  	{
-	  	ros::spinOnce();
-		//do something
-		int angle = SAR_Profile_2D();
-		if(angle > 0)
-		{
-			printf("Alpha:%d\n", angle);
-		}
+		myfile.open("power.txt");
 
+	        // %Tag(SPIN)%
+        	while (n.ok())
+        	{
+                	ros::spinOnce();
+                	//do something
+                	int angle = SAR_Profile_2D();
+                	if(angle > 0)
+                	{
+				
+                        	printf("Alpha:%d\n", angle);
+				//Switch to another AP
+				switch(AP_ID)
+				{
+				case 0:
+					//Switch to from AP1 to AP2
+					AP_ID = (AP_ID+1)%AP_NUM;
+					kill(pid, SIGINT);	//kill the child process first
+					pid = fork();
+					if(pid < 0)        //failed to fork
+        				{
+                				cerr << "Failed to fork ping" <<endl;
+                				exit(1);
+        				}
+					else if(pid == 0)
+					{
+						//Code executed in child only
+						system("iwconfig wlan0 essid TP5G2");
+                				printf("Switch to TP5G2 and start ping\n");
+                				system("ping -n -i 0.05 192.168.1.2");
+					}
+					break;
+				case 1:
+					AP_ID = (AP_ID+1)%AP_NUM;
+                                        kill(pid, SIGINT);      //kill the child process first
+                                        pid = fork();
+                                        if(pid < 0)        //failed to fork
+                                        {
+                                                cerr << "Failed to fork ping" <<endl;
+                                                exit(1);
+                                        }
+                                        else if(pid == 0)
+                                        {
+                                                //Code executed in child only
+                                                system("iwconfig wlan0 essid TP5G1");
+                                                printf("Switch to TP5G1 and start ping\n");
+                                                system("ping -n -i 0.05 192.168.0.2");
+                                        }
+                                        break;	
+				}
+			}
+		}
+	        // %EndTag(SPIN)%
+        	myfile.close();
 	}
-	// %EndTag(SPIN)%
-	myfile.close();
- 	return 0;
+	return 0;
 }
