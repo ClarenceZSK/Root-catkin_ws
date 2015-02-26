@@ -12,6 +12,13 @@
 #include <math.h>
 #include <assert.h>
 #include <fstream>
+#include <stdlib.h>
+#include <stdio.h>
+
+//for multiple processes processing
+#include <signal.h>
+#include <sys/types.h>
+#include <unistd.h>
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
@@ -70,6 +77,7 @@ double PowerCalculation(double alpha)
 	return ret;
 }
 
+
 int findDirectPath()
 {
 	Eigen::VectorXd avgProfile = multipathProfile/(double)count_d;
@@ -111,19 +119,19 @@ int SAR_Profile_2D()
 			maxT_D = 0;
 			++count_d;
 			int r_yaw;
-			//When csi and imu data vectors reach size limit, start angle generati    on
+			//When csi and imu data vectors reach size limit, start angle generation
 			int resolution = stepSize;      //search resolution
-      double power = 0;
+      			double power = 0;
       
 			myfile << "#" << count_d << endl;
 			
-      for(int alpha = 0; alpha < 360; alpha += resolution)
-      {
+      			for(int alpha = 0; alpha < 360; alpha += resolution)
+      			{
 				double sumpow = 0;
-        for (int step = 0; step < stepSize; ++step)
-	      {
+        			for (int step = 0; step < stepSize; ++step)
+	      			{
 					double alpha_r = (alpha+step)*PI/180.0;
-        	double powtmp = PowerCalculation(alpha_r);
+        				double powtmp = PowerCalculation(alpha_r);
 					sumpow += powtmp;
 					////myfile << powtmp << endl;
 					//multipathProfile(alpha) += powtmp;
@@ -134,15 +142,12 @@ int SAR_Profile_2D()
 						r_yaw = alpha;
 					}
 						
-      	}
-				
+      				}
 				myfile << sumpow << endl;
-				
-
 			}
 			//int directPath = findDirectPath();
 			++dataIndex;
-      //return directPath;
+      			//return directPath;
 			printf("Count:%d,maxPow: %0.3f, ",count_d, power);
 			return r_yaw;
 		}
@@ -175,20 +180,61 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "listener");
+  	ros::init(argc, argv, "listener");
 	multipathProfile.setZero();
-  ros::NodeHandle n;
+  	ros::NodeHandle n;
 
-  ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
+  	ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 1000, csiCallback);
 
+	//system configuration
+	system("service network-manager stop");
+	printf("Network-manager stop\n");
+
+	system("modprobe -r iwlwifi mac80211");
+	printf("Remove wifi module completed\n");
+
+	system("modprobe iwlwifi connector_log=0x1");
+	printf("Load connector log module\n");
+
+	system("iwconfig wlan0 essid TP5G1");
+	printf("iwconfig to TP5G1\n");
+
+	system("dhclient wlan0");
+	printf("dhclient wlan0 completed\n");
+
+	system("iwconfig wlan0 essid TP5G2");
+	printf("iwconfig to TP5G2\n");
+
+	system("dhclient wlan0");
+        printf("dhclient wlan0 completed\n");
 	
+	//fork ping process
+	pid_t pID = fork();
+	if(pID == 0)		//child
+	{
+		//Code only executed by child process
+		system("iwconfig wlan0 essid TP5G1");
+		printf("Switch to TP5G1 and start ping\n");
+		system("ping -n -i 0.05 192.168.0.2");
+		
+	}
+	else if(pID < 0)	//failed to fork
+	{
+		cerr << "Failed to fork ping" <<endl;
+		exit(1);
+	}
+	else
+	{
+		//Code only executed by parent process
+		
+	}
 	myfile.open("power.txt");
 	
 	// %Tag(SPIN)%
 	while (n.ok())
-  {
-	  ros::spinOnce();
+  	{
+	  	ros::spinOnce();
 		//do something
 		int angle = SAR_Profile_2D();
 		if(angle > 0)
@@ -199,5 +245,5 @@ int main(int argc, char **argv)
 	}
 	// %EndTag(SPIN)%
 	myfile.close();
-  return 0;
+ 	return 0;
 }
