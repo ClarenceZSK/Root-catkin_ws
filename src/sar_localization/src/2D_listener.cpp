@@ -285,6 +285,7 @@ int main(int argc, char **argv)
 		}
 	        // %EndTag(SPIN)%
         	myfile.close();
+		kill(pid, SIGINT);
 	}
 	return 0;
 }
