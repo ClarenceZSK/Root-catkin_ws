@@ -55,6 +55,7 @@ bool start = false;
 
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
+pid_t childPID = -2;
 
 //for debug
 int preIdx = 0;
@@ -92,6 +93,30 @@ int findDirectPath()
 	printf("max pow:%lf\n", maxV);
 
 	return idx;
+}
+
+int mysystem(const char *cmdstr)
+{
+	if(cmdstr == NULL)
+	{
+		cerr << "NULL command is not allowed" << endl;
+		exit(1);
+	}
+	if( (childPID = fork()) < 0)
+	{
+		cerr << "Fail to fork" << endl;
+	}
+	else if(childPID == 0)
+	{
+		execl("/bin/sh", "sh", "-c", cmdstr, (char *) 0);
+		_exit(127);
+	}	
+	else	//parent process
+	{
+		//return child pid
+		return childPID;
+	}
+	return childPID;
 }
 
 int SAR_Profile_2D()
@@ -191,15 +216,19 @@ int main(int argc, char **argv)
 	ros::Subscriber sub2 = n.subscribe("csi", 1000, csiCallback);
 
 	//system configuration
-	system("service network-manager stop");
-	printf("Network-manager stop\n");
+	//system("service network-manager stop");
+	//printf("Network-manager stop\n");
 
-	system("modprobe -r iwlwifi mac80211");
-	printf("Remove wifi module completed\n");
+	//system("modprobe -r iwlwifi mac80211");
+	//printf("Remove wifi module completed\n");
 
-	system("modprobe iwlwifi connector_log=0x1");
-	printf("Load connector log module\n");
+	//system("modprobe iwlwifi connector_log=0x1");
+	//printf("Load connector log module\n");
+	
+	//system("iwlist wlan0 scan");
+	//printf("Scan completed\n");
 
+	pid_t cpid;
 	system("iwconfig wlan0 essid TP5G1");
 	printf("iwconfig to TP5G1\n");
 
@@ -212,80 +241,44 @@ int main(int argc, char **argv)
 	system("dhclient wlan0");
         printf("dhclient from TP5G2 completed\n");
 	
-	//fork ping process
-	pid_t pid = fork();
-	if(pid == 0)		//child
-	{
-		//Code only executed by child process
-		system("iwconfig wlan0 essid TP5G1");
-		printf("Switch to TP5G1 and start ping\n");
-		system("ping -n -i 0.05 192.168.0.2");
+	system("iwconfig wlan0 essid TP5G1");
+	printf("Switch to TP5G1 and start ping\n");
+	cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
 		
-	}
-	else if(pid < 0)	//failed to fork
-	{
-		cerr << "Failed to fork ping" <<endl;
-		exit(1);
-	}
-	else
-	{
-		//Code only executed by parent process
-		myfile.open("power.txt");
+	myfile.open("power.txt");
 
-	        // %Tag(SPIN)%
-        	while (n.ok())
-        	{
-                	ros::spinOnce();
-                	//do something
-                	int angle = SAR_Profile_2D();
-                	if(angle > 0)
-                	{
-				
-                        	printf("Alpha:%d\n", angle);
-				//Switch to another AP
-				switch(AP_ID)
-				{
-				case 0:
-					//Switch to from AP1 to AP2
-					AP_ID = (AP_ID+1)%AP_NUM;
-					kill(pid, SIGINT);	//kill the child process first
-					pid = fork();
-					if(pid < 0)        //failed to fork
-        				{
-                				cerr << "Failed to fork ping" <<endl;
-                				exit(1);
-        				}
-					else if(pid == 0)
-					{
-						//Code executed in child only
-						system("iwconfig wlan0 essid TP5G2");
-                				printf("Switch to TP5G2 and start ping\n");
-                				system("ping -n -i 0.05 192.168.1.2");
-					}
-					break;
-				case 1:
-					AP_ID = (AP_ID+1)%AP_NUM;
-                                        kill(pid, SIGINT);      //kill the child process first
-                                        pid = fork();
-                                        if(pid < 0)        //failed to fork
-                                        {
-                                                cerr << "Failed to fork ping" <<endl;
-                                                exit(1);
-                                        }
-                                        else if(pid == 0)
-                                        {
-                                                //Code executed in child only
-                                                system("iwconfig wlan0 essid TP5G1");
-                                                printf("Switch to TP5G1 and start ping\n");
-                                                system("ping -n -i 0.05 192.168.0.2");
-                                        }
-                                        break;	
-				}
+	// %Tag(SPIN)%
+        while (n.ok())
+        {
+               	ros::spinOnce();
+               	//do something
+               	int angle = SAR_Profile_2D();
+               	if(angle > 0)
+               	{
+	                printf("Alpha:%d\n", angle);
+			//Switch to another AP
+			switch(AP_ID)
+			{
+			case 0:
+				//Switch to from AP1 to AP2
+				AP_ID = (AP_ID+1)%AP_NUM;
+				system("pkill -INT -n ping");	//kill the child process first
+				system("iwconfig wlan0 essid TP5G2");
+                		printf("Switch to TP5G2 and start ping\n");
+                		cpid = mysystem("ping -q -n -i 0.05 192.168.0.3");
+				break;
+			case 1:
+				AP_ID = (AP_ID+1)%AP_NUM;
+                        	system("pkill -INT -n ping");      //kill the child process first
+                                system("iwconfig wlan0 essid TP5G1");
+                                printf("Switch to TP5G1 and start ping\n");
+	                        cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
+        	                break;	
 			}
 		}
-	        // %EndTag(SPIN)%
-        	myfile.close();
-		kill(pid, SIGINT);
 	}
+	// %EndTag(SPIN)%
+	myfile.close();
+	system("pkill -INT -n ping");
 	return 0;
 }
