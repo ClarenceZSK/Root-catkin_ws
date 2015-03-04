@@ -14,6 +14,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
+#include <algorithm>
 #include <glib.h>
 
 //for multiple processes processing
@@ -44,8 +45,10 @@ bool imu_ready = false;
 double yaw;
 complex<double> csi1;
 complex<double> csi2;
-
-Eigen::VectorXd multipathProfile(360);
+//multipath effect processing
+Eigen::VectorXi peak_mat(360);
+int vib_threshold = 0;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 
 double landa = 0.06;			//The aperture size is 6cm
 double r = 0.116;			//The radius (antenna interval)
@@ -83,17 +86,29 @@ double PowerCalculation(double alpha)
 }
 
 
-int findDirectPath()
+Eigen::VectorXi peakElimination(Eigen::VectorXi cur_peak_mat)
 {
-	Eigen::VectorXd avgProfile = multipathProfile/(double)count_d;
-	int idx;
-	printf("Count:%d,preMax:%lf,",count_d,avgProfile(preIdx) );
-	double maxV = avgProfile.maxCoeff(&idx);
-	//printf("Mul-pro max:%lf, avg-pro max:%lf\n",multipathProfile(row,col), avgProfile(row,col) );
-	preIdx = idx;
-	printf("max pow:%lf\n", maxV);
+	Eigen::VectorXi ret;
+	for(int i  = 0; i < cur_peak_mat.size(); ++i)
+	{
+		if(cur_peak_mat(i) == true)
+		{
+			//start match the previous peak matrix in a group way
+			bool peakOr = false;
+			for(int j = i-vib_threshold; j <= i+vib_threshold; ++j)
+			{
+				int dx = (j+360)%360;
+	            peakOr = (peakOr || peak_mat(dx) );
+			}
+			ret(i) = peakOr;
+		}
+		else
+		{
+			ret(i) = 0;
+		}
+	}
 
-	return idx;
+	return ret;
 }
 
 int mysystem(const char *cmdstr)
@@ -114,7 +129,6 @@ int mysystem(const char *cmdstr)
 	}	
 	else	//parent process
 	{
-		//return child pid
 		return childPID;
 	}
 	return childPID;
@@ -122,14 +136,11 @@ int mysystem(const char *cmdstr)
 
 int SAR_Profile_2D()
 {
-	//csi_ready = false;
-	//imu_ready = false;
 	double timeDifference = fabs(t_stamp_csi-t_stamp_imu);
 	if(maxT_D < timeDifference)
 	{
 		maxT_D = timeDifference;
 	}
-	//printf("T_D:%lf, ", timeDifference);
 	orientation[dataIndex % sizeLimit] = yaw;
 	CSI1[dataIndex % sizeLimit] = csi1;
 	CSI2[dataIndex % sizeLimit] = csi2;
@@ -154,10 +165,10 @@ int SAR_Profile_2D()
 		for(int alpha = 0; alpha < 360; alpha += resolution)
 		{
 			double sumpow = 0;
-       			for (int step = 0; step < stepSize; ++step)
-      			{
+			for (int step = 0; step < stepSize; ++step)
+			{
 				double alpha_r = (alpha+step)*PI/180.0;
-       				double powtmp = PowerCalculation(alpha_r);
+				double powtmp = PowerCalculation(alpha_r);
 				sumpow += powtmp;
 				////myfile << powtmp << endl;
 				//multipathProfile(alpha) += powtmp;
@@ -168,12 +179,12 @@ int SAR_Profile_2D()
 					r_yaw = alpha;
 				}
 				
-      			}
+			}
 			myfile << sumpow << endl;
 		}
 		//int directPath = findDirectPath();
 		++dataIndex;
-      		//return directPath;
+		//return directPath;
 		printf("Count:%d,maxPow: %0.3f, ",count_d, power);
 		return r_yaw;
 	}
@@ -202,67 +213,15 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
   	csi_ready = true;
 }   
 // %EndTag(CALLBACK)%
-/*
-void processing()
-{
-	pid_t cpid;	
-	while(ros::ok())
-	{
-	int angle = SAR_Profile_2D();
-	if(angle > 0)
-        {
-                 printf("Alpha:%d\n", angle);
-                 //Switch to another AP
-                 switch(AP_ID)
-                 {
-                 case 0:
-                         //Switch to from AP1 to AP2
-                         AP_ID = (AP_ID+1)%AP_NUM;
-                         system("pkill -INT -n ping");   //kill the child process first
-                         system("iwconfig wlan0 essid TP5G2");
-                         printf("Switch to TP5G2 and start ping\n");
-                         cpid = mysystem("ping -q -n -i 0.01 192.168.0.3");
-                         break;
-                 case 1:
-                         AP_ID = (AP_ID+1)%AP_NUM;
-                         system("pkill -INT -n ping");      //kill the child process first
-                         system("iwconfig wlan0 essid TP5G1");
-                         printf("Switch to TP5G1 and start ping\n");
-                         cpid = mysystem("ping -q -n -i 0.01 192.168.0.2");
-                         break;
-                 }
-        }
-
-	}
-
-}
-*/
 
 int main(int argc, char **argv)
 {
   	ros::init(argc, argv, "listener");
-	multipathProfile.setZero();
+	peak_mat.setZero();
   	ros::NodeHandle n;
 
   	ros::Subscriber sub1 = n.subscribe("imu", 1, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 1, csiCallback);
-
-	//ros::MultiThreadedSpinner spinner(2);
-
-	//ros::Rate(100);
-
-	//system configuration
-	//system("service network-manager stop");
-	//printf("Network-manager stop\n");
-
-	//system("modprobe -r iwlwifi mac80211");
-	//printf("Remove wifi module completed\n");
-
-	//system("modprobe iwlwifi connector_log=0x1");
-	//printf("Load connector log module\n");
-	
-	//system("iwlist wlan0 scan");
-	//printf("Scan completed\n");
 
 	pid_t cpid;
 	system("iwconfig wlan0 essid TP5G1");
@@ -275,7 +234,7 @@ int main(int argc, char **argv)
 	printf("iwconfig to TP5G2\n");
 
 	system("dhclient wlan0");
-        printf("dhclient from TP5G2 completed\n");
+	printf("dhclient from TP5G2 completed\n");
 	
 	system("iwconfig wlan0 essid TP5G1");
 	printf("Switch to TP5G1 and start ping\n");
@@ -295,42 +254,29 @@ int main(int argc, char **argv)
 			if(angle >= 0)
 			{
 				printf("Alpha:%d\n", angle);
-        	                //Switch to another AP
-                	        switch(AP_ID)
-                        	{
-	                        case 0:
-        	                        //Switch to from AP1 to AP2
-                	                AP_ID = (AP_ID+1)%AP_NUM;
-                        	        system("pkill -INT -n ping");   //kill the child process first
-                                	system("iwconfig wlan0 essid TP5G2");
-                                	printf("Switch to TP5G2 and start ping\n");
-                                	cpid = mysystem("ping -q -n -i 0.05 192.168.0.3");
-                                	break;
-                        	case 1:
-                                	AP_ID = (AP_ID+1)%AP_NUM;
-                                	system("pkill -INT -n ping");      //kill the child process first
-                                	system("iwconfig wlan0 essid TP5G1");
-                                	printf("Switch to TP5G1 and start ping\n");
-                                	cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
-                                	break;
-                        	}
+				//Switch to another AP
+				switch(AP_ID)
+				{
+				case 0:
+					//Switch to from AP1 to AP2
+					AP_ID = (AP_ID+1)%AP_NUM;
+					system("pkill -INT -n ping");   //kill the child process first
+					system("iwconfig wlan0 essid TP5G2");
+					printf("Switch to TP5G2 and start ping\n");
+					cpid = mysystem("ping -q -n -i 0.05 192.168.0.3");
+					break;
+				case 1:
+					AP_ID = (AP_ID+1)%AP_NUM;
+					system("pkill -INT -n ping");      //kill the child process first
+					system("iwconfig wlan0 essid TP5G1");
+					printf("Switch to TP5G1 and start ping\n");
+					cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
+					break;
+				}
 			}
 		}
 	}
 
-	/*
-	GThread* process_thread;
-  	GError* err=NULL;
-
-  	if ((process_thread = g_thread_new( "data_processing", (GThreadFunc)processing, NULL)) == NULL)
-  	{
-   		printf("Failed to create serial handling thread: %s!!\n", err->message);
-    		g_error_free(err);
-  	}
-	// %Tag(SPIN)%
-        ros::spin();
-	// %EndTag(SPIN)%
-	*/
 	myfile.close();
 	system("pkill -INT -n ping");
 	return 0;
