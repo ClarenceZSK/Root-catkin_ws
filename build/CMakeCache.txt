@@ -201,6 +201,15 @@ EMPY_SCRIPT:STRING=/usr/bin/empy
 Eigen_DIR:PATH=Eigen_DIR-NOTFOUND
 
 //Path to a file.
+GLIB2_INTERNAL_INCLUDE_DIR:PATH=/usr/lib/x86_64-linux-gnu/glib-2.0/include
+
+//Path to a library.
+GLIB2_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libglib-2.0.so
+
+//Path to a file.
+GLIB2_MAIN_INCLUDE_DIR:PATH=/usr/include/glib-2.0
+
+//Path to a file.
 GTEST_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
@@ -215,6 +224,15 @@ GTEST_MAIN_LIBRARY:FILEPATH=GTEST_MAIN_LIBRARY-NOTFOUND
 //Path to a library.
 GTEST_MAIN_LIBRARY_DEBUG:FILEPATH=GTEST_MAIN_LIBRARY_DEBUG-NOTFOUND
 
+//Path to a file.
+GTHREAD2_INTERNAL_INCLUDE_DIR:PATH=GTHREAD2_INTERNAL_INCLUDE_DIR-NOTFOUND
+
+//Path to a library.
+GTHREAD2_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libgthread-2.0.so
+
+//Path to a file.
+GTHREAD2_MAIN_INCLUDE_DIR:PATH=/usr/include/glib-2.0
+
 //lsb_release executable was found
 LSB_FOUND:BOOL=TRUE
 
@@ -223,6 +241,9 @@ LSB_RELEASE_EXECUTABLE:FILEPATH=/usr/bin/lsb_release
 
 //Path to a program.
 NOSETESTS:FILEPATH=/usr/bin/nosetests-2.7
+
+//Path to a program.
+PKGCONFIG_EXECUTABLE:FILEPATH=/usr/bin/pkg-config
 
 //Path to a program.
 PYTHON_EXECUTABLE:FILEPATH=/usr/bin/python
@@ -482,10 +503,16 @@ CMAKE_UNAME:INTERNAL=/bin/uname
 CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding GLIB2
+FIND_PACKAGE_MESSAGE_DETAILS_GLIB2:INTERNAL=[/usr/lib/x86_64-linux-gnu/libglib-2.0.so][/usr/include/glib-2.0][v()]
+//Details about finding GTHREAD2
+FIND_PACKAGE_MESSAGE_DETAILS_GTHREAD2:INTERNAL=[/usr/lib/x86_64-linux-gnu/libgthread-2.0.so][/usr/include/glib-2.0][v()]
 //Details about finding PythonInterp
 FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/usr/bin/python][v2.7.6()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+//ADVANCED property for variable: GLIB2_LIBRARY
+GLIB2_LIBRARY-ADVANCED:INTERNAL=1
 GTEST_FROM_SOURCE_FOUND:INTERNAL=TRUE
 GTEST_FROM_SOURCE_INCLUDE_DIRS:INTERNAL=/usr/include
 GTEST_FROM_SOURCE_LIBRARIES:INTERNAL=gtest
@@ -501,6 +528,10 @@ GTEST_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 GTEST_MAIN_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: GTEST_MAIN_LIBRARY_DEBUG
 GTEST_MAIN_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: GTHREAD2_LIBRARY
+GTHREAD2_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PKGCONFIG_EXECUTABLE
+PKGCONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PYTHON_EXECUTABLE
 PYTHON_EXECUTABLE-ADVANCED:INTERNAL=1
 //This needs to be in PYTHONPATH when 'setup.py install' is called.

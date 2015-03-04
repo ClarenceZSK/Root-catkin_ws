@@ -98,6 +98,8 @@ sar_localization/CMakeFiles/2D_listener.dir/src/2D_listener.cpp.o.provides.build
 /root/catkin_ws/devel/lib/sar_localization/2D_listener: /usr/lib/x86_64-linux-gnu/libboost_thread.so
 /root/catkin_ws/devel/lib/sar_localization/2D_listener: /usr/lib/x86_64-linux-gnu/libpthread.so
 /root/catkin_ws/devel/lib/sar_localization/2D_listener: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+/root/catkin_ws/devel/lib/sar_localization/2D_listener: /usr/lib/x86_64-linux-gnu/libglib-2.0.so
+/root/catkin_ws/devel/lib/sar_localization/2D_listener: /usr/lib/x86_64-linux-gnu/libgthread-2.0.so
 /root/catkin_ws/devel/lib/sar_localization/2D_listener: sar_localization/CMakeFiles/2D_listener.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /root/catkin_ws/devel/lib/sar_localization/2D_listener"
 	cd /root/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/2D_listener.dir/link.txt --verbose=$(VERBOSE)

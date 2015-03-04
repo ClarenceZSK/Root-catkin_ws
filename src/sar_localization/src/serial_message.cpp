@@ -423,6 +423,15 @@ void UART2_CommandRoute(void)
 		if(Sum_check()){
 			if(rx_buffer[1]==0xA1){
 				UART2_Get_IMU();
+				//std_msgs::Float32 msg;
+				sar_localization::Imu msg;
+				//ros::ROS_WARN("The yaw angle: ");
+				msg.header.stamp = ros::Time::now();
+				msg.yaw = yaw+180;
+				msg.pitch = pitch+90;
+				msg.roll = roll+180;
+				imu_pub.publish(msg);
+				printf("Yaw:%lf,pitch:%lf,roll:%lf\n",yaw+180,pitch+90,roll+180);
 			}
 			if(rx_buffer[1]==0xA2){
 				UART2_Get_Motion();
@@ -476,7 +485,7 @@ void Decode_frame(uint8_t data)
 void serial_wait( void* serial_ptr )
 {
 	int fd = *((int*)serial_ptr);
-	ros::Rate listen_rate(100);
+	//ros::Rate listen_rate(100);
 	while (ros::ok())
 	{
 		uint8_t cp;
@@ -488,15 +497,6 @@ void serial_wait( void* serial_ptr )
 		{
      	fprintf(stderr, "ERROR: Could not read from fd %d\n", fd);
 		}
-		//std_msgs::Float32 msg;
-		sar_localization::Imu msg;
-		//ros::ROS_WARN("The yaw angle: ");
-		msg.header.stamp = ros::Time::now();
-		msg.yaw = yaw+180;
-		msg.pitch = pitch+90;
-		msg.roll = roll+180;
-		imu_pub.publish(msg);
-		printf("Yaw:%lf,pitch:%lf,roll:%lf\n",yaw+180,pitch+90,roll+180);
 		// If a message could be decoded, handle it
 		if(debug)
 		{

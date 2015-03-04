@@ -102,6 +102,18 @@ include_directories(
 
 include_directories(${EIGEN_INCLUDE_DIRS})
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+include(cmake/FindGLIB2.cmake)
+include(cmake/FindGTHREAD2.cmake)
+FIND_PACKAGE(GLIB2  REQUIRED)
+FIND_PACKAGE(GTHREAD2  REQUIRED)
+
+INCLUDE_DIRECTORIES(
+    ${GLIB2_MAIN_INCLUDE_DIR}
+    ${GLIB2_INTERNAL_INCLUDE_DIR}
+    ${GTHREAD2_MAIN_INCLUDE_DIR}
+)
 ## Declare a cpp library
 # add_library(sar_localization
 #   src/${PROJECT_NAME}/sar_localization.cpp
@@ -175,7 +187,12 @@ add_dependencies(serial_message sar_localization_generate_messages_cpp)
 #add_executable(listener src/listener.cpp)
 add_executable(2D_listener src/2D_listener.cpp)
 #target_link_libraries(listener ${catkin_LIBRARIES})
-target_link_libraries(2D_listener ${catkin_LIBRARIES})
+target_link_libraries(
+	2D_listener 
+	${catkin_LIBRARIES}
+	${GLIB2_LIBRARY}
+    	${GTHREAD2_LIBRARY}
+)
 #add_dependencies(listener sar_localization_generate_messages_cpp)
 add_dependencies(2D_listener sar_localization_generate_messages_cpp)
 
