@@ -134,8 +134,25 @@ int mysystem(const char *cmdstr)
 	return childPID;
 }
 
-int SAR_Profile_2D()
+vector<int> countPeak()
 {
+	vector<int> ret;
+	ret.clear();
+	for (int i = 0; i < peak_mat.size(); ++i)
+	{
+		if (peak_mat(i) == 1)
+		{
+			ret.push_back(i);	
+		}
+	}
+	return ret;
+}
+
+
+vector<int> SAR_Profile_2D()
+{
+	vector<int> ret;
+	ret.clear();
 	double timeDifference = fabs(t_stamp_csi-t_stamp_imu);
 	if(maxT_D < timeDifference)
 	{
@@ -151,47 +168,75 @@ int SAR_Profile_2D()
 	}
 	if(start)
 	{
+		Eigen::VectorXi cur_peak_mat;
+		cur_peak_mat.setZero();
 		printf("max T_D:%lf, ", maxT_D);
 		start = false;
 		maxT_D = 0;
 		++count_d;
-		int r_yaw;
-		//When csi and imu data vectors reach size limit, start angle generation
-		int resolution = stepSize;      //search resolution
-		double power = 0;
-  
-		myfile << "#" << count_d << endl;
-			
-		for(int alpha = 0; alpha < 360; alpha += resolution)
-		{
-			double sumpow = 0;
-			for (int step = 0; step < stepSize; ++step)
-			{
-				double alpha_r = (alpha+step)*PI/180.0;
-				double powtmp = PowerCalculation(alpha_r);
-				sumpow += powtmp;
-				////myfile << powtmp << endl;
-				//multipathProfile(alpha) += powtmp;
-				//single path
-				if(power < powtmp)
-				{
-					power= powtmp;
-					r_yaw = alpha;
-				}
-				
-			}
-			myfile << sumpow << endl;
-		}
-		//int directPath = findDirectPath();
-		++dataIndex;
-		//return directPath;
-		printf("Count:%d,maxPow: %0.3f, ",count_d, power);
-		return r_yaw;
-	}
 		
-	++dataIndex;
+		//When csi and imu data vectors reach size limit, start angle generation
+		int resolution = 1;      //search resolution
 
-	return -1;
+ 		bool up = false;
+		bool initial_down = false;
+		double prePow = PowerCalculation(0);
+
+		myfile << "#" << count_d << endl;
+		for(int alpha = 1; alpha < 360; alpha += resolution)
+		{
+			double alpha_r = alpha*PI/180.0;
+			double powtmp = PowerCalculation(alpha_r);
+			if(powtmp > prePow)
+			{
+				up = true;
+			}
+			else if(alpha == 1)
+			{
+				initial_down = true;
+			}
+
+			if(up)		//only if up, we wait down for peak detection
+			{
+				if(powtmp < prePow)		//down
+				{
+					cur_peak_mat(alpha) = 1;
+					up = false;			//once peak detected, we wait for up signal again
+				}
+			}
+			myfile << cur_peak_mat(alpha) << endl;
+			prePow = powtmp;
+		}
+		//after the loop, we has to take care the initial point that it may be also a peak
+		double powtmp = PowerCalculation(0);
+		if(powtmp > prePow)
+		{
+			up = true;
+		}
+		if(up && initial_down)
+		{
+			cur_peak_mat(0) = 1;
+		}
+		myfile << cur_peak_mat(0) << endl;
+
+		++dataIndex;
+		
+		if(count_d == 1)
+		{
+			peak_mat = cur_peak_mat;
+			ret = countPeak();
+			printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
+		}
+		else
+		{
+			peak_mat = peakElimination(cur_peak_mat);
+			ret = countPeak();
+			printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
+			return ret;
+		}
+	}
+	++dataIndex;
+	return ret;
 }
 
 // %Tag(CALLBACK)%
@@ -250,9 +295,14 @@ int main(int argc, char **argv)
 		{
 			csi_ready = false;
 			imu_ready = false;
-			int angle = SAR_Profile_2D();	
-			if(angle >= 0)
+			vector<int> peakAngles = SAR_Profile_2D();	
+			if(!peakAngles.empty() )
 			{
+				//print peaks after the elimination
+
+				for(int i = 0; i < peakAngles.size(); ++i)
+				{
+				}
 				printf("Alpha:%d\n", angle);
 				//Switch to another AP
 				switch(AP_ID)
