@@ -47,7 +47,7 @@ complex<double> csi1;
 complex<double> csi2;
 //multipath effect processing
 Eigen::VectorXi peak_mat(360);
-int vib_threshold = 0;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int vib_threshold = 3;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
 int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 
 double landa = 0.06;			//The aperture size is 6cm
@@ -64,7 +64,8 @@ pid_t childPID = -2;
 //for debug
 int preIdx = 0;
 double maxT_D = 0;
-ofstream myfile;
+ofstream myfile1;		//power
+ofstream myfile2;		//peaks
 
 double PowerCalculation(double alpha)
 {
@@ -88,7 +89,7 @@ double PowerCalculation(double alpha)
 
 Eigen::VectorXi peakElimination(Eigen::VectorXi cur_peak_mat)
 {
-	Eigen::VectorXi ret;
+	Eigen::VectorXi ret(360);
 	for(int i  = 0; i < cur_peak_mat.size(); ++i)
 	{
 		if(cur_peak_mat(i) == true)
@@ -140,6 +141,7 @@ vector<int> countPeak()
 	ret.clear();
 	for (int i = 0; i < peak_mat.size(); ++i)
 	{
+		myfile2 << peak_mat(i) << endl;
 		if (peak_mat(i) == 1)
 		{
 			ret.push_back(i);	
@@ -164,11 +166,19 @@ vector<int> SAR_Profile_2D()
 	if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
 	{
 		printf("Start!\n");
-		start = true;
+		if(maxT_D > 30)
+		{
+			maxT_D = 0;
+			printf("Data mismatch! Restart sampling!\n");
+		}
+		else
+		{
+			start = true;
+		}
 	}
 	if(start)
 	{
-		Eigen::VectorXi cur_peak_mat;
+		Eigen::VectorXi cur_peak_mat(360);
 		cur_peak_mat.setZero();
 		printf("max T_D:%lf, ", maxT_D);
 		start = false;
@@ -182,7 +192,11 @@ vector<int> SAR_Profile_2D()
 		bool initial_down = false;
 		double prePow = PowerCalculation(0);
 
-		myfile << "#" << count_d << endl;
+		myfile1 << "#" << count_d << endl;	//for power
+		myfile1 << prePow << endl;
+
+		myfile2 << "#" << count_d << endl;	//for peaks
+		
 		for(int alpha = 1; alpha < 360; alpha += resolution)
 		{
 			double alpha_r = alpha*PI/180.0;
@@ -204,7 +218,8 @@ vector<int> SAR_Profile_2D()
 					up = false;			//once peak detected, we wait for up signal again
 				}
 			}
-			myfile << cur_peak_mat(alpha) << endl;
+			myfile1 << powtmp << endl;
+			//myfile2 << cur_peak_mat(alpha) << endl;
 			prePow = powtmp;
 		}
 		//after the loop, we has to take care the initial point that it may be also a peak
@@ -217,7 +232,7 @@ vector<int> SAR_Profile_2D()
 		{
 			cur_peak_mat(0) = 1;
 		}
-		myfile << cur_peak_mat(0) << endl;
+		myfile2 << cur_peak_mat(0) << endl;
 
 		++dataIndex;
 		
@@ -227,7 +242,7 @@ vector<int> SAR_Profile_2D()
 			ret = countPeak();
 			printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
 		}
-		else
+		else	//start peak elimination
 		{
 			peak_mat = peakElimination(cur_peak_mat);
 			ret = countPeak();
@@ -265,8 +280,8 @@ int main(int argc, char **argv)
 	peak_mat.setZero();
   	ros::NodeHandle n;
 
-  	ros::Subscriber sub1 = n.subscribe("imu", 1, imuCallback);
-	ros::Subscriber sub2 = n.subscribe("csi", 1, csiCallback);
+  	ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
+	ros::Subscriber sub2 = n.subscribe("csi", 1000, csiCallback);
 
 	pid_t cpid;
 	system("iwconfig wlan0 essid TP5G1");
@@ -275,6 +290,7 @@ int main(int argc, char **argv)
 	system("dhclient wlan0");
 	printf("dhclient from TP5G1 completed\n");
 
+	/*
 	system("iwconfig wlan0 essid TP5G2");
 	printf("iwconfig to TP5G2\n");
 
@@ -283,10 +299,15 @@ int main(int argc, char **argv)
 	
 	system("iwconfig wlan0 essid TP5G1");
 	printf("Switch to TP5G1 and start ping\n");
+	*/
 	cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
-		
-	myfile.open("power.txt");
-
+	
+	myfile1.open("power.txt");
+	myfile2.open("peaks.txt");
+	
+	ros::spinOnce();		//empty the queue
+	csi_ready = false;
+	imu_ready = false;
 	while(ros::ok() )
 	{
 		//spinner.spinOnce();
@@ -299,11 +320,14 @@ int main(int argc, char **argv)
 			if(!peakAngles.empty() )
 			{
 				//print peaks after the elimination
-
+				printf("%d peaks: ", (int) peakAngles.size() );
 				for(int i = 0; i < peakAngles.size(); ++i)
 				{
+					
+					printf("%d ", peakAngles[i]);
 				}
-				printf("Alpha:%d\n", angle);
+				printf("\n");
+				/*
 				//Switch to another AP
 				switch(AP_ID)
 				{
@@ -323,11 +347,13 @@ int main(int argc, char **argv)
 					cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
 					break;
 				}
+				*/
 			}
 		}
 	}
 
-	myfile.close();
+	myfile1.close();
+	myfile2.close();
 	system("pkill -INT -n ping");
 	return 0;
 }
