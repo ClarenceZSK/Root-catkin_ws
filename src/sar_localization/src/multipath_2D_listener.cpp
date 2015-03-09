@@ -51,7 +51,7 @@ int vib_threshold = 3;			//The peak vibration allowance, 0 means the persistent 
 int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 
 double landa = 0.06;			//The aperture size is 6cm
-double r = 0.116;			//The radius (antenna interval)
+double r = 0.06;			//The radius (antenna interval)
 
 int dataIndex = 0;
 int count_d = 0;

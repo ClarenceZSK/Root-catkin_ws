@@ -25,7 +25,7 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 300
+#define sizeLimit 100
 #define profileLimit 20
 //for debug
 #define stepSize 1
@@ -53,7 +53,7 @@ complex<double> csi2;
 Eigen::VectorXd multipathProfile(360);
 
 double landa = 0.06;			//The aperture size is 6cm
-double r = 0.116;			//The radius (antenna interval)
+double r = 0.06;			//The radius (antenna interval)
 
 int dataIndex = 0;
 int count_d = 0;
@@ -75,13 +75,13 @@ double maxT_D = 0;
 ofstream myfile;
 
 double RadianToDegree(double radian)
-  {
-      return radian/PI*180;
-  }
-  double DegreeToRadian(double degree)
-  {
-      return degree/180.0*PI;
-  }
+{
+    return radian/PI*180;
+}
+double DegreeToRadian(double degree)
+{
+    return degree/180.0*PI;
+}
 
 
 double PowerCalculation(double alpha)
