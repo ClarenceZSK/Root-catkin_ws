@@ -23,7 +23,7 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 200
+#define sizeLimit 100
 #define profileLimit 20
 //for debug
 #define stepSize 1
@@ -57,6 +57,12 @@ bool start = false;
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
 pid_t childPID = -2;
+
+//for data preprocessing to make sure the collected data really formed a circle
+//double min_interval = 360;	//the minimum distance of two adjacent imu data
+//double max_interval = 0;	//the maximun distance between two adjacent imu data
+//double circle_distance = 0;
+
 
 //for debug
 int preIdx = 0;
@@ -131,14 +137,59 @@ int SAR_Profile_2D()
 		{
 			maxT_D = timeDifference;
 		}
-		//printf("T_D:%lf, ", timeDifference);
+		
 		orientation[dataIndex % sizeLimit] = yaw;
 		CSI1[dataIndex % sizeLimit] = csi1;
 		CSI2[dataIndex % sizeLimit] = csi2;
+		++dataIndex;
 		if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
 		{
-			printf("Start!\n");
-			start = true;
+			//start data preprocessing
+			//
+			double max_interval = 0;
+			double min_interval = 0xffff;
+			double maxAngle = 0;
+			double minAngle = 0xffff;
+			
+			for(int i = 0; i < sizeLimit-1; ++i)
+			{
+				double y1 = orientation[i];
+				double y2 = orientation[i+1];
+				double interval = fabs(y1-y2);
+				if(min_interval > interval)	//find min interval
+				{
+					min_interval = interval;	
+				}
+
+				if(max_interval < interval)		//find max interval
+				{
+					max_interval = interval;
+				}
+			}
+
+			for(int i = 0; i < sizeLimit; ++i)
+			{
+				double y = orientation[i];
+				if(maxAngle < y)
+				{
+					maxAngle = y;
+				}
+				if(minAngle > y)
+				{
+					minAngle = y;
+				}
+			}
+			double circle_distance = maxAngle - minAngle;
+			printf("Max interval:%.3f, min interval:%.3f\n", max_interval, min_interval);
+			if(circle_distance < 353)
+			{
+				printf("Not a circle! Resampling!\n");
+			}
+			else 
+			{
+				printf("Start!\n");
+				start = true;
+			}
 		}
 		if(start)
 		{
@@ -180,7 +231,6 @@ int SAR_Profile_2D()
 			return r_yaw;
 		}	
 		
-		++dataIndex;
 	}
 
 	return -1;
@@ -247,8 +297,8 @@ int main(int argc, char **argv)
 	multipathProfile.setZero();
   	ros::NodeHandle n;
 
-  	ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
-	ros::Subscriber sub2 = n.subscribe("csi", 1000, csiCallback);
+  	ros::Subscriber sub1 = n.subscribe("imu", 10000, imuCallback);
+	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 
 	//ros::MultiThreadedSpinner spinner(2);
 
@@ -265,12 +315,12 @@ int main(int argc, char **argv)
 	//system("iwlist wlan0 scan");
 	//printf("Scan completed\n");
 
-	pid_t cpid;
-	system("iwconfig wlan0 essid TP5G1");
-	printf("iwconfig to TP5G1\n");
+	//pid_t cpid;
+	//system("iwconfig wlan0 essid TP5G1");
+	//printf("iwconfig to TP5G1\n");
 
-	system("dhclient wlan0");
-	printf("dhclient from TP5G1 completed\n");
+	//system("dhclient wlan0");
+	//printf("dhclient from TP5G1 completed\n");
 
 	//system("iwconfig wlan0 essid TP5G2");
 	//printf("iwconfig to TP5G2\n");
@@ -278,9 +328,9 @@ int main(int argc, char **argv)
 	//system("dhclient wlan0");
     //printf("dhclient from TP5G2 completed\n");
 	
-	system("iwconfig wlan0 essid TP5G1");
-	printf("Switch to TP5G1 and start ping\n");
-	cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
+	//system("iwconfig wlan0 essid TP5G1");
+	//printf("Switch to TP5G1 and start ping\n");
+	//cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
 		
 	myfile.open("power.txt");
 	ros::spinOnce();		//empty the queue
@@ -332,6 +382,6 @@ int main(int argc, char **argv)
 	// %EndTag(SPIN)%
 	*/
 	myfile.close();
-	system("pkill -INT -n ping");
+	//system("pkill -INT -n ping");
 	return 0;
 }	
