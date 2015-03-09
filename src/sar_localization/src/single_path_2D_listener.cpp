@@ -27,6 +27,9 @@
 #define PI 3.1415926
 #define sizeLimit 100
 #define profileLimit 20
+
+#define interval_threshold 25	//maximun interval must greater than 25 degree
+#define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1
 
@@ -242,7 +245,12 @@ int SAR_Profile_2D()
 			
 			double circle_distance = maxAngle - minAngle;
 			printf("Max interval:%.3f, min interval:%.3f, max angle:%.3f, min angle:%.3f\n", max_interval, min_interval, maxAngle, minAngle);
-			if(circle_distance < 353)
+			if(max_interval > interval_threshold)
+			{
+				printf("Too large interval! Resampling!\n");
+				input.clear();
+			}
+			else if(circle_distance < circle_threshold)
 			{
 				printf("Circle distance:%lf!Not a circle! Resampling!\n", circle_distance );
 				input.clear();
