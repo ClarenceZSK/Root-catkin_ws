@@ -23,7 +23,7 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 100
+#define sizeLimit 200
 #define profileLimit 20
 //for debug
 #define stepSize 1
@@ -126,6 +126,15 @@ int mysystem(const char *cmdstr)
 	return childPID;
 }
 
+double RadianToDegree(double radian)
+{
+	return radian/PI*180;
+}
+double DegreeToRadian(double degree)
+{
+	return degree/180*PI;
+}
+
 int SAR_Profile_2D()
 {
 	if(csi_ready && imu_ready)
@@ -180,10 +189,10 @@ int SAR_Profile_2D()
 				}
 			}
 			double circle_distance = maxAngle - minAngle;
-			printf("Max interval:%.3f, min interval:%.3f\n", max_interval, min_interval);
-			if(circle_distance < 353)
+			printf("Max interval:%.3f, min interval:%.3f, max angle:%.3f, min angle:%.3f\n", RadianToDegree(max_interval), RadianToDegree(min_interval), RadianToDegree(maxAngle), RadianToDegree(minAngle) );
+			if(RadianToDegree(circle_distance) < 353)
 			{
-				printf("Not a circle! Resampling!\n");
+				printf("Circle distance:%lf!Not a circle! Resampling!\n", RadianToDegree(circle_distance) );
 			}
 			else 
 			{
@@ -225,7 +234,7 @@ int SAR_Profile_2D()
 				myfile << sumpow << endl;
 			}
 			//int directPath = findDirectPath();
-			++dataIndex;
+			//++dataIndex;
       		//return directPath;
 			printf("Count:%d,maxPow: %0.3f, ",count_d, power);
 			return r_yaw;
