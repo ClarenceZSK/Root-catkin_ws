@@ -8,6 +8,8 @@
 
 #include "/opt/eigen/Eigen/Dense"
 #include <vector>
+#include <map>
+#include <set>
 #include <complex>
 #include <math.h>
 #include <assert.h>
@@ -23,7 +25,7 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 200
+#define sizeLimit 300
 #define profileLimit 20
 //for debug
 #define stepSize 1
@@ -36,6 +38,9 @@ using namespace Eigen;
 complex<double>  CSI1[sizeLimit];
 complex<double>  CSI2[sizeLimit];
 double orientation[sizeLimit];
+
+map<double, pair<complex<double>, complex<double> > > input;		
+
 double t_stamp_csi;			//time stamp of csi
 double t_stamp_imu;			//time stamp of imu
 bool csi_ready = false;
@@ -69,25 +74,60 @@ int preIdx = 0;
 double maxT_D = 0;
 ofstream myfile;
 
+double RadianToDegree(double radian)
+  {
+      return radian/PI*180;
+  }
+  double DegreeToRadian(double degree)
+  {
+      return degree/180.0*PI;
+  }
+
+
 double PowerCalculation(double alpha)
 {
+	map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
 	complex<double> avgCsiHat (0, 0);
-
-	for(int i = 0; i < sizeLimit; ++i)
+	input_iter = input.begin();
+	//for(int i = 0; i < sizeLimit; ++i)
+	while(input_iter != input.end() )
 	{
-		double theta = 2*PI/landa*r*cos(alpha-orientation[i]);
+		double input_yaw = DegreeToRadian(input_iter->first);
+		complex<double> input_csi1 = input_iter->second.first;
+		complex<double> input_csi2 = input_iter->second.second;
+		double theta = 2*PI/landa*r*cos(alpha-input_yaw);
 		double real_tmp = cos(theta);
 		double image_tmp = sin(theta);
 		complex<double> tmp (real_tmp, image_tmp);
 		//cout << "Relative csi:" << CSI1[i]*conj(CSI2[i]) << endl;
-		avgCsiHat += CSI1[i]*conj(CSI2[i])*tmp;
+		avgCsiHat += input_csi1*conj(input_csi2)*tmp;
+		++input_iter;
 	}
-	avgCsiHat /= sizeLimit;
+	avgCsiHat /= input.size();
 	double ret = avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.imag();
 	//printf("Power calculation: %lf\n", ret);
 	return ret;
 }
+/*
+double PowerCalculation(double alpha)                                                                            
+{
+    complex<double> avgCsiHat (0, 0);
 
+    for(int i = 0; i < sizeLimit; ++i)
+    {
+        double theta = 2*PI/landa*r*cos(alpha-orientation[i]);
+        double real_tmp = cos(theta);
+        double image_tmp = sin(theta);
+        complex<double> tmp (real_tmp, image_tmp);
+        //cout << "Relative csi:" << CSI1[i]*conj(CSI2[i]) << endl;
+        avgCsiHat += CSI1[i]*conj(CSI2[i])*tmp;
+    }
+    avgCsiHat /= sizeLimit;
+    double ret = avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.imag();
+    //printf("Power calculation: %lf\n", ret);
+    return ret;
+}
+*/
 
 int findDirectPath()
 {
@@ -126,14 +166,6 @@ int mysystem(const char *cmdstr)
 	return childPID;
 }
 
-double RadianToDegree(double radian)
-{
-	return radian/PI*180;
-}
-double DegreeToRadian(double degree)
-{
-	return degree/180*PI;
-}
 
 int SAR_Profile_2D()
 {
@@ -147,24 +179,54 @@ int SAR_Profile_2D()
 			maxT_D = timeDifference;
 		}
 		
-		orientation[dataIndex % sizeLimit] = yaw;
-		CSI1[dataIndex % sizeLimit] = csi1;
-		CSI2[dataIndex % sizeLimit] = csi2;
-		++dataIndex;
-		if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
+		//orientation[dataIndex % sizeLimit] = yaw;
+		//CSI1[dataIndex % sizeLimit] = csi1;
+		//CSI2[dataIndex % sizeLimit] = csi2;
+		//++dataIndex;
+
+		input[RadianToDegree(yaw)] =  make_pair(csi1, csi2);
+		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
+		if(input.size() == sizeLimit)
 		{
 			//start data preprocessing
 			//
+			
+			map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
+			input_iter = input.begin();
+			/*
+			int count_input = 0;
+			for(input_iter = input.begin(); input_iter != input.end(); ++input_iter)
+			{
+				++count_input;
+				complex<double> input_csi1 = input_iter->second.first;
+				complex<double> input_csi2 = input_iter->second.second;
+				printf("%d -> %.2f %.2fi && %.2f %.2fi; ", count_input, input_csi1.real(), input_csi1.imag(), input_csi2.real(), input_csi2.imag() );
+			}
+			printf("\n");
+			*/
 			double max_interval = 0;
 			double min_interval = 0xffff;
 			double maxAngle = 0;
 			double minAngle = 0xffff;
 			
-			for(int i = 0; i < sizeLimit-1; ++i)
+			
+			while(input_iter != input.end() )
 			{
-				double y1 = orientation[i];
-				double y2 = orientation[i+1];
-				double interval = fabs(y1-y2);
+				double y1 = input_iter->first;
+				++input_iter;
+				if(input_iter == input.end() )
+				{
+					break;
+				}
+				double y2 = input_iter->first;
+				++input_iter;
+				double interval = y2 - y1;
+				/*
+				if(interval > PI)
+				{
+					interval = 2*PI-interval;
+				}
+				*/
 				if(min_interval > interval)	//find min interval
 				{
 					min_interval = interval;	
@@ -175,30 +237,22 @@ int SAR_Profile_2D()
 					max_interval = interval;
 				}
 			}
-
-			for(int i = 0; i < sizeLimit; ++i)
-			{
-				double y = orientation[i];
-				if(maxAngle < y)
-				{
-					maxAngle = y;
-				}
-				if(minAngle > y)
-				{
-					minAngle = y;
-				}
-			}
+			maxAngle = input.rbegin()->first;
+			minAngle = input.begin()->first;
+			
 			double circle_distance = maxAngle - minAngle;
-			printf("Max interval:%.3f, min interval:%.3f, max angle:%.3f, min angle:%.3f\n", RadianToDegree(max_interval), RadianToDegree(min_interval), RadianToDegree(maxAngle), RadianToDegree(minAngle) );
-			if(RadianToDegree(circle_distance) < 353)
+			printf("Max interval:%.3f, min interval:%.3f, max angle:%.3f, min angle:%.3f\n", max_interval, min_interval, maxAngle, minAngle);
+			if(circle_distance < 353)
 			{
-				printf("Circle distance:%lf!Not a circle! Resampling!\n", RadianToDegree(circle_distance) );
+				printf("Circle distance:%lf!Not a circle! Resampling!\n", circle_distance );
+				input.clear();
 			}
 			else 
 			{
-				printf("Start!\n");
+				printf("Circle distance:%.2f! Start!\n", circle_distance);
 				start = true;
 			}
+		
 		}
 		if(start)
 		{
@@ -237,6 +291,7 @@ int SAR_Profile_2D()
 			//++dataIndex;
       		//return directPath;
 			printf("Count:%d,maxPow: %0.3f, ",count_d, power);
+			input.clear();
 			return r_yaw;
 		}	
 		
