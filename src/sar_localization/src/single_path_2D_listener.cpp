@@ -25,10 +25,10 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 100
+#define sizeLimit 500
 #define profileLimit 20
 
-#define interval_threshold 25	//maximun interval must greater than 25 degree
+#define interval_threshold 20	//maximun interval must greater than 25 degree
 #define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1
@@ -65,6 +65,9 @@ bool start = false;
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
 pid_t childPID = -2;
+
+//auto switch
+bool autoSwith = 0;
 
 //for data preprocessing to make sure the collected data really formed a circle
 //double min_interval = 360;	//the minimum distance of two adjacent imu data
@@ -145,7 +148,7 @@ int findDirectPath()
 	return idx;
 }
 
-int mysystem(const char *cmdstr)
+void mysystem(const char *cmdstr)
 {
 	if(cmdstr == NULL)
 	{
@@ -161,12 +164,8 @@ int mysystem(const char *cmdstr)
 		execl("/bin/sh", "sh", "-c", cmdstr, (char *) 0);
 		_exit(127);
 	}	
-	else	//parent process
-	{
-		//return child pid
-		return childPID;
-	}
-	return childPID;
+	//parent process
+	//...
 }
 
 
@@ -189,7 +188,7 @@ int SAR_Profile_2D()
 
 		input[RadianToDegree(yaw)] =  make_pair(csi1, csi2);
 		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
-		if(input.size() == sizeLimit)
+		if(input.size() == sizeLimit && 1)
 		{
 			//start data preprocessing
 			//
@@ -228,22 +227,18 @@ int SAR_Profile_2D()
 			minAngle = input.begin()->first;
 			
 			double circle_distance = maxAngle - minAngle;
-			printf("Max interval:%.3f, min interval:%.3f, max angle:%.3f, min angle:%.3f\n", max_interval, min_interval, maxAngle, minAngle);
-			if(max_interval > interval_threshold)
+			
+			if(max_interval < interval_threshold && circle_distance >= circle_threshold)
 			{
-				printf("Too large interval! Resampling!\n");
-				input.clear();
-			}
-			else if(circle_distance < circle_threshold)
-			{
-				printf("Circle distance:%lf!Not a circle! Resampling!\n", circle_distance );
-				input.clear();
-			}
-			else 
-			{
-				printf("Circle distance:%.2f! Start!\n", circle_distance);
+				printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, circle_distance);
 				start = true;
 			}
+			else if(input.size() > sizeLimit)	//it indicates some unpredictable situations causing very large input map
+			{
+				printf("Too many samples! Clear and Resampling!\n");
+				input.clear();
+			}
+			
 		
 		}
 		if(start)
@@ -282,7 +277,7 @@ int SAR_Profile_2D()
 			//int directPath = findDirectPath();
 			//++dataIndex;
       		//return directPath;
-			printf("Count:%d,maxPow: %0.3f, ",count_d, power);
+			printf("Count:%d,maxPow: %0.3f,sample size:%d, ",count_d, power,(int) input.size() );
 			input.clear();
 			return r_yaw;
 		}	
@@ -371,21 +366,22 @@ int main(int argc, char **argv)
 	//system("iwlist wlan0 scan");
 	//printf("Scan completed\n");
 
-	pid_t cpid;
-	//system("iwconfig wlan0 essid TP5G1");
-	//printf("iwconfig to TP5G1\n");
+	if(autoSwith)
+	{
+		system("iwconfig wlan0 essid TP5G1");
+		printf("iwconfig to TP5G1\n");
 
-	//system("dhclient wlan0");
-	//printf("dhclient from TP5G1 completed\n");
+		system("dhclient wlan0");
+		printf("dhclient from TP5G1 completed\n");
 
-	system("iwconfig wlan0 essid TP5G2");
-	printf("iwconfig to TP5G2\n");
+		system("iwconfig wlan0 essid TP5G2");
+		printf("iwconfig to TP5G2\n");
 
-	system("dhclient wlan0");
-    printf("dhclient from TP5G2 completed\n");
+		system("dhclient wlan0");
+    	printf("dhclient from TP5G2 completed\n");
 	
-	cpid = mysystem("ping -q -n -i 0.05 192.168.0.3");
-		
+		mysystem("ping -q -n -i 0.05 192.168.0.3");
+	}	
 	myfile.open("power.txt");
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
@@ -399,26 +395,27 @@ int main(int argc, char **argv)
 		{
 			printf("Alpha:%d\n", angle);
             //Switch to another AP
-			/*
-       	    switch(AP_ID)
-            {
-            case 0:
-				//Switch to from AP1 to AP2
-              	AP_ID = (AP_ID+1)%AP_NUM;
-                system("pkill -INT -n ping");   //kill the child process first
-               	system("iwconfig wlan0 essid TP5G2");
-               	printf("Switch to TP5G2 and start ping\n");
-              	cpid = mysystem("ping -q -n -i 0.05 192.168.0.3");
-               	break;
-            case 1:
-              	AP_ID = (AP_ID+1)%AP_NUM;
-              	system("pkill -INT -n ping");      //kill the child process first
-              	system("iwconfig wlan0 essid TP5G1");
-               	printf("Switch to TP5G1 and start ping\n");
-        	   	cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
-           	break;
-           	}
-			*/
+			if(autoSwith)
+			{
+       	    	switch(AP_ID)
+            	{
+            	case 0:
+					//Switch to from AP1 to AP2
+              		AP_ID = (AP_ID+1)%AP_NUM;
+                	system("pkill -INT -n ping");   //kill the child process first
+               		system("iwconfig wlan0 essid TP5G2");
+               		printf("Switch to TP5G2 and start ping\n");
+              		mysystem("ping -q -n -i 0.05 192.168.0.3");
+               		break;
+            	case 1:
+              		AP_ID = (AP_ID+1)%AP_NUM;
+              		system("pkill -INT -n ping");      //kill the child process first
+              		system("iwconfig wlan0 essid TP5G1");
+               		printf("Switch to TP5G1 and start ping\n");
+        	   		mysystem("ping -q -n -i 0.05 192.168.0.2");
+           		break;
+           		}
+			}
 		}
 	}
 
@@ -436,6 +433,9 @@ int main(int argc, char **argv)
 	// %EndTag(SPIN)%
 	*/
 	myfile.close();
-	system("pkill -INT -n ping");
+	if(autoSwith)
+	{
+		system("pkill -INT -n ping");
+	}
 	return 0;
 }	
