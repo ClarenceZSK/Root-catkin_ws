@@ -196,17 +196,6 @@ int SAR_Profile_2D()
 			
 			map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
 			input_iter = input.begin();
-			/*
-			int count_input = 0;
-			for(input_iter = input.begin(); input_iter != input.end(); ++input_iter)
-			{
-				++count_input;
-				complex<double> input_csi1 = input_iter->second.first;
-				complex<double> input_csi2 = input_iter->second.second;
-				printf("%d -> %.2f %.2fi && %.2f %.2fi; ", count_input, input_csi1.real(), input_csi1.imag(), input_csi2.real(), input_csi2.imag() );
-			}
-			printf("\n");
-			*/
 			double max_interval = 0;
 			double min_interval = 0xffff;
 			double maxAngle = 0;
@@ -224,12 +213,7 @@ int SAR_Profile_2D()
 				double y2 = input_iter->first;
 				++input_iter;
 				double interval = y2 - y1;
-				/*
-				if(interval > PI)
-				{
-					interval = 2*PI-interval;
-				}
-				*/
+
 				if(min_interval > interval)	//find min interval
 				{
 					min_interval = interval;	
@@ -387,22 +371,20 @@ int main(int argc, char **argv)
 	//system("iwlist wlan0 scan");
 	//printf("Scan completed\n");
 
-	//pid_t cpid;
+	pid_t cpid;
 	//system("iwconfig wlan0 essid TP5G1");
 	//printf("iwconfig to TP5G1\n");
 
 	//system("dhclient wlan0");
 	//printf("dhclient from TP5G1 completed\n");
 
-	//system("iwconfig wlan0 essid TP5G2");
-	//printf("iwconfig to TP5G2\n");
+	system("iwconfig wlan0 essid TP5G2");
+	printf("iwconfig to TP5G2\n");
 
-	//system("dhclient wlan0");
-    //printf("dhclient from TP5G2 completed\n");
+	system("dhclient wlan0");
+    printf("dhclient from TP5G2 completed\n");
 	
-	//system("iwconfig wlan0 essid TP5G1");
-	//printf("Switch to TP5G1 and start ping\n");
-	//cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
+	cpid = mysystem("ping -q -n -i 0.05 192.168.0.3");
 		
 	myfile.open("power.txt");
 	ros::spinOnce();		//empty the queue
@@ -454,6 +436,6 @@ int main(int argc, char **argv)
 	// %EndTag(SPIN)%
 	*/
 	myfile.close();
-	//system("pkill -INT -n ping");
+	system("pkill -INT -n ping");
 	return 0;
 }	
