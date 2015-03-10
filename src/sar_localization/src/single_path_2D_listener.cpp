@@ -28,7 +28,7 @@
 #define sizeLimit 500
 #define profileLimit 20
 
-#define interval_threshold 20	//maximun interval must greater than 25 degree
+#define interval_threshold 5	//maximun interval must greater than 25 degree
 #define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1
@@ -188,7 +188,8 @@ int SAR_Profile_2D()
 
 		input[RadianToDegree(yaw)] =  make_pair(csi1, csi2);
 		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
-		if(input.size() == sizeLimit && 1)
+		//if(input.size() == sizeLimit || 1)
+		if(input.size() > 1 )
 		{
 			//start data preprocessing
 			//
@@ -200,18 +201,13 @@ int SAR_Profile_2D()
 			double maxAngle = 0;
 			double minAngle = 0xffff;
 			
-			
+			double prey = input_iter->first;
+			double cury = 0xffff;
+			++input_iter;
 			while(input_iter != input.end() )
 			{
-				double y1 = input_iter->first;
-				++input_iter;
-				if(input_iter == input.end() )
-				{
-					break;
-				}
-				double y2 = input_iter->first;
-				++input_iter;
-				double interval = y2 - y1;
+				cury = input_iter->first;
+				double interval = cury - prey;
 
 				if(min_interval > interval)	//find min interval
 				{
@@ -222,7 +218,10 @@ int SAR_Profile_2D()
 				{
 					max_interval = interval;
 				}
+				++input_iter;
+				prey = cury;
 			}
+			//printf("\n");
 			maxAngle = input.rbegin()->first;
 			minAngle = input.begin()->first;
 			
