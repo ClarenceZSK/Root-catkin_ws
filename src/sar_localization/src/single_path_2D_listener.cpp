@@ -28,7 +28,7 @@
 #define sizeLimit 500
 #define profileLimit 20
 
-#define interval_threshold 5	//maximun interval must greater than 25 degree
+#define interval_threshold 6	//maximun interval must greater than 25 degree
 #define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1
@@ -38,9 +38,9 @@ using namespace Eigen;
 
 //vector<complex<double> > CSI1;		//CSI from antenna 1
 //vector<complex<double> > CSI2;		//CSI from antenna 2
-complex<double>  CSI1[sizeLimit];
-complex<double>  CSI2[sizeLimit];
-double orientation[sizeLimit];
+//complex<double>  CSI1[sizeLimit];
+//complex<double>  CSI2[sizeLimit];
+//double orientation[sizeLimit];
 
 map<double, pair<complex<double>, complex<double> > > input;		
 
@@ -62,12 +62,17 @@ int dataIndex = 0;
 int count_d = 0;
 bool start = false;
 
+//yaw normalize
+bool std_flag = false;
+double std_yaw = 0;
+
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
 pid_t childPID = -2;
 
+
 //auto switch
-bool autoSwith = 0;
+bool autoSwith = 1;
 
 //for data preprocessing to make sure the collected data really formed a circle
 //double min_interval = 360;	//the minimum distance of two adjacent imu data
@@ -180,13 +185,14 @@ int SAR_Profile_2D()
 		{
 			maxT_D = timeDifference;
 		}
-		
-		//orientation[dataIndex % sizeLimit] = yaw;
-		//CSI1[dataIndex % sizeLimit] = csi1;
-		//CSI2[dataIndex % sizeLimit] = csi2;
-		//++dataIndex;
 
-		input[RadianToDegree(yaw)] =  make_pair(csi1, csi2);
+		double std_input_yaw = RadianToDegree(yaw - std_yaw);
+		if (std_input_yaw < 0)
+		{
+			std_input_yaw += 360;
+		}
+		//printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
+		input[std_input_yaw] =  make_pair(csi1, csi2);
 		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
 		//if(input.size() == sizeLimit || 1)
 		if(input.size() > 1 )
@@ -261,8 +267,6 @@ int SAR_Profile_2D()
 					double alpha_r = (alpha+step)*PI/180.0;
        				double powtmp = PowerCalculation(alpha_r);
 					sumpow += powtmp;
-					////myfile << powtmp << endl;
-					//multipathProfile(alpha) += powtmp;
 					//single path
 					if(power < powtmp)
 					{
@@ -292,6 +296,15 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
   	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
   	yaw = msg->yaw;
 	yaw = yaw*PI/180.0;
+	
+	//if(!std_flag && input.size() > 2)
+	if(!std_flag)
+	{
+		
+		std_yaw = yaw;
+		std_flag = true;
+		printf("std_yaw:%.2f\n", RadianToDegree(std_yaw) );
+	}
   	imu_ready = true;
 }
 
@@ -350,6 +363,7 @@ int main(int argc, char **argv)
   	ros::Subscriber sub1 = n.subscribe("imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 
+	
 	//ros::MultiThreadedSpinner spinner(2);
 
 	//system configuration
@@ -385,6 +399,8 @@ int main(int argc, char **argv)
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
 	imu_ready = false;
+	//input.clear();
+	//std_flag = false;
 	while(n.ok() )
 	{
 		//spinner.spinOnce();
@@ -401,18 +417,26 @@ int main(int argc, char **argv)
             	case 0:
 					//Switch to from AP1 to AP2
               		AP_ID = (AP_ID+1)%AP_NUM;
-                	system("pkill -INT -n ping");   //kill the child process first
-               		system("iwconfig wlan0 essid TP5G2");
-               		printf("Switch to TP5G2 and start ping\n");
-              		mysystem("ping -q -n -i 0.05 192.168.0.3");
+                	system("pkill -n ping");   //kill the child process first
+               		system("iwconfig wlan0 essid TP5G1");
+               		printf("Switch to TP5G1 and start ping\n");
+              		mysystem("ping -q -n -i 0.05 192.168.0.2");
+					ros::spinOnce();
+					csi_ready = false;
+					imu_ready = false;
+					input.clear();
                		break;
             	case 1:
               		AP_ID = (AP_ID+1)%AP_NUM;
-              		system("pkill -INT -n ping");      //kill the child process first
-              		system("iwconfig wlan0 essid TP5G1");
-               		printf("Switch to TP5G1 and start ping\n");
-        	   		mysystem("ping -q -n -i 0.05 192.168.0.2");
-           		break;
+              		system("pkill -n ping");      //kill the child process first
+              		system("iwconfig wlan0 essid TP5G2");
+               		printf("Switch to TP5G2 and start ping\n");
+        	   		mysystem("ping -q -n -i 0.05 192.168.0.3");
+					ros::spinOnce();
+					csi_ready = false;
+					imu_ready = false;
+					input.clear();
+           			break;
            		}
 			}
 		}
@@ -434,7 +458,7 @@ int main(int argc, char **argv)
 	myfile.close();
 	if(autoSwith)
 	{
-		system("pkill -INT -n ping");
+		system("pkill -n ping");
 	}
 	return 0;
 }	
