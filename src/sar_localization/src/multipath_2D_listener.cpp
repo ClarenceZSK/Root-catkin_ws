@@ -25,7 +25,7 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 200
+#define sizeLimit 500
 #define profileLimit 20
 
 #define interval_threshold 6
@@ -54,7 +54,7 @@ complex<double> csi1;
 complex<double> csi2;
 //multipath effect processing
 Eigen::VectorXi peak_mat(360);
-int vib_threshold = 3;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int vib_threshold = 5;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
 int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 
 double landa = 0.06;			//The aperture size is 6cm
@@ -73,7 +73,7 @@ int AP_NUM = 2;		//The number of available APs
 pid_t childPID = -2;
 
 //auto switch
-bool autoSwitch = 1;
+bool autoSwitch = 0;
 
 //for debug
 int preIdx = 0;

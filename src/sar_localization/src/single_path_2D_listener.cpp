@@ -393,7 +393,7 @@ int main(int argc, char **argv)
 		system("dhclient wlan0");
     	printf("dhclient from TP5G2 completed\n");
 	
-		mysystem("ping -q -n -i 0.05 192.168.0.3");
+		mysystem("ping -q -n -i 0.02 192.168.0.3");
 	}	
 	myfile.open("power.txt");
 	ros::spinOnce();		//empty the queue
@@ -420,7 +420,7 @@ int main(int argc, char **argv)
                 	system("pkill -n ping");   //kill the child process first
                		system("iwconfig wlan0 essid TP5G1");
                		printf("Switch to TP5G1 and start ping\n");
-              		mysystem("ping -q -n -i 0.05 192.168.0.2");
+              		mysystem("ping -q -n -i 0.02 192.168.0.2");
 					ros::spinOnce();
 					csi_ready = false;
 					imu_ready = false;
@@ -431,7 +431,7 @@ int main(int argc, char **argv)
               		system("pkill -n ping");      //kill the child process first
               		system("iwconfig wlan0 essid TP5G2");
                		printf("Switch to TP5G2 and start ping\n");
-        	   		mysystem("ping -q -n -i 0.05 192.168.0.3");
+        	   		mysystem("ping -q -n -i 0.02 192.168.0.3");
 					ros::spinOnce();
 					csi_ready = false;
 					imu_ready = false;
