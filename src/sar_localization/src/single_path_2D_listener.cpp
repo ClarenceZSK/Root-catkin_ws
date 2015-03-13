@@ -424,7 +424,7 @@ int main(int argc, char **argv)
 					ros::spinOnce();
 					csi_ready = false;
 					imu_ready = false;
-					input.clear();
+					//input.clear();
                		break;
             	case 1:
               		AP_ID = (AP_ID+1)%AP_NUM;
@@ -435,7 +435,7 @@ int main(int argc, char **argv)
 					ros::spinOnce();
 					csi_ready = false;
 					imu_ready = false;
-					input.clear();
+					//input.clear();
            			break;
            		}
 			}

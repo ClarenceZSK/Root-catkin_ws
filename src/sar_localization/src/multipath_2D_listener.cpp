@@ -8,6 +8,7 @@
 
 #include "/opt/eigen/Eigen/Dense"
 #include <vector>
+#include <map>
 #include <complex>
 #include <math.h>
 #include <assert.h>
@@ -26,6 +27,9 @@
 #define PI 3.1415926
 #define sizeLimit 200
 #define profileLimit 20
+
+#define interval_threshold 6
+#define circle_threshold 353
 //for debug
 #define stepSize 1
 
@@ -34,9 +38,12 @@ using namespace Eigen;
 
 //vector<complex<double> > CSI1;		//CSI from antenna 1
 //vector<complex<double> > CSI2;		//CSI from antenna 2
-complex<double>  CSI1[sizeLimit];
-complex<double>  CSI2[sizeLimit];
-double orientation[sizeLimit];
+//complex<double>  CSI1[sizeLimit];
+//complex<double>  CSI2[sizeLimit];
+//double orientation[sizeLimit];
+
+map<double, pair<complex<double>, complex<double> > > input;
+
 double t_stamp_csi;			//time stamp of csi
 double t_stamp_imu;			//time stamp of imu
 bool csi_ready = false;
@@ -57,9 +64,16 @@ int dataIndex = 0;
 int count_d = 0;
 bool start = false;
 
+//yaw normalize
+bool std_flag = false;
+double std_yaw = 0;
+
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
 pid_t childPID = -2;
+
+//auto switch
+bool autoSwitch = 1;
 
 //for debug
 int preIdx = 0;
@@ -67,20 +81,36 @@ double maxT_D = 0;
 ofstream myfile1;		//power
 ofstream myfile2;		//peaks
 
+double RadianToDegree(double radian)
+{
+	    return radian/PI*180;
+}
+double DegreeToRadian(double degree)
+{
+	    return degree/180.0*PI;
+}
+
+
 double PowerCalculation(double alpha)
 {
-	complex<double> avgCsiHat (0, 0);
+	map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
+    complex<double> avgCsiHat (0, 0);
+    input_iter = input.begin();
+    //for(int i = 0; i < sizeLimit; ++i)
+    while(input_iter != input.end() )
+    {
+        double input_yaw = DegreeToRadian(input_iter->first);
+        complex<double> input_csi1 = input_iter->second.first;
+        complex<double> input_csi2 = input_iter->second.second;
+        double theta = 2*PI/landa*r*cos(alpha-input_yaw);
+        double real_tmp = cos(theta);
+        double image_tmp = sin(theta);
+        complex<double> tmp (real_tmp, image_tmp);
+        avgCsiHat += input_csi1*conj(input_csi2)*tmp;
+        ++input_iter;
+    }
+    avgCsiHat /= input.size();
 
-	for(int i = 0; i < sizeLimit; ++i)
-	{
-		double theta = 2*PI/landa*r*cos(alpha-orientation[i]);
-		double real_tmp = cos(theta);
-		double image_tmp = sin(theta);
-		complex<double> tmp (real_tmp, image_tmp);
-		//cout << "Relative csi:" << CSI1[i]*conj(CSI2[i]) << endl;
-		avgCsiHat += CSI1[i]*conj(CSI2[i])*tmp;
-	}
-	avgCsiHat /= sizeLimit;
 	double ret = avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.imag();
 	//printf("Power calculation: %lf\n", ret);
 	return ret;
@@ -112,7 +142,7 @@ Eigen::VectorXi peakElimination(Eigen::VectorXi cur_peak_mat)
 	return ret;
 }
 
-int mysystem(const char *cmdstr)
+void mysystem(const char *cmdstr)
 {
 	if(cmdstr == NULL)
 	{
@@ -128,11 +158,8 @@ int mysystem(const char *cmdstr)
 		execl("/bin/sh", "sh", "-c", cmdstr, (char *) 0);
 		_exit(127);
 	}	
-	else	//parent process
-	{
-		return childPID;
-	}
-	return childPID;
+	//parent process
+	//...
 }
 
 vector<int> countPeak()
@@ -155,102 +182,151 @@ vector<int> SAR_Profile_2D()
 {
 	vector<int> ret;
 	ret.clear();
-	double timeDifference = fabs(t_stamp_csi-t_stamp_imu);
-	if(maxT_D < timeDifference)
+	if(csi_ready && imu_ready)
 	{
-		maxT_D = timeDifference;
-	}
-	orientation[dataIndex % sizeLimit] = yaw;
-	CSI1[dataIndex % sizeLimit] = csi1;
-	CSI2[dataIndex % sizeLimit] = csi2;
-	if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
-	{
-		printf("Start!\n");
-		if(maxT_D > 30)
+		csi_ready = false;
+		imu_ready = false;
+		double timeDifference = fabs(t_stamp_csi-t_stamp_imu);
+		if(maxT_D < timeDifference)
 		{
+			maxT_D = timeDifference;
+		}
+		double std_input_yaw = RadianToDegree(yaw - std_yaw);
+        if (std_input_yaw < 0)
+        {
+            std_input_yaw += 360;
+        }
+        //printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
+        input[std_input_yaw] =  make_pair(csi1, csi2);
+
+		if(input.size() > 1 )
+        {
+            //start data preprocessing
+            //
+            
+            map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
+            input_iter = input.begin();
+            double max_interval = 0;
+            double min_interval = 0xffff;
+            double maxAngle = 0;
+            double minAngle = 0xffff;
+            
+            double prey = input_iter->first;
+            double cury = 0xffff;
+            ++input_iter;
+			while(input_iter != input.end() )
+            {
+                cury = input_iter->first;
+                double interval = cury - prey;
+
+                if(min_interval > interval) //find min interval
+                {
+                    min_interval = interval;    
+                }
+
+                if(max_interval < interval)     //find max interval
+                {
+                    max_interval = interval;
+                }
+                ++input_iter;
+                prey = cury;
+            }
+			maxAngle = input.rbegin()->first;
+            minAngle = input.begin()->first;
+            
+            double circle_distance = maxAngle - minAngle;
+            
+            if(max_interval < interval_threshold && circle_distance >= circle_threshold)
+            {
+                printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, circle_distance);
+                start = true;
+            }
+            else if(input.size() > sizeLimit)   //it indicates some unpredictable situations causing very large input map
+            {
+                printf("Too many samples! Clear and Resampling!\n");
+                input.clear();
+            }			
+
+		}
+	
+		if(start)
+		{
+			Eigen::VectorXi cur_peak_mat(360);
+			cur_peak_mat.setZero();
+			printf("max T_D:%lf, ", maxT_D);
+			start = false;
 			maxT_D = 0;
-			printf("Data mismatch! Restart sampling!\n");
-		}
-		else
-		{
-			start = true;
-		}
-	}
-	if(start)
-	{
-		Eigen::VectorXi cur_peak_mat(360);
-		cur_peak_mat.setZero();
-		printf("max T_D:%lf, ", maxT_D);
-		start = false;
-		maxT_D = 0;
-		++count_d;
+			++count_d;
 		
-		//When csi and imu data vectors reach size limit, start angle generation
-		int resolution = 1;      //search resolution
+			//When csi and imu data vectors reach size limit, start angle generation
+			int resolution = 1;      //search resolution
 
- 		bool up = false;
-		bool initial_down = false;
-		double prePow = PowerCalculation(0);
+ 			bool up = false;
+			bool initial_down = false;
+			double prePow = PowerCalculation(0);
 
-		myfile1 << "#" << count_d << endl;	//for power
-		myfile1 << prePow << endl;
+			myfile1 << "#" << count_d << endl;	//for power
+			myfile1 << prePow << endl;
 
-		myfile2 << "#" << count_d << endl;	//for peaks
+			myfile2 << "#" << count_d << endl;	//for peaks
 		
-		for(int alpha = 1; alpha < 360; alpha += resolution)
-		{
-			double alpha_r = alpha*PI/180.0;
-			double powtmp = PowerCalculation(alpha_r);
+			for(int alpha = 1; alpha < 360; alpha += resolution)
+			{
+				double alpha_r = alpha*PI/180.0;
+				double powtmp = PowerCalculation(alpha_r);
+				if(powtmp > prePow)
+				{
+					up = true;
+				}
+				else if(alpha == 1)
+				{
+					initial_down = true;
+				}
+
+				if(up)		//only if up, we wait down for peak detection
+				{
+					if(powtmp < prePow)		//down
+					{
+						cur_peak_mat(alpha) = 1;
+						up = false;			//once peak detected, we wait for up signal again
+					}
+				}
+				myfile1 << powtmp << endl;
+				//myfile2 << cur_peak_mat(alpha) << endl;
+				prePow = powtmp;
+			}
+			//after the loop, we has to take care the initial point that it may be also a peak
+			double powtmp = PowerCalculation(0);
 			if(powtmp > prePow)
 			{
 				up = true;
 			}
-			else if(alpha == 1)
+			if(up && initial_down)
 			{
-				initial_down = true;
+				cur_peak_mat(0) = 1;
 			}
+			myfile2 << cur_peak_mat(0) << endl;
 
-			if(up)		//only if up, we wait down for peak detection
-			{
-				if(powtmp < prePow)		//down
-				{
-					cur_peak_mat(alpha) = 1;
-					up = false;			//once peak detected, we wait for up signal again
-				}
-			}
-			myfile1 << powtmp << endl;
-			//myfile2 << cur_peak_mat(alpha) << endl;
-			prePow = powtmp;
-		}
-		//after the loop, we has to take care the initial point that it may be also a peak
-		double powtmp = PowerCalculation(0);
-		if(powtmp > prePow)
-		{
-			up = true;
-		}
-		if(up && initial_down)
-		{
-			cur_peak_mat(0) = 1;
-		}
-		myfile2 << cur_peak_mat(0) << endl;
-
-		++dataIndex;
+			++dataIndex;
 		
-		if(count_d == 1)
-		{
-			peak_mat = cur_peak_mat;
-			ret = countPeak();
-			printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
-		}
-		else	//start peak elimination
-		{
-			peak_mat = peakElimination(cur_peak_mat);
-			ret = countPeak();
-			printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
-			return ret;
+			if(count_d == 1)
+			{
+				peak_mat = cur_peak_mat;
+				ret = countPeak();
+				printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
+				input.clear();
+			}
+			else	//start peak elimination
+			{
+				peak_mat = peakElimination(cur_peak_mat);
+				ret = countPeak();
+				printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
+				input.clear();
+				return ret;
+			}
 		}
 	}
-	++dataIndex;
+	
 	return ret;
 }
 
@@ -260,6 +336,15 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
   	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
   	yaw = msg->yaw;
 	yaw = yaw*PI/180.0;
+	//if(!std_flag && input.size() > 2)
+    if(!std_flag)
+    {
+        
+        std_yaw = yaw;
+        std_flag = true;
+        printf("std_yaw:%.2f\n", RadianToDegree(std_yaw) );
+    }
+
   	imu_ready = true;
 }
 
@@ -283,77 +368,76 @@ int main(int argc, char **argv)
   	ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 1000, csiCallback);
 
-	pid_t cpid;
-	system("iwconfig wlan0 essid TP5G1");
-	printf("iwconfig to TP5G1\n");
+	if(autoSwitch)
+	{
+		system("iwconfig wlan0 essid TP5G1");
+		printf("iwconfig to TP5G1\n");
 
-	system("dhclient wlan0");
-	printf("dhclient from TP5G1 completed\n");
+		system("dhclient wlan0");
+		printf("dhclient from TP5G1 completed\n");
 
-	/*
-	system("iwconfig wlan0 essid TP5G2");
-	printf("iwconfig to TP5G2\n");
-
-	system("dhclient wlan0");
-	printf("dhclient from TP5G2 completed\n");
 	
-	system("iwconfig wlan0 essid TP5G1");
-	printf("Switch to TP5G1 and start ping\n");
-	*/
-	cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
+		system("iwconfig wlan0 essid TP5G2");
+		printf("iwconfig to TP5G2\n");
+
+		system("dhclient wlan0");
+		printf("dhclient from TP5G2 completed\n");
 	
+		mysystem("ping -q -n -i 0.05 192.168.0.3");
+	}
 	myfile1.open("power.txt");
 	myfile2.open("peaks.txt");
 	
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
 	imu_ready = false;
-	while(ros::ok() )
+	while(n.ok() )
 	{
 		//spinner.spinOnce();
 		ros::spinOnce();
-		if(csi_ready && imu_ready)
+		
+		vector<int> peakAngles = SAR_Profile_2D();	
+		if(!peakAngles.empty() )
 		{
-			csi_ready = false;
-			imu_ready = false;
-			vector<int> peakAngles = SAR_Profile_2D();	
-			if(!peakAngles.empty() )
+			//print peaks after the elimination
+			printf("%d peaks: ", (int) peakAngles.size() );
+			for(int i = 0; i < peakAngles.size(); ++i)
 			{
-				//print peaks after the elimination
-				printf("%d peaks: ", (int) peakAngles.size() );
-				for(int i = 0; i < peakAngles.size(); ++i)
-				{
 					
-					printf("%d ", peakAngles[i]);
-				}
-				printf("\n");
-				/*
-				//Switch to another AP
+				printf("%d ", peakAngles[i]);
+			}
+			printf("\n");
+				
+			//Switch to another AP
+			if(autoSwitch)
+			{
 				switch(AP_ID)
 				{
 				case 0:
 					//Switch to from AP1 to AP2
 					AP_ID = (AP_ID+1)%AP_NUM;
-					system("pkill -INT -n ping");   //kill the child process first
-					system("iwconfig wlan0 essid TP5G2");
-					printf("Switch to TP5G2 and start ping\n");
-					cpid = mysystem("ping -q -n -i 0.05 192.168.0.3");
+					system("pkill -n ping");   //kill the child process first
+					system("iwconfig wlan0 essid TP5G1");
+					printf("Switch to TP5G1 and start ping\n");
+					mysystem("ping -q -n -i 0.05 192.168.0.2");
 					break;
 				case 1:
 					AP_ID = (AP_ID+1)%AP_NUM;
-					system("pkill -INT -n ping");      //kill the child process first
-					system("iwconfig wlan0 essid TP5G1");
-					printf("Switch to TP5G1 and start ping\n");
-					cpid = mysystem("ping -q -n -i 0.05 192.168.0.2");
+					system("pkill -n ping");      //kill the child process first
+					system("iwconfig wlan0 essid TP5G2");
+					printf("Switch to TP5G2 and start ping\n");
+					mysystem("ping -q -n -i 0.05 192.168.0.3");
 					break;
 				}
-				*/
 			}
 		}
 	}
 
 	myfile1.close();
 	myfile2.close();
-	system("pkill -INT -n ping");
+	if(autoSwitch)
+	{
+		system("pkill -n ping");
+	}
 	return 0;
 }
