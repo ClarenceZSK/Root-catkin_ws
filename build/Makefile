@@ -267,6 +267,19 @@ _sar_localization_generate_messages_check_deps_Imu/fast:
 .PHONY : _sar_localization_generate_messages_check_deps_Imu/fast
 
 #=============================================================================
+# Target rules for targets named _sar_localization_generate_messages_check_deps_Motor
+
+# Build rule for target.
+_sar_localization_generate_messages_check_deps_Motor: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _sar_localization_generate_messages_check_deps_Motor
+.PHONY : _sar_localization_generate_messages_check_deps_Motor
+
+# fast build rule for target.
+_sar_localization_generate_messages_check_deps_Motor/fast:
+	$(MAKE) -f sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/build.make sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/build
+.PHONY : _sar_localization_generate_messages_check_deps_Motor/fast
+
+#=============================================================================
 # Target rules for targets named log_csi_stream
 
 # Build rule for target.
@@ -278,6 +291,19 @@ log_csi_stream: cmake_check_build_system
 log_csi_stream/fast:
 	$(MAKE) -f sar_localization/CMakeFiles/log_csi_stream.dir/build.make sar_localization/CMakeFiles/log_csi_stream.dir/build
 .PHONY : log_csi_stream/fast
+
+#=============================================================================
+# Target rules for targets named motor_message
+
+# Build rule for target.
+motor_message: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 motor_message
+.PHONY : motor_message
+
+# fast build rule for target.
+motor_message/fast:
+	$(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/build
+.PHONY : motor_message/fast
 
 #=============================================================================
 # Target rules for targets named multipath_2D_listener
@@ -548,7 +574,9 @@ help:
 	@echo "... 2D_listener"
 	@echo "... _sar_localization_generate_messages_check_deps_Csi"
 	@echo "... _sar_localization_generate_messages_check_deps_Imu"
+	@echo "... _sar_localization_generate_messages_check_deps_Motor"
 	@echo "... log_csi_stream"
+	@echo "... motor_message"
 	@echo "... multipath_2D_listener"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... roscpp_generate_messages_lisp"

@@ -1,5 +1,6 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/sar_localization_generate_messages_cpp"
+  "/root/catkin_ws/devel/include/sar_localization/Motor.h"
   "/root/catkin_ws/devel/include/sar_localization/Csi.h"
   "/root/catkin_ws/devel/include/sar_localization/Imu.h"
 )

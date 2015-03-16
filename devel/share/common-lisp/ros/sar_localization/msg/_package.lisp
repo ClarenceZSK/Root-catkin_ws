@@ -3,6 +3,8 @@
   (:export
    "<CSI>"
    "CSI"
+   "<MOTOR>"
+   "MOTOR"
    "<IMU>"
    "IMU"
   ))

@@ -1,5 +1,6 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/sar_localization_generate_messages_lisp"
+  "/root/catkin_ws/devel/share/common-lisp/ros/sar_localization/msg/Motor.lisp"
   "/root/catkin_ws/devel/share/common-lisp/ros/sar_localization/msg/Csi.lisp"
   "/root/catkin_ws/devel/share/common-lisp/ros/sar_localization/msg/Imu.lisp"
 )

@@ -5,6 +5,7 @@
 #include "std_msgs/Header.h"
 #include "sar_localization/Imu.h"
 #include "sar_localization/Csi.h"
+#include "sar_localization/Motor.h"
 
 #include "/opt/eigen/Eigen/Dense"
 #include <vector>
@@ -28,7 +29,7 @@
 #define sizeLimit 500
 #define profileLimit 20
 
-#define interval_threshold 6	//maximun interval must greater than 25 degree
+#define interval_threshold 6	//maximun interval must greater than X degree
 #define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1
@@ -46,6 +47,7 @@ map<double, pair<complex<double>, complex<double> > > input;
 
 double t_stamp_csi;			//time stamp of csi
 double t_stamp_imu;			//time stamp of imu
+double t_stamp_motor;		//time stamp of motor
 bool csi_ready = false;
 bool imu_ready = false;
 //double pitch;
@@ -63,8 +65,9 @@ int count_d = 0;
 bool start = false;
 
 //yaw normalize
-bool std_flag = false;
-double std_yaw = 0;
+bool std_flag = true;
+double std_yaw = -1;
+double offset_yaw = 0;
 
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
@@ -72,7 +75,7 @@ pid_t childPID = -2;
 
 
 //auto switch
-bool autoSwith = 1;
+bool autoSwith = 0;
 
 //for data preprocessing to make sure the collected data really formed a circle
 //double min_interval = 360;	//the minimum distance of two adjacent imu data
@@ -191,6 +194,10 @@ int SAR_Profile_2D()
 		{
 			std_input_yaw += 360;
 		}
+		else if(std_input_yaw >= 360)
+		{
+			std_input_yaw -= 360;
+		}
 		//printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
 		input[std_input_yaw] =  make_pair(csi1, csi2);
 		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
@@ -291,6 +298,17 @@ int SAR_Profile_2D()
 }
 
 // %Tag(CALLBACK)%
+
+void motorCallback(const sar_localization::Motor::ConstPtr& msg)
+{
+	t_stamp_motor = msg->header.stamp.toNSec()*1e-6;
+	offset_yaw = msg->offset_yaw;
+	if(offset_yaw <= 0.1)
+	{
+		std_flag = false;
+	}
+}
+
 void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 { 
   	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
@@ -301,7 +319,7 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 	if(!std_flag)
 	{
 		
-		std_yaw = yaw;
+		std_yaw = yaw + DegreeToRadian(offset_yaw);
 		std_flag = true;
 		printf("std_yaw:%.2f\n", RadianToDegree(std_yaw) );
 	}
@@ -362,7 +380,7 @@ int main(int argc, char **argv)
 
   	ros::Subscriber sub1 = n.subscribe("imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
-
+	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
 	
 	//ros::MultiThreadedSpinner spinner(2);
 

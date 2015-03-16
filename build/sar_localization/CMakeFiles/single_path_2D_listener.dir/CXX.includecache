@@ -1756,6 +1756,24 @@ ros/message_operations.h
 std_msgs/Header.h
 -
 
+/root/catkin_ws/devel/include/sar_localization/Motor.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+std_msgs/Header.h
+-
+
 /root/catkin_ws/src/sar_localization/src/single_path_2D_listener.cpp
 ros/ros.h
 /root/catkin_ws/src/sar_localization/src/ros/ros.h
@@ -1771,6 +1789,8 @@ sar_localization/Imu.h
 /root/catkin_ws/src/sar_localization/src/sar_localization/Imu.h
 sar_localization/Csi.h
 /root/catkin_ws/src/sar_localization/src/sar_localization/Csi.h
+sar_localization/Motor.h
+/root/catkin_ws/src/sar_localization/src/sar_localization/Motor.h
 /opt/eigen/Eigen/Dense
 -
 vector

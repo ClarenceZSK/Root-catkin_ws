@@ -51,6 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES
    Imu.msg
    Csi.msg
+   Motor.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -183,6 +184,11 @@ INCLUDE_DIRECTORIES(
 add_executable(serial_message src/serial_message.cpp)
 target_link_libraries(serial_message ${catkin_LIBRARIES})
 add_dependencies(serial_message sar_localization_generate_messages_cpp)
+
+add_executable(motor_message src/motor_message.cpp)
+target_link_libraries(motor_message ${catkin_LIBRARIES})
+add_dependencies(motor_message sar_localization_generate_messages_cpp)
+
 
 add_executable(single_path_2D_listener src/single_path_2D_listener.cpp)
 target_link_libraries(

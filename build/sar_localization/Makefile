@@ -192,6 +192,20 @@ _sar_localization_generate_messages_check_deps_Imu/fast:
 .PHONY : _sar_localization_generate_messages_check_deps_Imu/fast
 
 # Convenience name for target.
+sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/rule:
+	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/rule
+.PHONY : sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/rule
+
+# Convenience name for target.
+_sar_localization_generate_messages_check_deps_Motor: sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/rule
+.PHONY : _sar_localization_generate_messages_check_deps_Motor
+
+# fast build rule for target.
+_sar_localization_generate_messages_check_deps_Motor/fast:
+	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/build.make sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir/build
+.PHONY : _sar_localization_generate_messages_check_deps_Motor/fast
+
+# Convenience name for target.
 sar_localization/CMakeFiles/log_csi_stream.dir/rule:
 	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/log_csi_stream.dir/rule
 .PHONY : sar_localization/CMakeFiles/log_csi_stream.dir/rule
@@ -204,6 +218,20 @@ log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/rule
 log_csi_stream/fast:
 	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/log_csi_stream.dir/build.make sar_localization/CMakeFiles/log_csi_stream.dir/build
 .PHONY : log_csi_stream/fast
+
+# Convenience name for target.
+sar_localization/CMakeFiles/motor_message.dir/rule:
+	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/motor_message.dir/rule
+.PHONY : sar_localization/CMakeFiles/motor_message.dir/rule
+
+# Convenience name for target.
+motor_message: sar_localization/CMakeFiles/motor_message.dir/rule
+.PHONY : motor_message
+
+# fast build rule for target.
+motor_message/fast:
+	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/build
+.PHONY : motor_message/fast
 
 # Convenience name for target.
 sar_localization/CMakeFiles/multipath_2D_listener.dir/rule:
@@ -519,6 +547,30 @@ src/log_csi_stream.cpp.s:
 	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/log_csi_stream.dir/build.make sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.s
 .PHONY : src/log_csi_stream.cpp.s
 
+src/motor_message.o: src/motor_message.cpp.o
+.PHONY : src/motor_message.o
+
+# target to build an object file
+src/motor_message.cpp.o:
+	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/src/motor_message.cpp.o
+.PHONY : src/motor_message.cpp.o
+
+src/motor_message.i: src/motor_message.cpp.i
+.PHONY : src/motor_message.i
+
+# target to preprocess a source file
+src/motor_message.cpp.i:
+	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/src/motor_message.cpp.i
+.PHONY : src/motor_message.cpp.i
+
+src/motor_message.s: src/motor_message.cpp.s
+.PHONY : src/motor_message.s
+
+# target to generate assembly for a file
+src/motor_message.cpp.s:
+	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/src/motor_message.cpp.s
+.PHONY : src/motor_message.cpp.s
+
 src/multipath_2D_listener.o: src/multipath_2D_listener.cpp.o
 .PHONY : src/multipath_2D_listener.o
 
@@ -600,12 +652,14 @@ help:
 	@echo "... 2D_listener"
 	@echo "... _sar_localization_generate_messages_check_deps_Csi"
 	@echo "... _sar_localization_generate_messages_check_deps_Imu"
+	@echo "... _sar_localization_generate_messages_check_deps_Motor"
 	@echo "... edit_cache"
 	@echo "... install"
 	@echo "... install/local"
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... log_csi_stream"
+	@echo "... motor_message"
 	@echo "... multipath_2D_listener"
 	@echo "... rebuild_cache"
 	@echo "... roscpp_generate_messages_cpp"
@@ -633,6 +687,9 @@ help:
 	@echo "... src/log_csi_stream.o"
 	@echo "... src/log_csi_stream.i"
 	@echo "... src/log_csi_stream.s"
+	@echo "... src/motor_message.o"
+	@echo "... src/motor_message.i"
+	@echo "... src/motor_message.s"
 	@echo "... src/multipath_2D_listener.o"
 	@echo "... src/multipath_2D_listener.i"
 	@echo "... src/multipath_2D_listener.s"

@@ -525,7 +525,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle handle;
 	imu_pub = handle.advertise<sar_localization::Imu>("imu", 1000);
 	/* default values for arguments */
-	char *uart_name = (char*)"/dev/ttyUSB0";
+	char *uart_name = (char*)"/dev/ttyUSB1";
 	int baudrate = 115200;
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
 	/* read program arguments */

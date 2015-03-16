@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
-messages_str = "/root/catkin_ws/src/sar_localization/msg/Imu.msg;/root/catkin_ws/src/sar_localization/msg/Csi.msg"
+messages_str = "/root/catkin_ws/src/sar_localization/msg/Imu.msg;/root/catkin_ws/src/sar_localization/msg/Csi.msg;/root/catkin_ws/src/sar_localization/msg/Motor.msg"
 services_str = ""
 pkg_name = "sar_localization"
 dependencies_str = "std_msgs"
