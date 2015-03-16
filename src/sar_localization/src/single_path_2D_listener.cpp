@@ -303,7 +303,7 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 {
 	t_stamp_motor = msg->header.stamp.toNSec()*1e-6;
 	offset_yaw = msg->offset_yaw;
-	if(offset_yaw <= 0.1)
+	if(offset_yaw < 0.1 || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 0.2 )
 	{
 		std_flag = false;
 	}
@@ -320,6 +320,10 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 	{
 		
 		std_yaw = yaw + DegreeToRadian(offset_yaw);
+		if(std_yaw >= 2*PI)
+		{
+			std_yaw -= 2*PI;
+		}
 		std_flag = true;
 		printf("std_yaw:%.2f\n", RadianToDegree(std_yaw) );
 	}
