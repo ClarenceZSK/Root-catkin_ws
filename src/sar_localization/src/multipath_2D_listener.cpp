@@ -5,6 +5,8 @@
 #include "std_msgs/Header.h"
 #include "sar_localization/Imu.h"
 #include "sar_localization/Csi.h"
+#include "sar_localization/Motor.h"
+
 
 #include "/opt/eigen/Eigen/Dense"
 #include <vector>
@@ -16,7 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <algorithm>
-#include <glib.h>
+//#include <glib.h>
 
 //for multiple processes processing
 #include <signal.h>
@@ -46,6 +48,7 @@ map<double, pair<complex<double>, complex<double> > > input;
 
 double t_stamp_csi;			//time stamp of csi
 double t_stamp_imu;			//time stamp of imu
+double t_stamp_motor;       //time stamp of motor
 bool csi_ready = false;
 bool imu_ready = false;
 //double pitch;
@@ -65,8 +68,9 @@ int count_d = 0;
 bool start = false;
 
 //yaw normalize
-bool std_flag = false;
-double std_yaw = 0;
+bool std_flag = true;
+double std_yaw = -1;
+double offset_yaw = 0;
 
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
@@ -196,6 +200,11 @@ vector<int> SAR_Profile_2D()
         {
             std_input_yaw += 360;
         }
+		else if(std_input_yaw >= 360)
+        {
+            std_input_yaw -= 360;
+        }
+
         //printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
         input[std_input_yaw] =  make_pair(csi1, csi2);
 
@@ -243,6 +252,17 @@ vector<int> SAR_Profile_2D()
             else if(input.size() > sizeLimit)   //it indicates some unpredictable situations causing very large input map
             {
                 printf("Too many samples! Clear and Resampling!\n");
+				printf("Reason: \n");
+                if(max_interval >= interval_threshold)
+                {
+                    printf("Too large interval! max_interval/threshold:%.2f/%d  \n", max_interval, interval_threshold);
+                }
+  
+                if(circle_distance < circle_threshold)
+                {
+                    printf("Not a circle! circle_distance/threshold:%.2f/%d\n"  , circle_distance, circle_threshold);
+                }
+
                 input.clear();
             }
 
@@ -330,6 +350,17 @@ vector<int> SAR_Profile_2D()
 }
 
 // %Tag(CALLBACK)%
+void motorCallback(const sar_localization::Motor::ConstPtr& msg)
+{
+    t_stamp_motor = msg->header.stamp.toNSec()*1e-6;
+    offset_yaw = msg->offset_yaw;
+    if(offset_yaw < 0.1 || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 0.2   )
+    {
+        std_flag = false;
+    }
+}
+
+
 void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 {
   	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
@@ -338,9 +369,13 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 	//if(!std_flag && input.size() > 2)
     if(!std_flag)
     {
-        std_yaw = yaw;
+		std_yaw = yaw + DegreeToRadian(offset_yaw);
+        if(std_yaw >= 2*PI)
+        {
+            std_yaw -= 2*PI;
+        }
         std_flag = true;
-        printf("std_yaw:%.2f\n", RadianToDegree(std_yaw) );
+        //printf("T_D:%.2f, std_yaw:%.2f, yaw:%.2f, offset yaw:%.2f\n", fabs(t_stamp_motor-t_stamp_imu), RadianToDegree(std_yaw), RadianToDegree(yaw), offset_yaw);
     }
 
   	imu_ready = true;
@@ -365,6 +400,7 @@ int main(int argc, char **argv)
 
   	ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 1000, csiCallback);
+	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
 
 	if(autoSwitch)
 	{

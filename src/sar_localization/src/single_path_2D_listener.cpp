@@ -17,7 +17,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <stdio.h>
-#include <glib.h>
+//#include <glib.h>
 
 //for multiple processes processing
 #include <signal.h>
@@ -249,6 +249,17 @@ int SAR_Profile_2D()
 			else if(input.size() > sizeLimit)	//it indicates some unpredictable situations causing very large input map
 			{
 				printf("Too many samples! Clear and Resampling!\n");
+				printf("Reason: \n");
+				if(max_interval >= interval_threshold)
+				{
+					printf("Too large interval! max_interval/threshold:%.2f/%d\n", max_interval, interval_threshold);
+				}
+
+				if(circle_distance < circle_threshold)
+				{
+					printf("Not a circle! circle_distance/threshold:%.2f/%d\n", circle_distance, circle_threshold);
+				}
+
 				input.clear();
 			}
 			
@@ -315,18 +326,16 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
   	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
   	yaw = msg->yaw;
 	yaw = yaw*PI/180.0;
-	
 	//if(!std_flag && input.size() > 2)
 	if(!std_flag)
 	{
-		
 		std_yaw = yaw + DegreeToRadian(offset_yaw);
 		if(std_yaw >= 2*PI)
 		{
 			std_yaw -= 2*PI;
 		}
 		std_flag = true;
-		printf("std_yaw:%.2f\n", RadianToDegree(std_yaw) );
+		//printf("T_D:%.2f, std_yaw:%.2f, yaw:%.2f, offset yaw:%.2f\n", fabs(t_stamp_motor-t_stamp_imu), RadianToDegree(std_yaw), RadianToDegree(yaw), offset_yaw);
 	}
   	imu_ready = true;
 }
@@ -484,4 +493,4 @@ int main(int argc, char **argv)
 		system("pkill -n ping");
 	}
 	return 0;
-}	
+}
