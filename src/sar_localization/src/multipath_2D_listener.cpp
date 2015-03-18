@@ -83,11 +83,11 @@ ofstream myfile2;		//peaks
 
 double RadianToDegree(double radian)
 {
-	    return radian/PI*180;
+    return radian/PI*180;
 }
 double DegreeToRadian(double degree)
 {
-	    return degree/180.0*PI;
+    return degree/180.0*PI;
 }
 
 
@@ -157,7 +157,7 @@ void mysystem(const char *cmdstr)
 	{
 		execl("/bin/sh", "sh", "-c", cmdstr, (char *) 0);
 		_exit(127);
-	}	
+	}
 	//parent process
 	//...
 }
@@ -171,7 +171,7 @@ vector<int> countPeak()
 		myfile2 << peak_mat(i) << endl;
 		if (peak_mat(i) == 1)
 		{
-			ret.push_back(i);	
+			ret.push_back(i);
 		}
 	}
 	return ret;
@@ -203,14 +203,14 @@ vector<int> SAR_Profile_2D()
         {
             //start data preprocessing
             //
-            
+
             map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
             input_iter = input.begin();
             double max_interval = 0;
             double min_interval = 0xffff;
             double maxAngle = 0;
             double minAngle = 0xffff;
-            
+
             double prey = input_iter->first;
             double cury = 0xffff;
             ++input_iter;
@@ -221,7 +221,7 @@ vector<int> SAR_Profile_2D()
 
                 if(min_interval > interval) //find min interval
                 {
-                    min_interval = interval;    
+                    min_interval = interval;
                 }
 
                 if(max_interval < interval)     //find max interval
@@ -233,9 +233,8 @@ vector<int> SAR_Profile_2D()
             }
 			maxAngle = input.rbegin()->first;
             minAngle = input.begin()->first;
-            
             double circle_distance = maxAngle - minAngle;
-            
+
             if(max_interval < interval_threshold && circle_distance >= circle_threshold)
             {
                 printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, circle_distance);
@@ -245,10 +244,10 @@ vector<int> SAR_Profile_2D()
             {
                 printf("Too many samples! Clear and Resampling!\n");
                 input.clear();
-            }			
+            }
 
 		}
-	
+
 		if(start)
 		{
 			Eigen::VectorXi cur_peak_mat(360);
@@ -257,7 +256,7 @@ vector<int> SAR_Profile_2D()
 			start = false;
 			maxT_D = 0;
 			++count_d;
-		
+
 			//When csi and imu data vectors reach size limit, start angle generation
 			int resolution = 1;      //search resolution
 
@@ -269,7 +268,7 @@ vector<int> SAR_Profile_2D()
 			myfile1 << prePow << endl;
 
 			myfile2 << "#" << count_d << endl;	//for peaks
-		
+
 			for(int alpha = 1; alpha < 360; alpha += resolution)
 			{
 				double alpha_r = alpha*PI/180.0;
@@ -308,7 +307,7 @@ vector<int> SAR_Profile_2D()
 			myfile2 << cur_peak_mat(0) << endl;
 
 			++dataIndex;
-		
+
 			if(count_d == 1)
 			{
 				peak_mat = cur_peak_mat;
@@ -326,20 +325,19 @@ vector<int> SAR_Profile_2D()
 			}
 		}
 	}
-	
+
 	return ret;
 }
 
 // %Tag(CALLBACK)%
 void imuCallback(const sar_localization::Imu::ConstPtr& msg)
-{ 
+{
   	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
   	yaw = msg->yaw;
 	yaw = yaw*PI/180.0;
 	//if(!std_flag && input.size() > 2)
     if(!std_flag)
     {
-        
         std_yaw = yaw;
         std_flag = true;
         printf("std_yaw:%.2f\n", RadianToDegree(std_yaw) );
@@ -352,11 +350,11 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
   	t_stamp_csi = msg->header.stamp.toNSec()*1e-6;
   	complex<double> csi1tmp (msg->csi1_real, msg->csi1_image);
-  	csi1 = csi1tmp; 
+  	csi1 = csi1tmp;
   	complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
-  	csi2 = csi2tmp; 
+  	csi2 = csi2tmp;
   	csi_ready = true;
-}   
+}
 // %EndTag(CALLBACK)%
 
 int main(int argc, char **argv)
@@ -376,18 +374,18 @@ int main(int argc, char **argv)
 		system("dhclient wlan0");
 		printf("dhclient from TP5G1 completed\n");
 
-	
+
 		system("iwconfig wlan0 essid TP5G2");
 		printf("iwconfig to TP5G2\n");
 
 		system("dhclient wlan0");
 		printf("dhclient from TP5G2 completed\n");
-	
+
 		mysystem("ping -q -n -i 0.05 192.168.0.3");
 	}
 	myfile1.open("power.txt");
 	myfile2.open("peaks.txt");
-	
+
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
 	imu_ready = false;
@@ -395,19 +393,17 @@ int main(int argc, char **argv)
 	{
 		//spinner.spinOnce();
 		ros::spinOnce();
-		
-		vector<int> peakAngles = SAR_Profile_2D();	
+
+		vector<int> peakAngles = SAR_Profile_2D();
 		if(!peakAngles.empty() )
 		{
 			//print peaks after the elimination
 			printf("%d peaks: ", (int) peakAngles.size() );
-			for(int i = 0; i < peakAngles.size(); ++i)
+			for(int i = 0; i < (int) peakAngles.size(); ++i)
 			{
-					
 				printf("%d ", peakAngles[i]);
 			}
 			printf("\n");
-				
 			//Switch to another AP
 			if(autoSwitch)
 			{

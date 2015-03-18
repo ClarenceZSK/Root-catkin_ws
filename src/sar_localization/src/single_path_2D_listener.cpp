@@ -171,7 +171,7 @@ void mysystem(const char *cmdstr)
 	{
 		execl("/bin/sh", "sh", "-c", cmdstr, (char *) 0);
 		_exit(127);
-	}	
+	}
 	//parent process
 	//...
 }
@@ -200,6 +200,7 @@ int SAR_Profile_2D()
 		}
 		//printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
 		input[std_input_yaw] =  make_pair(csi1, csi2);
+		//printf("std input %.2f\n", std_input_yaw);
 		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
 		//if(input.size() == sizeLimit || 1)
 		if(input.size() > 1 )
@@ -224,7 +225,7 @@ int SAR_Profile_2D()
 
 				if(min_interval > interval)	//find min interval
 				{
-					min_interval = interval;	
+					min_interval = interval;
 				}
 
 				if(max_interval < interval)		//find max interval
@@ -310,7 +311,7 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 }
 
 void imuCallback(const sar_localization::Imu::ConstPtr& msg)
-{ 
+{
   	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
   	yaw = msg->yaw;
 	yaw = yaw*PI/180.0;
@@ -334,11 +335,11 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
   	t_stamp_csi = msg->header.stamp.toNSec()*1e-6;
   	complex<double> csi1tmp (msg->csi1_real, msg->csi1_image);
-  	csi1 = csi1tmp; 
+  	csi1 = csi1tmp;
   	complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
-  	csi2 = csi2tmp; 
+  	csi2 = csi2tmp;
   	csi_ready = true;
-}   
+}
 // %EndTag(CALLBACK)%
 /*
 void processing()
