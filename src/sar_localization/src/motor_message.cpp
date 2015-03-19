@@ -42,14 +42,14 @@ struct timeval tv;		  ///< System time
 //int serial_compid = 0;
 
 //uart reicer flag
-#define b_uart_head  0x80 
-#define b_rx_over    0x40  
+#define b_uart_head  0x80
+#define b_rx_over    0x40
 // USART Receiver buffer
 #define RX_BUFFER_SIZE 100
 void Decode_frame(unsigned char data);
-volatile unsigned char rx_buffer[RX_BUFFER_SIZE]; 
-volatile unsigned char rx_wr_index; 
-volatile unsigned char RC_Flag;  
+volatile unsigned char rx_buffer[RX_BUFFER_SIZE];
+volatile unsigned char rx_wr_index;
+volatile unsigned char RC_Flag;
 float offset_yaw;
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
@@ -73,7 +73,7 @@ ros::Publisher      	motor_pub;
 int open_port(const char* port)
 {
 	int fd; /* File descriptor for the port */
-	
+
 	// Open serial port
 	// O_RDWR - Read and write
 	// O_NOCTTY - Ignore special chars like CTRL-C
@@ -87,14 +87,14 @@ int open_port(const char* port)
 	{
 		fcntl(fd, F_SETFL, 0);
 	}
-	
+
 	return (fd);
 }
 
 bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, bool hardware_control)
 {
 	//struct termios options;
-	
+
 	struct termios  config;
 	if(!isatty(fd))
 	{
@@ -125,8 +125,8 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 	config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |
 	                     ONOCR | OFILL | OPOST);
 
-	#ifdef OLCUC 
-  		config.c_oflag &= ~OLCUC; 
+	#ifdef OLCUC
+  		config.c_oflag &= ~OLCUC;
 	#endif
 
   	#ifdef ONOEOT
@@ -147,7 +147,7 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 	config.c_cflag &= ~(CSIZE | PARENB);
 	config.c_cflag |= CS8;
 	//
-	
+
 	switch (baud)
 	{
 		case 1200:
@@ -218,10 +218,10 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 		default:
 			fprintf(stderr, "ERROR: Desired baud rate %d could not be set, aborting.\n", baud);
 			return false;
-			
+
 			break;
 	}
-	
+
 	//
 	// Finally, apply the configuration
 	//
@@ -252,7 +252,7 @@ void UART2_Get_Motor(void)
 	}
 	else temp = (temp&0x7fff);
 	offset_yaw=(float)temp / 10.0f;
-	
+
 }
 
 void UART2_Get_Motion(void)
@@ -291,12 +291,12 @@ void UART2_Get_Motion(void)
 	}
 	else temp = (temp&0x7fff);
 	az=temp;
-	
+
 	temp = 0;
 	temp = rx_buffer[8];
 	temp <<= 8;
 	temp |= rx_buffer[9];
-	if(temp&0x8000) 
+	if(temp&0x8000)
 	{
 		temp = 0-(temp&0x7fff);
 	}
@@ -350,9 +350,9 @@ void UART2_Get_Motion(void)
 }
 
 unsigned char Sum_check(void)
-{ 
+{
 	unsigned char i;
-	unsigned int checksum=0; 
+	unsigned int checksum=0;
 	for(i=0;i<rx_buffer[0]-2;i++)
 		checksum+=rx_buffer[i];
         if((checksum%256)==rx_buffer[rx_buffer[0]-2])
@@ -468,7 +468,7 @@ void serial_wait( void* serial_ptr )
 
 
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
 
 	ros::init(argc, argv, "motor_publisher");
@@ -480,7 +480,7 @@ int main(int argc, char **argv)
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
 	/* read program arguments */
 	int i;
-	for (i = 1; i < argc; i++) 
+	for (i = 1; i < argc; i++)
 	{ /* argv[0] is "serial" */
 		if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
 			printf(commandline_usage, argv[0], uart_name, baudrate);
@@ -556,8 +556,8 @@ int main(int argc, char **argv)
 	{
 		exit(noErrors);
 	}
-	
-    
+
+
     	// Run indefinitely while the serial loop handles data
 	if (!silent) printf("\nREADY, waiting for serial data.\n");
         int* fd_ptr = &fd;
@@ -580,15 +580,15 @@ int main(int argc, char **argv)
     	{
        		exit(noErrors);
     	}
-  
+
     	printf("\nSERIAL TO ROS BRIDGE STARTED - RUNNING..\n\n");
 /**
      * Now pump callbacks (execute mavlinkCallback) until CTRL-c is pressed
-*/ 
+*/
    // ros::spin();
   //
     	serial_wait(fd_ptr);
-    
+
 	close_port(fd);
 
 	return 0;

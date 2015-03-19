@@ -57,7 +57,7 @@ complex<double> csi1;
 complex<double> csi2;
 //multipath effect processing
 Eigen::VectorXi peak_mat(360);
-int vib_threshold = 5;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int vib_threshold = 8;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
 int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 
 double landa = 0.06;			//The aperture size is 6cm
@@ -66,6 +66,7 @@ double r = 0.06;			//The radius (antenna interval)
 int dataIndex = 0;
 int count_d = 0;
 bool start = false;
+bool globalStart = false;
 
 //yaw normalize
 bool std_flag = true;
@@ -186,7 +187,7 @@ vector<int> SAR_Profile_2D()
 {
 	vector<int> ret;
 	ret.clear();
-	if(csi_ready && imu_ready)
+	if(csi_ready && imu_ready && globalStart)
 	{
 		csi_ready = false;
 		imu_ready = false;
@@ -204,7 +205,8 @@ vector<int> SAR_Profile_2D()
         {
             std_input_yaw -= 360;
         }
-
+		int tp = std_input_yaw*10;
+		std_input_yaw = tp/10.0;
         //printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
         input[std_input_yaw] =  make_pair(csi1, csi2);
 
@@ -257,7 +259,6 @@ vector<int> SAR_Profile_2D()
                 {
                     printf("Too large interval! max_interval/threshold:%.2f/%d  \n", max_interval, interval_threshold);
                 }
-  
                 if(circle_distance < circle_threshold)
                 {
                     printf("Not a circle! circle_distance/threshold:%.2f/%d\n"  , circle_distance, circle_threshold);
@@ -332,14 +333,14 @@ vector<int> SAR_Profile_2D()
 			{
 				peak_mat = cur_peak_mat;
 				ret = countPeak();
-				printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
+				printf("Vib:%d,Count:%d,peak_num: %d\n", vib_threshold, count_d, (int) ret.size());
 				input.clear();
 			}
 			else	//start peak elimination
 			{
 				peak_mat = peakElimination(cur_peak_mat);
 				ret = countPeak();
-				printf("Count:%d,peak_num: %d\n",count_d, (int) ret.size());
+				printf("Vib:%d,Count:%d,peak_num: %d\n", vib_threshold, count_d, (int) ret.size());
 				input.clear();
 				return ret;
 			}
@@ -356,6 +357,7 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
     offset_yaw = msg->offset_yaw;
     if(offset_yaw < 0.1 || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 0.2   )
     {
+		globalStart = true;
         std_flag = false;
     }
 }

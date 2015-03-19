@@ -26,10 +26,10 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 500
+#define sizeLimit 300
 #define profileLimit 20
 
-#define interval_threshold 6	//maximun interval must greater than X degree
+#define interval_threshold 12	//maximun interval must greater than X degree
 #define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1
@@ -43,7 +43,7 @@ using namespace Eigen;
 //complex<double>  CSI2[sizeLimit];
 //double orientation[sizeLimit];
 
-map<double, pair<complex<double>, complex<double> > > input;		
+map<double, pair<complex<double>, complex<double> > > input;
 
 double t_stamp_csi;			//time stamp of csi
 double t_stamp_imu;			//time stamp of imu
@@ -63,6 +63,7 @@ double r = 0.06;			//The radius (antenna interval)
 int dataIndex = 0;
 int count_d = 0;
 bool start = false;
+bool globalStart = false;	//This is a tag that start to record data as long as the normalization is done
 
 //yaw normalize
 bool std_flag = true;
@@ -123,7 +124,7 @@ double PowerCalculation(double alpha)
 	return ret;
 }
 /*
-double PowerCalculation(double alpha)                                                                            
+double PowerCalculation(double alpha)
 {
     complex<double> avgCsiHat (0, 0);
 
@@ -179,7 +180,7 @@ void mysystem(const char *cmdstr)
 
 int SAR_Profile_2D()
 {
-	if(csi_ready && imu_ready)
+	if(csi_ready && imu_ready && globalStart)
 	{
 		csi_ready = false;
 		imu_ready = false;
@@ -198,8 +199,12 @@ int SAR_Profile_2D()
 		{
 			std_input_yaw -= 360;
 		}
+		//keep 0.1 value
+		int tp = std_input_yaw*10;
+		std_input_yaw = tp/10.0;
 		//printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
 		input[std_input_yaw] =  make_pair(csi1, csi2);
+		//input[RadianToDegree(yaw)] =  make_pair(csi1, csi2);
 		//printf("std input %.2f\n", std_input_yaw);
 		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
 		//if(input.size() == sizeLimit || 1)
@@ -207,14 +212,14 @@ int SAR_Profile_2D()
 		{
 			//start data preprocessing
 			//
-			
+
 			map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
 			input_iter = input.begin();
 			double max_interval = 0;
 			double min_interval = 0xffff;
 			double maxAngle = 0;
 			double minAngle = 0xffff;
-			
+
 			double prey = input_iter->first;
 			double cury = 0xffff;
 			++input_iter;
@@ -238,12 +243,12 @@ int SAR_Profile_2D()
 			//printf("\n");
 			maxAngle = input.rbegin()->first;
 			minAngle = input.begin()->first;
-			
+
 			double circle_distance = maxAngle - minAngle;
-			
+
 			if(max_interval < interval_threshold && circle_distance >= circle_threshold)
 			{
-				printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, circle_distance);
+				printf("Max interval:%.2f, min interval:%lf, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, circle_distance);
 				start = true;
 			}
 			else if(input.size() > sizeLimit)	//it indicates some unpredictable situations causing very large input map
@@ -262,8 +267,8 @@ int SAR_Profile_2D()
 
 				input.clear();
 			}
-			
-		
+
+
 		}
 		if(start)
 		{
@@ -275,9 +280,9 @@ int SAR_Profile_2D()
 			//When csi and imu data vectors reach size limit, start angle generation
 			int resolution = stepSize;      //search resolution
 			double power = 0;
-	  
+
 			myfile << "#" << count_d << endl;
-			
+
 			for(int alpha = 0; alpha < 360; alpha += resolution)
 			{
 				double sumpow = 0;
@@ -292,7 +297,7 @@ int SAR_Profile_2D()
 						power= powtmp;
 						r_yaw = alpha;
 					}
-				
+
       			}
 				myfile << sumpow << endl;
 			}
@@ -302,8 +307,8 @@ int SAR_Profile_2D()
 			printf("Count:%d,maxPow: %0.3f,sample size:%d, ",count_d, power,(int) input.size() );
 			input.clear();
 			return r_yaw;
-		}	
-		
+		}
+
 	}
 
 	return -1;
@@ -317,6 +322,7 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 	offset_yaw = msg->offset_yaw;
 	if(offset_yaw < 0.1 || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 0.2 )
 	{
+		globalStart = true;
 		std_flag = false;
 	}
 }
@@ -353,7 +359,7 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 /*
 void processing()
 {
-	pid_t cpid;	
+	pid_t cpid;
 	while(ros::ok())
 	{
 	int angle = SAR_Profile_2D();
@@ -395,7 +401,7 @@ int main(int argc, char **argv)
   	ros::Subscriber sub1 = n.subscribe("imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
-	
+
 	//ros::MultiThreadedSpinner spinner(2);
 
 	//system configuration
@@ -407,7 +413,7 @@ int main(int argc, char **argv)
 
 	//system("modprobe iwlwifi connector_log=0x1");
 	//printf("Load connector log module\n");
-	
+
 	//system("iwlist wlan0 scan");
 	//printf("Scan completed\n");
 
@@ -424,9 +430,9 @@ int main(int argc, char **argv)
 
 		system("dhclient wlan0");
     	printf("dhclient from TP5G2 completed\n");
-	
+
 		mysystem("ping -q -n -i 0.02 192.168.0.3");
-	}	
+	}
 	myfile.open("power.txt");
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
@@ -437,7 +443,7 @@ int main(int argc, char **argv)
 	{
 		//spinner.spinOnce();
 		ros::spinOnce();
-		int angle = SAR_Profile_2D();	
+		int angle = SAR_Profile_2D();
 		if(angle >= 0)
 		{
 			printf("Alpha:%d\n", angle);
