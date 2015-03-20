@@ -57,13 +57,14 @@ complex<double> csi1;
 complex<double> csi2;
 //multipath effect processing
 Eigen::VectorXi peak_mat(360);
-int vib_threshold = 8;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int vib_threshold = 5;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
 int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 
 double landa = 0.06;			//The aperture size is 6cm
 double r = 0.06;			//The radius (antenna interval)
+//Eigen::VectorXi std_profile(360);	//Store a standard multipath profile to recover from 0 result
+bool peakVanished = false;	//It indicates that after angle elimination, there is no angle left. In this case, we need to recover for continuing experiment
 
-int dataIndex = 0;
 int count_d = 0;
 bool start = false;
 bool globalStart = false;
@@ -79,6 +80,10 @@ pid_t childPID = -2;
 
 //auto switch
 bool autoSwitch = 0;
+
+//AoA localization
+multimap<int, int> angleSet;	//The set of angles for localization: <AP_ID, angles>. Probably, more than 1 angles will be selected
+
 
 //for debug
 int preIdx = 0;
@@ -327,7 +332,6 @@ vector<int> SAR_Profile_2D()
 			}
 			myfile2 << cur_peak_mat(0) << endl;
 
-			++dataIndex;
 
 			if(count_d == 1)
 			{
@@ -342,6 +346,18 @@ vector<int> SAR_Profile_2D()
 				ret = countPeak();
 				printf("Vib:%d,Count:%d,peak_num: %d\n", vib_threshold, count_d, (int) ret.size());
 				input.clear();
+				//some additional processing includes:
+				//1. peak re-elimination from the last moment multipath profile
+				//2. extract the potential correct result if the ret size is 1
+				if(ret.empty() )
+				{
+					peakVanished = true;
+					peak_mat = cur_peak_mat;	//store the last moment peak situation
+				}
+				else if(ret.size() == 1)		//It indicates that we have obtained the final converged result. At this time, we restart the process based on the current peak situation
+				{
+					peak_mat = cur_peak_mat;
+				}
 				return ret;
 			}
 		}
@@ -349,6 +365,7 @@ vector<int> SAR_Profile_2D()
 
 	return ret;
 }
+
 
 // %Tag(CALLBACK)%
 void motorCallback(const sar_localization::Motor::ConstPtr& msg)
@@ -412,7 +429,6 @@ int main(int argc, char **argv)
 		system("dhclient wlan0");
 		printf("dhclient from TP5G1 completed\n");
 
-
 		system("iwconfig wlan0 essid TP5G2");
 		printf("iwconfig to TP5G2\n");
 
@@ -427,12 +443,31 @@ int main(int argc, char **argv)
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
 	imu_ready = false;
+	vector<int> peakAngles;
 	while(n.ok() )
 	{
 		//spinner.spinOnce();
 		ros::spinOnce();
 
-		vector<int> peakAngles = SAR_Profile_2D();
+		if(peakVanished)
+		{
+			peakVanished = false;
+			printf("Peak vanished, restart peak elimination based on the last moment multipath profile.\n");
+			//Put the last moment peaks to angleSet for localization
+			for(unsigned int i = 0; i < peakAngles.size(); ++i)
+			{
+				angleSet.insert(make_pair(AP_ID, peakAngles[i]) );
+			}
+		}
+		else if(peakAngles.size() == 1)
+		{
+			//Store this potential result
+			angleSet.insert(make_pair(AP_ID, peakAngles[0]) );
+		}
+
+		peakAngles.clear();
+		peakAngles = SAR_Profile_2D();
+
 		if(!peakAngles.empty() )
 		{
 			//print peaks after the elimination
@@ -442,6 +477,12 @@ int main(int argc, char **argv)
 				printf("%d ", peakAngles[i]);
 			}
 			printf("\n");
+			if(peakAngles.size() == 1)
+			{
+				printf("\n");
+				printf("!Get the converged result! Restart!\n");
+				printf("\n");
+			}
 			//Switch to another AP
 			if(autoSwitch)
 			{
@@ -464,7 +505,9 @@ int main(int argc, char **argv)
 					break;
 				}
 			}
+
 		}
+
 	}
 
 	myfile1.close();
@@ -472,6 +515,18 @@ int main(int argc, char **argv)
 	if(autoSwitch)
 	{
 		system("pkill -n ping");
+	}
+	//print out the final anglular result
+	if(!angleSet.empty() )
+	{
+		printf("AP_ID -> Angles: ");
+		multimap<int, int>::iterator finalRetPos = angleSet.begin();
+		while(finalRetPos != angleSet.end() )
+		{
+			printf("%d->%d; ", finalRetPos->first, finalRetPos->second);
+			++finalRetPos;
+		}
+		printf("\n");
 	}
 	return 0;
 }
