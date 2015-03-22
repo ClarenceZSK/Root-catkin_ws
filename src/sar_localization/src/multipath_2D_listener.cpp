@@ -27,10 +27,10 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 500
+#define sizeLimit 300
 #define profileLimit 20
 
-#define interval_threshold 6
+#define interval_threshold 10
 #define circle_threshold 353
 //for debug
 #define stepSize 1
@@ -90,6 +90,17 @@ int preIdx = 0;
 double maxT_D = 0;
 ofstream myfile1;		//power
 ofstream myfile2;		//peaks
+int test_target = 90;	//test peak near 90 degree
+int detect_range1 = vib_threshold;
+int detect_range2 = detect_range1+1;
+int detect_range3 = detect_range2+1;
+int detect_range4 = detect_range3+1;
+int count1 = 0;
+int count2 = 0;
+int count3 = 0;
+int count4 = 0;
+int count_detected = 0;
+int count_finalOutput = 0;
 
 double RadianToDegree(double radian)
 {
@@ -98,6 +109,24 @@ double RadianToDegree(double radian)
 double DegreeToRadian(double degree)
 {
     return degree/180.0*PI;
+}
+
+void testNearTarget(int alpha)
+{
+	if(alpha >= test_target-detect_range1 && alpha <= test_target+detect_range1)
+	{
+		++count1;
+	}
+	if(alpha >= test_target-detect_range2 && alpha <= test_target+detect_range2)    {
+        ++count2;
+    }
+	if(alpha >= test_target-detect_range3 && alpha <= test_target+detect_range3)    {
+        ++count3;
+    }
+	if(alpha >= test_target-detect_range4 && alpha <= test_target+detect_range4)    {
+        ++count4;
+    }
+
 }
 
 
@@ -313,6 +342,9 @@ vector<int> SAR_Profile_2D()
 					if(powtmp < prePow)		//down
 					{
 						cur_peak_mat(alpha) = 1;
+						//for debug
+						testNearTarget(alpha);
+						///////////
 						up = false;			//once peak detected, we wait for up signal again
 					}
 				}
@@ -352,11 +384,11 @@ vector<int> SAR_Profile_2D()
 				if(ret.empty() )
 				{
 					peakVanished = true;
-					peak_mat = cur_peak_mat;	//store the last moment peak situation
+					peak_mat.setZero();	//store the last moment peak situation
 				}
 				else if(ret.size() == 1)		//It indicates that we have obtained the final converged result. At this time, we restart the process based on the current peak situation
 				{
-					peak_mat = cur_peak_mat;
+					peak_mat.setZero();
 				}
 				return ret;
 			}
@@ -372,7 +404,7 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 {
     t_stamp_motor = msg->header.stamp.toNSec()*1e-6;
     offset_yaw = msg->offset_yaw;
-    if(offset_yaw < 0.1 || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 0.2   )
+    if( (offset_yaw > 0.1 && offset_yaw < 0.5) || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 1   )
     {
 		globalStart = true;
         std_flag = false;
@@ -444,26 +476,11 @@ int main(int argc, char **argv)
 	csi_ready = false;
 	imu_ready = false;
 	vector<int> peakAngles;
+	vector<int> prePeakAngles;
 	while(n.ok() )
 	{
 		//spinner.spinOnce();
 		ros::spinOnce();
-
-		if(peakVanished)
-		{
-			peakVanished = false;
-			printf("Peak vanished, restart peak elimination based on the last moment multipath profile.\n");
-			//Put the last moment peaks to angleSet for localization
-			for(unsigned int i = 0; i < peakAngles.size(); ++i)
-			{
-				angleSet.insert(make_pair(AP_ID, peakAngles[i]) );
-			}
-		}
-		else if(peakAngles.size() == 1)
-		{
-			//Store this potential result
-			angleSet.insert(make_pair(AP_ID, peakAngles[0]) );
-		}
 
 		peakAngles.clear();
 		peakAngles = SAR_Profile_2D();
@@ -471,10 +488,15 @@ int main(int argc, char **argv)
 		if(!peakAngles.empty() )
 		{
 			//print peaks after the elimination
+			prePeakAngles = peakAngles;
 			printf("%d peaks: ", (int) peakAngles.size() );
 			for(int i = 0; i < (int) peakAngles.size(); ++i)
 			{
 				printf("%d ", peakAngles[i]);
+				if(peakAngles[i] >= test_target-detect_range4 && peakAngles[i] <= test_target+detect_range4)
+				{
+					++count_detected;
+				}
 			}
 			printf("\n");
 			if(peakAngles.size() == 1)
@@ -483,6 +505,13 @@ int main(int argc, char **argv)
 				printf("!Get the converged result! Restart!\n");
 				printf("\n");
 			}
+
+			if(peakAngles.size() == 1)
+        	{
+        	    //Store this potential result
+    	        angleSet.insert(make_pair(AP_ID, peakAngles[0]) );
+	        }
+
 			//Switch to another AP
 			if(autoSwitch)
 			{
@@ -507,6 +536,18 @@ int main(int argc, char **argv)
 			}
 
 		}
+		else if(peakVanished)
+        {
+            peakVanished = false;
+            printf("Peak vanished, restart peak elimination based on the last moment multipath profile.\n");
+            //Put the last moment peaks to angleSet for localization
+            for(unsigned int i = 0; i < prePeakAngles.size(); ++i)
+            {
+                angleSet.insert(make_pair(AP_ID, prePeakAngles[i]) );
+            }
+			prePeakAngles.clear();
+        }
+
 
 	}
 
@@ -524,9 +565,17 @@ int main(int argc, char **argv)
 		while(finalRetPos != angleSet.end() )
 		{
 			printf("%d->%d; ", finalRetPos->first, finalRetPos->second);
+
+			if(finalRetPos->second >= test_target-detect_range4 && finalRetPos->second <= test_target+detect_range4)
+			{
+				++count_finalOutput;
+			}
 			++finalRetPos;
 		}
 		printf("\n");
 	}
+	printf("%.2f correct peaks exist in the output\n", (float) count_finalOutput/(float)angleSet.size() );
+	printf("%d(%d, %d, %d) target peaks exist in %d detections -> %.2f(%.2f, %.2f, %.2f)\n", count1, count2, count3, count4, count_d, (float)count1/(float)count_d, (float)count2/(float)count_d, (float)count3/(float)count_d, (float)count4/(float)count_d);
+
 	return 0;
 }
