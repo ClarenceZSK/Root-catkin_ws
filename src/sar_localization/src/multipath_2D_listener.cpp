@@ -64,6 +64,7 @@ double landa = 0.06;			//The aperture size is 6cm
 double r = 0.06;			//The radius (antenna interval)
 //Eigen::VectorXi std_profile(360);	//Store a standard multipath profile to recover from 0 result
 bool peakVanished = false;	//It indicates that after angle elimination, there is no angle left. In this case, we need to recover for continuing experiment
+bool reset = 0;
 
 int count_d = 0;
 bool start = false;
@@ -365,8 +366,9 @@ vector<int> SAR_Profile_2D()
 			myfile2 << cur_peak_mat(0) << endl;
 
 
-			if(count_d == 1)
+			if(count_d == 1 || reset)
 			{
+				reset = 0;
 				peak_mat = cur_peak_mat;
 				ret = countPeak();
 				printf("Vib:%d,Count:%d,peak_num: %d\n", vib_threshold, count_d, (int) ret.size());
@@ -384,11 +386,13 @@ vector<int> SAR_Profile_2D()
 				if(ret.empty() )
 				{
 					peakVanished = true;
-					peak_mat.setZero();	//store the last moment peak situation
+					//peak_mat.setZero();	//store the last moment peak situation
+					reset = 1;
 				}
 				else if(ret.size() == 1)		//It indicates that we have obtained the final converged result. At this time, we restart the process based on the current peak situation
 				{
-					peak_mat.setZero();
+					reset = 1;
+					//peak_mat.setZero();
 				}
 				return ret;
 			}
