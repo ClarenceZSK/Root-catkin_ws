@@ -31,7 +31,12 @@
     :reader csi2_image
     :initarg :csi2_image
     :type cl:float
-    :initform 0.0))
+    :initform 0.0)
+   (check_csi
+    :reader check_csi
+    :initarg :check_csi
+    :type cl:boolean
+    :initform cl:nil))
 )
 
 (cl:defclass Csi (<Csi>)
@@ -66,6 +71,11 @@
 (cl:defmethod csi2_image-val ((m <Csi>))
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader sar_localization-msg:csi2_image-val is deprecated.  Use sar_localization-msg:csi2_image instead.")
   (csi2_image m))
+
+(cl:ensure-generic-function 'check_csi-val :lambda-list '(m))
+(cl:defmethod check_csi-val ((m <Csi>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader sar_localization-msg:check_csi-val is deprecated.  Use sar_localization-msg:check_csi instead.")
+  (check_csi m))
 (cl:defmethod roslisp-msg-protocol:serialize ((msg <Csi>) ostream)
   "Serializes a message object of type '<Csi>"
   (roslisp-msg-protocol:serialize (cl:slot-value msg 'header) ostream)
@@ -105,6 +115,7 @@
     (cl:write-byte (cl:ldb (cl:byte 8 40) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream))
+  (cl:write-byte (cl:ldb (cl:byte 8 0) (cl:if (cl:slot-value msg 'check_csi) 1 0)) ostream)
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <Csi>) istream)
   "Deserializes a message object of type '<Csi>"
@@ -149,6 +160,7 @@
       (cl:setf (cl:ldb (cl:byte 8 48) bits) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 56) bits) (cl:read-byte istream))
     (cl:setf (cl:slot-value msg 'csi2_image) (roslisp-utils:decode-double-float-bits bits)))
+    (cl:setf (cl:slot-value msg 'check_csi) (cl:not (cl:zerop (cl:read-byte istream))))
   msg
 )
 (cl:defmethod roslisp-msg-protocol:ros-datatype ((msg (cl:eql '<Csi>)))
@@ -159,16 +171,16 @@
   "sar_localization/Csi")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<Csi>)))
   "Returns md5sum for a message object of type '<Csi>"
-  "49a032c6fcc10451fb69ed7a76a6c778")
+  "b594aad3c2552cffe0f0dc5378a20944")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'Csi)))
   "Returns md5sum for a message object of type 'Csi"
-  "49a032c6fcc10451fb69ed7a76a6c778")
+  "b594aad3c2552cffe0f0dc5378a20944")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<Csi>)))
   "Returns full string definition for message of type '<Csi>"
-  (cl:format cl:nil "Header header~%float64 csi1_real~%float64 csi1_image~%float64 csi2_real~%float64 csi2_image~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
+  (cl:format cl:nil "Header header~%float64 csi1_real~%float64 csi1_image~%float64 csi2_real~%float64 csi2_image~%bool check_csi~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'Csi)))
   "Returns full string definition for message of type 'Csi"
-  (cl:format cl:nil "Header header~%float64 csi1_real~%float64 csi1_image~%float64 csi2_real~%float64 csi2_image~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
+  (cl:format cl:nil "Header header~%float64 csi1_real~%float64 csi1_image~%float64 csi2_real~%float64 csi2_image~%bool check_csi~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <Csi>))
   (cl:+ 0
      (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'header))
@@ -176,6 +188,7 @@
      8
      8
      8
+     1
 ))
 (cl:defmethod roslisp-msg-protocol:ros-message-to-list ((msg <Csi>))
   "Converts a ROS message object to a list"
@@ -185,4 +198,5 @@
     (cl:cons ':csi1_image (csi1_image msg))
     (cl:cons ':csi2_real (csi2_real msg))
     (cl:cons ':csi2_image (csi2_image msg))
+    (cl:cons ':check_csi (check_csi msg))
 ))

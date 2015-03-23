@@ -7,7 +7,7 @@ import struct
 import std_msgs.msg
 
 class Csi(genpy.Message):
-  _md5sum = "49a032c6fcc10451fb69ed7a76a6c778"
+  _md5sum = "b594aad3c2552cffe0f0dc5378a20944"
   _type = "sar_localization/Csi"
   _has_header = True #flag to mark the presence of a Header object
   _full_text = """Header header
@@ -15,6 +15,7 @@ float64 csi1_real
 float64 csi1_image
 float64 csi2_real
 float64 csi2_image
+bool check_csi
 
 ================================================================================
 MSG: std_msgs/Header
@@ -35,8 +36,8 @@ time stamp
 string frame_id
 
 """
-  __slots__ = ['header','csi1_real','csi1_image','csi2_real','csi2_image']
-  _slot_types = ['std_msgs/Header','float64','float64','float64','float64']
+  __slots__ = ['header','csi1_real','csi1_image','csi2_real','csi2_image','check_csi']
+  _slot_types = ['std_msgs/Header','float64','float64','float64','float64','bool']
 
   def __init__(self, *args, **kwds):
     """
@@ -46,7 +47,7 @@ string frame_id
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       header,csi1_real,csi1_image,csi2_real,csi2_image
+       header,csi1_real,csi1_image,csi2_real,csi2_image,check_csi
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -65,12 +66,15 @@ string frame_id
         self.csi2_real = 0.
       if self.csi2_image is None:
         self.csi2_image = 0.
+      if self.check_csi is None:
+        self.check_csi = False
     else:
       self.header = std_msgs.msg.Header()
       self.csi1_real = 0.
       self.csi1_image = 0.
       self.csi2_real = 0.
       self.csi2_image = 0.
+      self.check_csi = False
 
   def _get_types(self):
     """
@@ -96,7 +100,7 @@ string frame_id
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_4d.pack(_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image))
+      buff.write(_struct_4dB.pack(_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -124,8 +128,9 @@ string frame_id
         self.header.frame_id = str[start:end]
       _x = self
       start = end
-      end += 32
-      (_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image,) = _struct_4d.unpack(str[start:end])
+      end += 33
+      (_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi,) = _struct_4dB.unpack(str[start:end])
+      self.check_csi = bool(self.check_csi)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -150,7 +155,7 @@ string frame_id
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_4d.pack(_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image))
+      buff.write(_struct_4dB.pack(_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -179,12 +184,13 @@ string frame_id
         self.header.frame_id = str[start:end]
       _x = self
       start = end
-      end += 32
-      (_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image,) = _struct_4d.unpack(str[start:end])
+      end += 33
+      (_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi,) = _struct_4dB.unpack(str[start:end])
+      self.check_csi = bool(self.check_csi)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = genpy.struct_I
+_struct_4dB = struct.Struct("<4dB")
 _struct_3I = struct.Struct("<3I")
-_struct_4d = struct.Struct("<4d")

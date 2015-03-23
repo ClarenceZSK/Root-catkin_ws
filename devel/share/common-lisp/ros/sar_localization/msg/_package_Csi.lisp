@@ -9,4 +9,6 @@
           CSI2_REAL
           CSI2_IMAGE-VAL
           CSI2_IMAGE
+          CHECK_CSI-VAL
+          CHECK_CSI
 ))

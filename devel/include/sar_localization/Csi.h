@@ -29,14 +29,16 @@ struct Csi_
     , csi1_real(0.0)
     , csi1_image(0.0)
     , csi2_real(0.0)
-    , csi2_image(0.0)  {
+    , csi2_image(0.0)
+    , check_csi(false)  {
     }
   Csi_(const ContainerAllocator& _alloc)
     : header(_alloc)
     , csi1_real(0.0)
     , csi1_image(0.0)
     , csi2_real(0.0)
-    , csi2_image(0.0)  {
+    , csi2_image(0.0)
+    , check_csi(false)  {
     }
 
 
@@ -55,6 +57,9 @@ struct Csi_
 
    typedef double _csi2_image_type;
   _csi2_image_type csi2_image;
+
+   typedef uint8_t _check_csi_type;
+  _check_csi_type check_csi;
 
 
 
@@ -133,12 +138,12 @@ struct MD5Sum< ::sar_localization::Csi_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "49a032c6fcc10451fb69ed7a76a6c778";
+    return "b594aad3c2552cffe0f0dc5378a20944";
   }
 
   static const char* value(const ::sar_localization::Csi_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x49a032c6fcc10451ULL;
-  static const uint64_t static_value2 = 0xfb69ed7a76a6c778ULL;
+  static const uint64_t static_value1 = 0xb594aad3c2552cffULL;
+  static const uint64_t static_value2 = 0xe0f0dc5378a20944ULL;
 };
 
 template<class ContainerAllocator>
@@ -162,6 +167,7 @@ float64 csi1_real\n\
 float64 csi1_image\n\
 float64 csi2_real\n\
 float64 csi2_image\n\
+bool check_csi\n\
 \n\
 ================================================================================\n\
 MSG: std_msgs/Header\n\
@@ -203,6 +209,7 @@ namespace serialization
       stream.next(m.csi1_image);
       stream.next(m.csi2_real);
       stream.next(m.csi2_image);
+      stream.next(m.check_csi);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER;
@@ -232,6 +239,8 @@ struct Printer< ::sar_localization::Csi_<ContainerAllocator> >
     Printer<double>::stream(s, indent + "  ", v.csi2_real);
     s << indent << "csi2_image: ";
     Printer<double>::stream(s, indent + "  ", v.csi2_image);
+    s << indent << "check_csi: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.check_csi);
   }
 };
 

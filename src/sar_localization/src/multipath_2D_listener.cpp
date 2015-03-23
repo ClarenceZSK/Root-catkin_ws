@@ -27,7 +27,7 @@
 //#include <tuple>
 //Global variables for data processing
 #define PI 3.1415926
-#define sizeLimit 300
+#define sizeLimit 500
 #define profileLimit 20
 
 #define interval_threshold 10
@@ -91,7 +91,9 @@ int preIdx = 0;
 double maxT_D = 0;
 ofstream myfile1;		//power
 ofstream myfile2;		//peaks
-int test_target = 90;	//test peak near 90 degree
+ofstream myfile3;		//statistics
+
+int test_target = 120;	//test peak near XX degree
 int detect_range1 = vib_threshold;
 int detect_range2 = detect_range1+1;
 int detect_range3 = detect_range2+1;
@@ -102,6 +104,7 @@ int count3 = 0;
 int count4 = 0;
 int count_detected = 0;
 int count_finalOutput = 0;
+map<int, int> statistics;	//first: alpha, second: count
 
 double RadianToDegree(double radian)
 {
@@ -118,16 +121,47 @@ void testNearTarget(int alpha)
 	{
 		++count1;
 	}
-	if(alpha >= test_target-detect_range2 && alpha <= test_target+detect_range2)    {
+	if(alpha >= test_target-detect_range2 && alpha <= test_target+detect_range2)
+	{
         ++count2;
     }
-	if(alpha >= test_target-detect_range3 && alpha <= test_target+detect_range3)    {
+	if(alpha >= test_target-detect_range3 && alpha <= test_target+detect_range3)
+	{
         ++count3;
     }
-	if(alpha >= test_target-detect_range4 && alpha <= test_target+detect_range4)    {
+	if(alpha >= test_target-detect_range4 && alpha <= test_target+detect_range4)
+	{
         ++count4;
     }
 
+}
+
+void getStatistics(Eigen::VectorXi cur_peaks)
+{
+	int range = vib_threshold;
+	for(int i = 0; i < cur_peaks.size(); ++i)
+	{
+		if(cur_peaks(i) == 1)
+		{
+			int idx1 = i-range;
+			int idx2 = i+range;
+			for(int j = idx1; j < idx2; ++j)
+			{
+				if(j < 0)
+				{
+					statistics[j+360]++;
+				}
+				else if(j >= 360)
+				{
+					statistics[j-360]++;
+				}
+				else
+				{
+					statistics[j]++;
+				}
+			}
+		}
+	}
 }
 
 
@@ -283,7 +317,7 @@ vector<int> SAR_Profile_2D()
 
             if(max_interval < interval_threshold && circle_distance >= circle_threshold)
             {
-                printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, circle_distance);
+                printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, sample size:%d, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, (int)input.size(), circle_distance);
                 start = true;
             }
             else if(input.size() > sizeLimit)   //it indicates some unpredictable situations causing very large input map
@@ -298,7 +332,7 @@ vector<int> SAR_Profile_2D()
                 {
                     printf("Not a circle! circle_distance/threshold:%.2f/%d\n"  , circle_distance, circle_threshold);
                 }
-
+				reset = 1;
                 input.clear();
             }
 
@@ -365,6 +399,9 @@ vector<int> SAR_Profile_2D()
 			}
 			myfile2 << cur_peak_mat(0) << endl;
 
+			//for debug, add statistical information
+			getStatistics(cur_peak_mat);
+			///////////////////////////////////////
 
 			if(count_d == 1 || reset)
 			{
@@ -443,7 +480,7 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
   	csi1 = csi1tmp;
   	complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
   	csi2 = csi2tmp;
-  	csi_ready = true;
+  	csi_ready = !msg->check_csi;
 }
 // %EndTag(CALLBACK)%
 
@@ -475,6 +512,7 @@ int main(int argc, char **argv)
 	}
 	myfile1.open("power.txt");
 	myfile2.open("peaks.txt");
+	myfile3.open("statistics.txt");
 
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
@@ -557,6 +595,7 @@ int main(int argc, char **argv)
 
 	myfile1.close();
 	myfile2.close();
+
 	if(autoSwitch)
 	{
 		system("pkill -n ping");
@@ -580,6 +619,17 @@ int main(int argc, char **argv)
 	}
 	printf("%.2f correct peaks exist in the output\n", (float) count_finalOutput/(float)angleSet.size() );
 	printf("%d(%d, %d, %d) target peaks exist in %d detections -> %.2f(%.2f, %.2f, %.2f)\n", count1, count2, count3, count4, count_d, (float)count1/(float)count_d, (float)count2/(float)count_d, (float)count3/(float)count_d, (float)count4/(float)count_d);
+
+	//write statistics and print out
+	map<int, int>::iterator stat_pos = statistics.begin();
+	while(stat_pos != statistics.end() )
+	{
+		myfile3 << stat_pos->first << " " << (float)stat_pos->second/(float)count_d << endl;
+		++stat_pos;
+		//print out
+		printf("Alpha:%d->%d/%d=%.2f\n", stat_pos->first, stat_pos->second, count_d, (float)stat_pos->second/(float)count_d );
+	}
+	myfile3.close();
 
 	return 0;
 }

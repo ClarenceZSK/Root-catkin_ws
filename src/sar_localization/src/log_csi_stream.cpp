@@ -131,9 +131,9 @@ int main(int argc, char** argv)
 			unsigned short bfee_count = pt[5] + (pt[6]<<8);
 			//printf("bfee_count = %d\n", bfee_count);
 			unsigned int Nrx = pt[9];
-			//printf("Nrx = %d\n", Nrx);
+			printf("Nrx = %d, ", Nrx);
 			unsigned int Ntx = pt[10];
-			//printf("Ntx = %d\n", Ntx);
+			printf("Ntx = %d\n", Ntx);
 			unsigned int rssi_a = pt[11];
 			unsigned int rssi_b = pt[12];
 			unsigned int rssi_c = pt[13];
@@ -163,8 +163,8 @@ int main(int argc, char** argv)
 			if(len != calc_len)
 			{
 					
-				//printf("len = %d, calc_len = %d\n", (unsigned int) len, calc_len);
-				//perror("Wrong beamforming matrix size");
+				printf("len = %d, calc_len = %d\n", (unsigned int) len, calc_len);
+				perror("Wrong beamforming matrix size");
 				//exit(0);	
 				//continue;
 				check_csi = true;
@@ -252,6 +252,7 @@ int main(int argc, char** argv)
 
 			msg.csi2_real = csi(1,0).real();
 			msg.csi2_image = csi(1,0).imag();
+			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
 			++count;
 			 if (count % 100 == 0)

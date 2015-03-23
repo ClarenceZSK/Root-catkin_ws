@@ -353,7 +353,7 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
   	csi1 = csi1tmp;
   	complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
   	csi2 = csi2tmp;
-  	csi_ready = true;
+  	csi_ready = !msg->check_csi;
 }
 // %EndTag(CALLBACK)%
 /*
