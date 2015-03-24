@@ -57,7 +57,7 @@ complex<double> csi1;
 complex<double> csi2;
 //multipath effect processing
 Eigen::VectorXi peak_mat(360);
-int vib_threshold = 5;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int vib_threshold = 8;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
 int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 
 double landa = 0.06;			//The aperture size is 6cm
@@ -93,7 +93,7 @@ ofstream myfile1;		//power
 ofstream myfile2;		//peaks
 ofstream myfile3;		//statistics
 
-int test_target = 120;	//test peak near XX degree
+int test_target = 353;	//test peak near XX degree
 int detect_range1 = vib_threshold;
 int detect_range2 = detect_range1+1;
 int detect_range3 = detect_range2+1;
@@ -480,7 +480,8 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
   	csi1 = csi1tmp;
   	complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
   	csi2 = csi2tmp;
-  	csi_ready = !msg->check_csi;
+  	//csi_ready = !msg->check_csi;
+	csi_ready = true;
 }
 // %EndTag(CALLBACK)%
 
@@ -625,9 +626,9 @@ int main(int argc, char **argv)
 	while(stat_pos != statistics.end() )
 	{
 		myfile3 << stat_pos->first << " " << (float)stat_pos->second/(float)count_d << endl;
-		++stat_pos;
 		//print out
 		printf("Alpha:%d->%d/%d=%.2f\n", stat_pos->first, stat_pos->second, count_d, (float)stat_pos->second/(float)count_d );
+		++stat_pos;
 	}
 	myfile3.close();
 

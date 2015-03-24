@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdint.h>
 
 #include "/opt/eigen/Eigen/Dense"
 #include <complex>
@@ -130,18 +131,20 @@ int main(int argc, char** argv)
 			unsigned long timestamp_low = pt[1] + (pt[2]<<8) + (pt[3]<<16) + (pt[4]<<24);
 			unsigned short bfee_count = pt[5] + (pt[6]<<8);
 			//printf("bfee_count = %d\n", bfee_count);
-			unsigned int Nrx = pt[9];
-			printf("Nrx = %d, ", Nrx);
-			unsigned int Ntx = pt[10];
-			printf("Ntx = %d\n", Ntx);
-			unsigned int rssi_a = pt[11];
-			unsigned int rssi_b = pt[12];
-			unsigned int rssi_c = pt[13];
+			uint8_t Nrx = pt[9];
+			//printf("Nrx = %d, ", Nrx);
+			uint8_t Ntx = pt[10];
+			//printf("Ntx = %d\n", Ntx);
+			uint8_t rssi_a = pt[11];
+			uint8_t rssi_b = pt[12];
+			uint8_t rssi_c = pt[13];
 			//printf("rssi_a,b,c = %d, %d, %d\n", rssi_a, rssi_b, rssi_c);
 			char noise = pt[14];
-			unsigned int agc = pt[15];
-			unsigned int antenna_sel = pt[16];
-			unsigned int len = pt[17] + (pt[18]<<8);
+			uint8_t agc = pt[15];
+			uint8_t antenna_sel = pt[16];
+			unsigned int len = (uint8_t) pt[17] + (pt[18]<<8);
+			//for (int mi = 0; mi <=212; ++mi)
+			//printf("pt[17]=%u, pt[18]=%u\n", (uint8_t) pt[17],(uint8_t) pt[18]);
 			//if(len > 400)
 			//{
 			//	printf("pt[17] is %d, pt[18] is %d\n", pt[17], pt[18]);
@@ -254,6 +257,7 @@ int main(int argc, char** argv)
 			msg.csi2_image = csi(1,0).imag();
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
+			printf("csi(0):%f %fi; csi(1):%f %fi\n",csi(0,0).real(), csi(0,0).imag(), csi(1,0).real(), csi(1,0).imag() );
 			++count;
 			 if (count % 100 == 0)
 				 printf("receive %d bytes [msgcnt=%u]\n", ret, count);
