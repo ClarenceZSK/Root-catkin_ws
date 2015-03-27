@@ -96,8 +96,9 @@ double DegreeToRadian(double degree)
 double PowerCalculation(double alpha)
 {
 	double ret = 0;
-	map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter;
-	for(int i = 0; i < (int) csi.size(); ++i)	//compute power for each subcarrier, each transmitter
+	map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
+	int div = (int) input_iter->second.size();
+	for(int i = 0; i < div; ++i)	//compute power for each subcarrier, each transmitter
 	{
 		input_iter = input.begin();
 		complex<double> avgCsiHat(0, 0);
@@ -117,7 +118,7 @@ double PowerCalculation(double alpha)
 		avgCsiHat /= input.size();
 		ret += avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.imag();
 	}
-	ret /= csi.size();
+	ret /= div;
 	//printf("Power calculation: %lf\n", ret);
 	return ret;
 }
@@ -248,6 +249,22 @@ int SAR_Profile_2D()
 			{
 				printf("Max interval:%.2f, min interval:%lf, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, circle_distance);
 				start = true;
+				//check data consistancy
+                map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
+                int check_size = (int) input_iter->second.size();
+                do
+                {
+                    ++input_iter;
+                    int s2 = (int) input_iter->second.size();
+                    if(check_size != s2)
+                    {
+                        printf("Inconsistent data! Resampling! %d-%d\n", check_size, s2);
+                        input.clear();
+                        start = false;
+                        break;
+                    }
+                }
+                while(input_iter != --input.end() );
 			}
 			else if(input.size() > sizeLimit)	//it indicates some unpredictable situations causing very large input map
 			{
@@ -367,7 +384,7 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 	{
 		image2.push_back(*pos);
 	}
-	assert(real1.size() == image1.size() == real2.size() == image2.size() );
+	assert(real1.size() == image1.size() && real2.size() == image2.size() && real1.size() == image2.size() );
 	for(int i = 0; i < (int) real1.size(); ++i)
 	{
 		complex<double> csi1tmp(real1[i], image1[i]);

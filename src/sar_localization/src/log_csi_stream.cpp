@@ -268,6 +268,7 @@ int main(int argc, char** argv)
 			msg.csi1_image.data.clear();
 			msg.csi2_real.data.clear();
 			msg.csi2_image.data.clear();
+			//cout << "msg:";
 			for (int i = 0; i < Ntx; ++i)
 			{
 				for (int j = 0; j < 30; ++j)
@@ -276,9 +277,10 @@ int main(int argc, char** argv)
 					msg.csi1_image.data.push_back(csi1(i, j).imag() );
 					msg.csi2_real.data.push_back(csi2(i, j).real() );
 					msg.csi2_image.data.push_back(csi2(i, j).imag() );
+					//cout << csi1(i,j) << csi2(i, j);
 				}
 			}
-
+			//cout << endl;
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
 

@@ -33,7 +33,7 @@
 #define sizeLimit 500
 #define profileLimit 20
 
-#define interval_threshold 10
+#define interval_threshold 13
 #define circle_threshold 353
 //for debug
 #define stepSize 1
@@ -108,11 +108,11 @@ map<int, int> statistics;	//first: alpha, second: count
 
 double RadianToDegree(double radian)
 {
-    return radian/PI*180;
+	return radian/PI*180;
 }
 double DegreeToRadian(double degree)
 {
-    return degree/180.0*PI;
+	return degree/180.0*PI;
 }
 
 void testNearTarget(int alpha)
@@ -123,16 +123,16 @@ void testNearTarget(int alpha)
 	}
 	if(alpha >= test_target-detect_range2 && alpha <= test_target+detect_range2)
 	{
-        ++count2;
-    }
+		++count2;
+	}
 	if(alpha >= test_target-detect_range3 && alpha <= test_target+detect_range3)
 	{
-        ++count3;
-    }
+		++count3;
+	}
 	if(alpha >= test_target-detect_range4 && alpha <= test_target+detect_range4)
 	{
-        ++count4;
-    }
+		++count4;
+	}
 
 }
 
@@ -168,28 +168,39 @@ void getStatistics(Eigen::VectorXi cur_peaks)
 double PowerCalculation(double alpha)
 {
 	double ret = 0;
-	map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter;
-	for(int i  = 0; i < (int) csi.size(); ++i)
+	map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
+	//printf("Input size:%d\n", input.size() );
+	int div = (int) input_iter->second.size();
+	for(int i  = 0; i < div; ++i)
 	{
-    	complex<double> avgCsiHat (0, 0);
-    	input_iter = input.begin();
-    	while(input_iter != input.end() )
-    	{
-        	double input_yaw = DegreeToRadian(input_iter->first);
-        	complex<double> input_csi1 = input_iter->second[i].first;
-        	complex<double> input_csi2 = input_iter->second[i].second;
-        	double theta = 2*PI/landa*r*cos(alpha-input_yaw);
-        	double real_tmp = cos(theta);
-        	double image_tmp = sin(theta);
-        	complex<double> tmp (real_tmp, image_tmp);
-        	avgCsiHat += input_csi1*conj(input_csi2)*tmp;
-        	++input_iter;
-    	}
-    	avgCsiHat /= input.size();
+		complex<double> avgCsiHat (0, 0);
+		input_iter = input.begin();
+		while(input_iter != input.end() )
+		{
+			double input_yaw = DegreeToRadian(input_iter->first);
+			double realtmp1 = input_iter->second[i].first.real();
+			double imagtmp1 = input_iter->second[i].first.imag();
+			double realtmp2 = input_iter->second[i].second.real();
+			double imagtmp2 = input_iter->second[i].second.imag();
+			complex<double> input_csi1(realtmp1, imagtmp1);
+			complex<double> input_csi2(realtmp2, imagtmp2);
+			//cout << "input csi1:"<< input_csi1 <<" csi2:" << input_csi2 << endl;
+			double theta = 2*PI/landa*r*cos(alpha-input_yaw);
+			double real_tmp = cos(theta);
+			double image_tmp = sin(theta);
+			complex<double> tmp (real_tmp, image_tmp);
+
+			avgCsiHat += input_csi1*conj(input_csi2)*tmp;
+			++input_iter;
+		}
+		avgCsiHat /= input.size();
+		//printf("real: %lf, imag: %lf, ret: %lf\n", avgCsiHat.real(),avgCsiHat.imag(),ret);
 		ret += avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.imag();
+		//printf("real: %lf, imag: %lf, ret: %lf\n", avgCsiHat.real(),avgCsiHat.imag(),ret);
 	}
-	ret /= csi.size();
-	//printf("Power calculation: %lf\n", ret);
+	//printf("Pwr: %lf, csi size: %d\n", ret, csi.size() );
+	ret /= div;
+	//printf("Pwr: %lf, csi size: %d\n", ret, div);
 	return ret;
 }
 
@@ -206,7 +217,7 @@ Eigen::VectorXi peakElimination(Eigen::VectorXi cur_peak_mat)
 			for(int j = i-vib_threshold; j <= i+vib_threshold; ++j)
 			{
 				int dx = (j+360)%360;
-	            peakOr = (peakOr || peak_mat(dx) );
+				peakOr = (peakOr || peak_mat(dx) );
 			}
 			ret(i) = peakOr;
 		}
@@ -269,75 +280,91 @@ vector<int> SAR_Profile_2D()
 			maxT_D = timeDifference;
 		}
 		double std_input_yaw = RadianToDegree(yaw - std_yaw);
-        if (std_input_yaw < 0)
-        {
-            std_input_yaw += 360;
-        }
+		if (std_input_yaw < 0)
+		{
+			std_input_yaw += 360;
+		}
 		else if(std_input_yaw >= 360)
-        {
-            std_input_yaw -= 360;
-        }
+		{
+			std_input_yaw -= 360;
+		}
 		int tp = std_input_yaw*10;
 		std_input_yaw = tp/10.0;
-        //printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
-        input[std_input_yaw] = csi;
+		//printf("csi size:%d\n",(int) csi.size() );
+		input[std_input_yaw] = csi;
 
 		if(input.size() > 1 )
-        {
-            //start data preprocessing
-            //
+		{
+			//start data preprocessing
+			//
 
-            map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter;
-            input_iter = input.begin();
-            double max_interval = 0;
-            double min_interval = 0xffff;
-            double maxAngle = 0;
-            double minAngle = 0xffff;
+			map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter;
+			input_iter = input.begin();
+			double max_interval = 0;
+			double min_interval = 0xffff;
+			double maxAngle = 0;
+			double minAngle = 0xffff;
 
-            double prey = input_iter->first;
-            double cury = 0xffff;
-            ++input_iter;
+			double prey = input_iter->first;
+			double cury = 0xffff;
+			++input_iter;
 			while(input_iter != input.end() )
-            {
-                cury = input_iter->first;
-                double interval = cury - prey;
+			{
+				cury = input_iter->first;
+				double interval = cury - prey;
 
-                if(min_interval > interval) //find min interval
-                {
-                    min_interval = interval;
-                }
+				if(min_interval > interval) //find min interval
+				{
+					min_interval = interval;
+				}
 
-                if(max_interval < interval)     //find max interval
-                {
-                    max_interval = interval;
-                }
-                ++input_iter;
-                prey = cury;
-            }
+				if(max_interval < interval)     //find max interval
+				{
+					max_interval = interval;
+				}
+				++input_iter;
+				prey = cury;
+			}
 			maxAngle = input.rbegin()->first;
-            minAngle = input.begin()->first;
-            double circle_distance = maxAngle - minAngle;
+			minAngle = input.begin()->first;
+			double circle_distance = maxAngle - minAngle;
 
-            if(max_interval < interval_threshold && circle_distance >= circle_threshold)
-            {
-                printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, sample size:%d, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, (int)input.size(), circle_distance);
-                start = true;
-            }
-            else if(input.size() > sizeLimit)   //it indicates some unpredictable situations causing very large input map
-            {
-                printf("Too many samples! Clear and Resampling!\n");
+			if(max_interval < interval_threshold && circle_distance >= circle_threshold)
+			{
+				printf("Max interval:%.2f, min interval:%.2f, max angle:%.2f, min angle:%.2f, sample size:%d, circle distance:%.2f\n", max_interval, min_interval, maxAngle, minAngle, (int)input.size(), circle_distance);
+				start = true;
+				//check data consistancy
+				map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
+				int check_size = (int) input_iter->second.size();
+				do
+				{
+					++input_iter;
+					int s2 = (int) input_iter->second.size();
+					if(check_size != s2)
+					{
+						printf("Inconsistent data! Resampling! %d-%d\n", check_size, s2);
+						input.clear();
+						start = false;
+						break;
+					}
+				}
+				while(input_iter != --input.end() );
+			}
+			else if(input.size() > sizeLimit)   //it indicates some unpredictable situations causing very large input map
+			{
+				printf("Too many samples! Clear and Resampling!\n");
 				printf("Reason: \n");
-                if(max_interval >= interval_threshold)
-                {
-                    printf("Too large interval! max_interval/threshold:%.2f/%d  \n", max_interval, interval_threshold);
-                }
-                if(circle_distance < circle_threshold)
-                {
-                    printf("Not a circle! circle_distance/threshold:%.2f/%d\n"  , circle_distance, circle_threshold);
-                }
+				if(max_interval >= interval_threshold)
+				{
+					printf("Too large interval! max_interval/threshold:%.2f/%d  \n", max_interval, interval_threshold);
+				}
+				if(circle_distance < circle_threshold)
+				{
+					printf("Not a circle! circle_distance/threshold:%.2f/%d\n"  , circle_distance, circle_threshold);
+				}
 				reset = 1;
-                input.clear();
-            }
+				input.clear();
+			}
 
 		}
 
@@ -353,7 +380,7 @@ vector<int> SAR_Profile_2D()
 			//When csi and imu data vectors reach size limit, start angle generation
 			int resolution = 1;      //search resolution
 
- 			bool up = false;
+			bool up = false;
 			bool initial_down = false;
 			double prePow = PowerCalculation(0);
 
@@ -446,80 +473,81 @@ vector<int> SAR_Profile_2D()
 // %Tag(CALLBACK)%
 void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 {
-    t_stamp_motor = msg->header.stamp.toNSec()*1e-6;
-    offset_yaw = msg->offset_yaw;
-    if( (offset_yaw > 0.1 && offset_yaw < 0.5) || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 1   )
-    {
+	t_stamp_motor = msg->header.stamp.toNSec()*1e-6;
+	offset_yaw = msg->offset_yaw;
+	if( (offset_yaw > 0.1 && offset_yaw < 0.5) || fabs(offset_yaw-180) <= 4 || (360-offset_yaw) < 1   )
+	{
 		globalStart = true;
-        std_flag = false;
-    }
+		std_flag = false;
+	}
 }
 
 
 void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 {
-  	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
-  	yaw = msg->yaw;
+	t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
+	yaw = msg->yaw;
 	yaw = yaw*PI/180.0;
 	//if(!std_flag && input.size() > 2)
-    if(!std_flag)
-    {
+	if(!std_flag)
+	{
 		std_yaw = yaw + DegreeToRadian(offset_yaw);
-        if(std_yaw >= 2*PI)
-        {
-            std_yaw -= 2*PI;
-        }
-        std_flag = true;
-        //printf("T_D:%.2f, std_yaw:%.2f, yaw:%.2f, offset yaw:%.2f\n", fabs(t_stamp_motor-t_stamp_imu), RadianToDegree(std_yaw), RadianToDegree(yaw), offset_yaw);
-    }
+		if(std_yaw >= 2*PI)
+		{
+			std_yaw -= 2*PI;
+		}
+		std_flag = true;
+		//printf("T_D:%.2f, std_yaw:%.2f, yaw:%.2f, offset yaw:%.2f\n", fabs(t_stamp_motor-t_stamp_imu), RadianToDegree(std_yaw), RadianToDegree(yaw), offset_yaw);
+	}
 
-  	imu_ready = true;
+	imu_ready = true;
 }
 
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
 	csi.clear();
-  	t_stamp_csi = msg->header.stamp.toNSec()*1e-6;
+	t_stamp_csi = msg->header.stamp.toNSec()*1e-6;
 	vector<double> real1;
-    vector<double> image1;
-    vector<double> real2;
-    vector<double> image2;
-    //Extract csi
-    for(std::vector<double>::const_iterator pos = msg->csi1_real.data.begin(); pos != msg->csi1_real.data.end(); ++pos)
-    {
-        real1.push_back(*pos);
-    }
-    for(std::vector<double>::const_iterator pos = msg->csi1_image.data.begin(); pos != msg->csi1_image.data.end(); ++pos)
-    {
-        image1.push_back(*pos);
-    }
-    for(std::vector<double>::const_iterator pos = msg->csi2_real.data.begin(); pos != msg->csi2_real.data.end(); ++pos)
-    {
-        real2.push_back(*pos);
-    }
-    for(std::vector<double>::const_iterator pos = msg->csi2_image.data.begin(); pos != msg->csi2_image.data.end(); ++pos)
-    {
-        image2.push_back(*pos);
-    }
-    assert(real1.size() == image1.size() == real2.size() == image2.size() );
-    for(int i = 0; i < (int) real1.size(); ++i)
-    {
-        complex<double> csi1tmp(real1[i], image1[i]);
-        complex<double> csi2tmp(real2[i], image2[i]);
-        csi.push_back(make_pair(csi1tmp, csi2tmp) );
-    }
-  	csi_ready = !msg->check_csi;
+	vector<double> image1;
+	vector<double> real2;
+	vector<double> image2;
+	//Extract csi
+	for(std::vector<double>::const_iterator pos = msg->csi1_real.data.begin(); pos != msg->csi1_real.data.end(); ++pos)
+	{
+		real1.push_back(*pos);
+	}
+	for(std::vector<double>::const_iterator pos = msg->csi1_image.data.begin(); pos != msg->csi1_image.data.end(); ++pos)
+	{
+		image1.push_back(*pos);
+	}
+	for(std::vector<double>::const_iterator pos = msg->csi2_real.data.begin(); pos != msg->csi2_real.data.end(); ++pos)
+	{
+		real2.push_back(*pos);
+	}
+	for(std::vector<double>::const_iterator pos = msg->csi2_image.data.begin(); pos != msg->csi2_image.data.end(); ++pos)
+	{
+		image2.push_back(*pos);
+	}
+	assert(real1.size() == image1.size() && real2.size() == image2.size() && real1.size() == image2.size() );
+	for(int i = 0; i < (int) real1.size(); ++i)
+	{
+		complex<double> csi1tmp(real1[i], image1[i]);
+		complex<double> csi2tmp(real2[i], image2[i]);
+		//printf("raw csi1:%lf %lfi, csi2:%lf %lfi\n", csi1tmp.real(), csi1tmp.imag(), csi2tmp.real(), csi2tmp.imag() );
+		csi.push_back(make_pair(csi1tmp, csi2tmp) );
+	}
+	csi_ready = !msg->check_csi;
 	//csi_ready = true;
 }
 // %EndTag(CALLBACK)%
 
 int main(int argc, char **argv)
 {
-  	ros::init(argc, argv, "listener");
+	ros::init(argc, argv, "listener");
 	peak_mat.setZero();
-  	ros::NodeHandle n;
+	ros::NodeHandle n;
 
-  	ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
+	ros::Subscriber sub1 = n.subscribe("imu", 1000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 1000, csiCallback);
 	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
 
@@ -578,46 +606,46 @@ int main(int argc, char **argv)
 			}
 
 			if(peakAngles.size() == 1)
-        	{
-        	    //Store this potential result
-    	        angleSet.insert(make_pair(AP_ID, peakAngles[0]) );
-	        }
+			{
+				//Store this potential result
+				angleSet.insert(make_pair(AP_ID, peakAngles[0]) );
+			}
 
 			//Switch to another AP
 			if(autoSwitch)
 			{
 				switch(AP_ID)
 				{
-				case 0:
-					//Switch to from AP1 to AP2
-					AP_ID = (AP_ID+1)%AP_NUM;
-					system("pkill -n ping");   //kill the child process first
-					system("iwconfig wlan0 essid TP5G1");
-					printf("Switch to TP5G1 and start ping\n");
-					mysystem("ping -q -n -i 0.05 192.168.0.2");
-					break;
-				case 1:
-					AP_ID = (AP_ID+1)%AP_NUM;
-					system("pkill -n ping");      //kill the child process first
-					system("iwconfig wlan0 essid TP5G2");
-					printf("Switch to TP5G2 and start ping\n");
-					mysystem("ping -q -n -i 0.05 192.168.0.3");
-					break;
+					case 0:
+						//Switch to from AP1 to AP2
+						AP_ID = (AP_ID+1)%AP_NUM;
+						system("pkill -n ping");   //kill the child process first
+						system("iwconfig wlan0 essid TP5G1");
+						printf("Switch to TP5G1 and start ping\n");
+						mysystem("ping -q -n -i 0.05 192.168.0.2");
+						break;
+					case 1:
+						AP_ID = (AP_ID+1)%AP_NUM;
+						system("pkill -n ping");      //kill the child process first
+						system("iwconfig wlan0 essid TP5G2");
+						printf("Switch to TP5G2 and start ping\n");
+						mysystem("ping -q -n -i 0.05 192.168.0.3");
+						break;
 				}
 			}
 
 		}
 		else if(peakVanished)
-        {
-            peakVanished = false;
-            printf("Peak vanished, restart peak elimination based on the last moment multipath profile.\n");
-            //Put the last moment peaks to angleSet for localization
-            for(unsigned int i = 0; i < prePeakAngles.size(); ++i)
-            {
-                angleSet.insert(make_pair(AP_ID, prePeakAngles[i]) );
-            }
+		{
+			peakVanished = false;
+			printf("Peak vanished, restart peak elimination based on the last moment multipath profile.\n");
+			//Put the last moment peaks to angleSet for localization
+			for(unsigned int i = 0; i < prePeakAngles.size(); ++i)
+			{
+				angleSet.insert(make_pair(AP_ID, prePeakAngles[i]) );
+			}
 			prePeakAngles.clear();
-        }
+		}
 
 
 	}
