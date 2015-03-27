@@ -8,6 +8,9 @@
 #include "std_msgs/Int16.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Header.h"
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+#include "std_msgs/Float64MultiArray.h"
 #include "sar_localization/Csi.h"
 #include <ros/console.h>
 //#include <sstream>
@@ -124,7 +127,7 @@ int main(int argc, char** argv)
 		char *pt = (char*) cmsg->data;
 		unsigned char data_code = (unsigned char) *pt;
 		//++pt;
-		//printf("Data code is: %d\n", (unsigned short) data_code);	
+		//printf("Data code is: %d\n", (unsigned short) data_code);
 		if(data_code == 187)	//Get beamforming
 		{
 			//printf("Enter data decode\n");
@@ -159,20 +162,19 @@ int main(int argc, char** argv)
 			char tmp;
 			int size[] = {Ntx, Nrx, 30};
 			//Eigen::Matrix<std::vector<complex<double> >, Ntx, Nrx> csi_entry;
-			//Note!!! Here we only log one transmitter's csi_entry, i.e., the first transmitter	
-			Eigen::MatrixXcd csi_entry(Nrx, 30);
+			//Note!!! We must use all transmitters' csi_entry, but only need two receivers' csi
+			Eigen::MatrixXcd csi1_entry(Ntx, 30);
+			Eigen::MatrixXcd csi2_entry(Ntx, 30);
 			//Check that length matches what it should
 			bool check_csi = false;
 			if(len != calc_len)
 			{
-					
+
 				printf("len = %d, calc_len = %d\n", (unsigned int) len, calc_len);
 				perror("Wrong beamforming matrix size");
-				//exit(0);	
-				//continue;
 				check_csi = true;
 			}
-			
+
 			for(i = 0; i < 30; ++i)
 			{
 				index += 3;
@@ -187,20 +189,30 @@ int main(int argc, char** argv)
 						tmp = (payload[index/8+1]>>remainder) | (payload[index/8+2]<<(8-remainder));
 						double image = (double) tmp;
 						complex<double> tmpCpmlex(real, image);
-						if(k==0)
+						if(j == 0)
 						{
-							csi_entry(j,i) = tmpCpmlex;
+							csi1_entry(k, i) = tmpCpmlex;
+						}
+						else if(j == 1)
+						{
+							csi2_entry(k, i) = tmpCpmlex;
 						}
 						index += 16;
 					}
 				}
 			}
 			//Get scaled entry
-	                Eigen::MatrixXcd csi_entry_conj(Nrx, 30);
-	                Eigen::MatrixXcd csi_entry_sq(Nrx, 30);  //dot product with csi_entry's conjugate
-        	        csi_entry_conj = csi_entry.conjugate();
-                	csi_entry_sq = csi_entry.array() * csi_entry_conj.array();
-	                double csi_entry_pwr = csi_entry_sq.sum().real();
+	                Eigen::MatrixXcd csi1_entry_conj(Ntx, 30);
+	                Eigen::MatrixXcd csi2_entry_conj(Ntx, 30);
+	                Eigen::MatrixXcd csi1_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
+	                Eigen::MatrixXcd csi2_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
+        	        csi1_entry_conj = csi1_entry.conjugate();
+        	        csi2_entry_conj = csi2_entry.conjugate();
+                	csi1_entry_sq = csi1_entry.array() * csi1_entry_conj.array();
+                	csi2_entry_sq = csi2_entry.array() * csi2_entry_conj.array();
+	                double csi1_entry_pwr = csi1_entry_sq.sum().real();
+	                double csi2_entry_pwr = csi2_entry_sq.sum().real();
+					double csi_entry_pwr = csi1_entry_pwr + csi2_entry_pwr;
 	                //Compute total rssi
 	                double rssi_mag = 0;
 	                if(rssi_a != 0)
@@ -230,18 +242,22 @@ int main(int argc, char** argv)
 	                double thermal_noise_pwr = pow(10, (noise_db/10) );
 	                double quant_error_pwr = scale * (Nrx * Ntx);
 	                double total_noise_pwr = thermal_noise_pwr + quant_error_pwr;
-			Eigen::MatrixXcd csi(Nrx, 30);
-			csi = csi_entry * sqrt(scale / total_noise_pwr);
+			Eigen::MatrixXcd csi1(Ntx, 30);
+			Eigen::MatrixXcd csi2(Ntx, 30);
+			csi1 = csi1_entry * sqrt(scale / total_noise_pwr);
+			csi2 = csi2_entry * sqrt(scale / total_noise_pwr);
 			if(Ntx == 2)
 			{
-				csi = csi*sqrt(2);
+				csi1 = csi1*sqrt(2);
+				csi2 = csi2*sqrt(2);
 			}
 			else if(Ntx == 3)
 			{
-				csi = csi*1.6788;
+				csi1 = csi1*1.6788;
+				csi2 = csi2*1.6788;
 			}
 			//End of CSI extraction
-			
+
 			//Next
 			//Start to publish CSI by ROS Msg
 			sar_localization::Csi msg;
@@ -264,7 +280,7 @@ int main(int argc, char** argv)
 		}	//End of if(code)
 		ros::spinOnce();
 		//printf("Exit decoder\n");
-		
+
 		//++count;
 		//printf("ret = %d, l = %d\n", ret, l);
 		//if (ret != l)
