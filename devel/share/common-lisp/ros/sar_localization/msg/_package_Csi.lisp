@@ -1,6 +1,8 @@
 (cl:in-package sar_localization-msg)
 (cl:export '(HEADER-VAL
           HEADER
+          NTX-VAL
+          NTX
           CSI1_REAL-VAL
           CSI1_REAL
           CSI1_IMAGE-VAL

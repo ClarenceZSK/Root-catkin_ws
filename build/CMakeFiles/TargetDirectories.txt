@@ -1,4 +1,3 @@
-/root/catkin_ws/build/sar_localization/CMakeFiles/2D_listener.dir
 /root/catkin_ws/build/sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Csi.dir
 /root/catkin_ws/build/sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Imu.dir
 /root/catkin_ws/build/sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir

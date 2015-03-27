@@ -7,10 +7,11 @@ import struct
 import std_msgs.msg
 
 class Csi(genpy.Message):
-  _md5sum = "2417f8913f2c71dba718fe873b5cb64c"
+  _md5sum = "d4390fb55572f1efc2a1c6b8190d5e0d"
   _type = "sar_localization/Csi"
   _has_header = True #flag to mark the presence of a Header object
   _full_text = """Header header
+uint8 Ntx
 std_msgs/Float64MultiArray csi1_real
 std_msgs/Float64MultiArray csi1_image
 std_msgs/Float64MultiArray csi2_real
@@ -78,8 +79,8 @@ string label   # label of given dimension
 uint32 size    # size of given dimension (in type units)
 uint32 stride  # stride of given dimension
 """
-  __slots__ = ['header','csi1_real','csi1_image','csi2_real','csi2_image','check_csi']
-  _slot_types = ['std_msgs/Header','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','bool']
+  __slots__ = ['header','Ntx','csi1_real','csi1_image','csi2_real','csi2_image','check_csi']
+  _slot_types = ['std_msgs/Header','uint8','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','bool']
 
   def __init__(self, *args, **kwds):
     """
@@ -89,7 +90,7 @@ uint32 stride  # stride of given dimension
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       header,csi1_real,csi1_image,csi2_real,csi2_image,check_csi
+       header,Ntx,csi1_real,csi1_image,csi2_real,csi2_image,check_csi
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -100,6 +101,8 @@ uint32 stride  # stride of given dimension
       #message fields cannot be None, assign default values for those that are
       if self.header is None:
         self.header = std_msgs.msg.Header()
+      if self.Ntx is None:
+        self.Ntx = 0
       if self.csi1_real is None:
         self.csi1_real = std_msgs.msg.Float64MultiArray()
       if self.csi1_image is None:
@@ -112,6 +115,7 @@ uint32 stride  # stride of given dimension
         self.check_csi = False
     else:
       self.header = std_msgs.msg.Header()
+      self.Ntx = 0
       self.csi1_real = std_msgs.msg.Float64MultiArray()
       self.csi1_image = std_msgs.msg.Float64MultiArray()
       self.csi2_real = std_msgs.msg.Float64MultiArray()
@@ -141,6 +145,7 @@ uint32 stride  # stride of given dimension
         buff.write(struct.pack('<I%sB'%length, length, *_x))
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_B.pack(self.Ntx))
       length = len(self.csi1_real.layout.dim)
       buff.write(_struct_I.pack(length))
       for val1 in self.csi1_real.layout.dim:
@@ -251,6 +256,9 @@ uint32 stride  # stride of given dimension
         self.header.frame_id = str[start:end].decode('utf-8')
       else:
         self.header.frame_id = str[start:end]
+      start = end
+      end += 1
+      (self.Ntx,) = _struct_B.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -398,6 +406,7 @@ uint32 stride  # stride of given dimension
         buff.write(struct.pack('<I%sB'%length, length, *_x))
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_B.pack(self.Ntx))
       length = len(self.csi1_real.layout.dim)
       buff.write(_struct_I.pack(length))
       for val1 in self.csi1_real.layout.dim:
@@ -509,6 +518,9 @@ uint32 stride  # stride of given dimension
         self.header.frame_id = str[start:end].decode('utf-8')
       else:
         self.header.frame_id = str[start:end]
+      start = end
+      end += 1
+      (self.Ntx,) = _struct_B.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])

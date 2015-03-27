@@ -262,6 +262,7 @@ int main(int argc, char** argv)
 			//Start to publish CSI by ROS Msg
 			sar_localization::Csi msg;
 			msg.header.stamp = ros::Time::now();
+			msg.Ntx = Ntx;
 			//initialization
 			msg.csi1_real.data.clear();
 			msg.csi1_image.data.clear();

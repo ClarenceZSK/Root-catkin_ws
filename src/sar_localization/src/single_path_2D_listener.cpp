@@ -3,6 +3,9 @@
 #include "std_msgs/Int16.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Header.h"
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+#include "std_msgs/Float64MultiArray.h"
 #include "sar_localization/Imu.h"
 #include "sar_localization/Csi.h"
 #include "sar_localization/Motor.h"
@@ -29,7 +32,7 @@
 #define sizeLimit 300
 #define profileLimit 20
 
-#define interval_threshold 12	//maximun interval must greater than X degree
+#define interval_threshold 10	//maximun interval must greater than X degree
 #define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1
@@ -43,7 +46,7 @@ using namespace Eigen;
 //complex<double>  CSI2[sizeLimit];
 //double orientation[sizeLimit];
 
-map<double, pair<complex<double>, complex<double> > > input;
+map<double, vector<pair<complex<double>, complex<double> > > > input;	//map<imu, csi1, csi2>
 
 double t_stamp_csi;			//time stamp of csi
 double t_stamp_imu;			//time stamp of imu
@@ -52,8 +55,7 @@ bool csi_ready = false;
 bool imu_ready = false;
 //double pitch;
 double yaw;
-complex<double> csi1;
-complex<double> csi2;
+vector<pair<complex<double>, complex<double> > > csi;		//CSI of antenna 1and antenna 2 of receiver for all subcarriers
 
 Eigen::VectorXd multipathProfile(360);
 
@@ -70,19 +72,11 @@ bool std_flag = true;
 double std_yaw = -1;
 double offset_yaw = 0;
 
+//auto switch
 int AP_ID = 0;		//The associated AP ID
 int AP_NUM = 2;		//The number of available APs
 pid_t childPID = -2;
-
-
-//auto switch
 bool autoSwith = 0;
-
-//for data preprocessing to make sure the collected data really formed a circle
-//double min_interval = 360;	//the minimum distance of two adjacent imu data
-//double max_interval = 0;	//the maximun distance between two adjacent imu data
-//double circle_distance = 0;
-
 
 //for debug
 int preIdx = 0;
@@ -101,25 +95,29 @@ double DegreeToRadian(double degree)
 
 double PowerCalculation(double alpha)
 {
-	map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
-	complex<double> avgCsiHat (0, 0);
-	input_iter = input.begin();
-	//for(int i = 0; i < sizeLimit; ++i)
-	while(input_iter != input.end() )
+	double ret = 0;
+	map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter;
+	for(int i = 0; i < (int) csi.size(); ++i)	//compute power for each subcarrier, each transmitter
 	{
-		double input_yaw = DegreeToRadian(input_iter->first);
-		complex<double> input_csi1 = input_iter->second.first;
-		complex<double> input_csi2 = input_iter->second.second;
-		double theta = 2*PI/landa*r*cos(alpha-input_yaw);
-		double real_tmp = cos(theta);
-		double image_tmp = sin(theta);
-		complex<double> tmp (real_tmp, image_tmp);
-		//cout << "Relative csi:" << CSI1[i]*conj(CSI2[i]) << endl;
-		avgCsiHat += input_csi1*conj(input_csi2)*tmp;
-		++input_iter;
+		input_iter = input.begin();
+		complex<double> avgCsiHat(0, 0);
+		while(input_iter != input.end() )
+		{
+			double input_yaw = DegreeToRadian(input_iter->first);
+			complex<double> input_csi1 = input_iter->second[i].first;
+			complex<double> input_csi2 = input_iter->second[i].second;
+			double theta = 2*PI/landa*r*cos(alpha-input_yaw);
+			double real_tmp = cos(theta);
+			double image_tmp = sin(theta);
+			complex<double> tmp (real_tmp, image_tmp);
+			//cout << "Relative csi:" << CSI1[i]*conj(CSI2[i]) << endl;
+			avgCsiHat += input_csi1*conj(input_csi2)*tmp;
+			++input_iter;
+		}
+		avgCsiHat /= input.size();
+		ret += avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.imag();
 	}
-	avgCsiHat /= input.size();
-	double ret = avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.imag();
+	ret /= csi.size();
 	//printf("Power calculation: %lf\n", ret);
 	return ret;
 }
@@ -203,7 +201,7 @@ int SAR_Profile_2D()
 		int tp = std_input_yaw*10;
 		std_input_yaw = tp/10.0;
 		//printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
-		input[std_input_yaw] =  make_pair(csi1, csi2);
+		input[std_input_yaw] = csi;
 		//input[RadianToDegree(yaw)] =  make_pair(csi1, csi2);
 		//printf("std input %.2f\n", std_input_yaw);
 		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
@@ -213,7 +211,7 @@ int SAR_Profile_2D()
 			//start data preprocessing
 			//
 
-			map<double, pair<complex<double>, complex<double> > >::iterator input_iter;
+			map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter;
 			input_iter = input.begin();
 			double max_interval = 0;
 			double min_interval = 0xffff;
@@ -267,8 +265,6 @@ int SAR_Profile_2D()
 
 				input.clear();
 			}
-
-
 		}
 		if(start)
 		{
@@ -276,7 +272,7 @@ int SAR_Profile_2D()
 			start = false;
 			maxT_D = 0;
 			++count_d;
-			int r_yaw;
+			int ret_yaw;
 			//When csi and imu data vectors reach size limit, start angle generation
 			int resolution = stepSize;      //search resolution
 			double power = 0;
@@ -286,7 +282,7 @@ int SAR_Profile_2D()
 			for(int alpha = 0; alpha < 360; alpha += resolution)
 			{
 				double sumpow = 0;
-       			for (int step = 0; step < stepSize; ++step)
+       			for(int step = 0; step < stepSize; ++step)
       			{
 					double alpha_r = (alpha+step)*PI/180.0;
        				double powtmp = PowerCalculation(alpha_r);
@@ -295,7 +291,7 @@ int SAR_Profile_2D()
 					if(power < powtmp)
 					{
 						power= powtmp;
-						r_yaw = alpha;
+						ret_yaw = alpha;
 					}
 
       			}
@@ -306,7 +302,7 @@ int SAR_Profile_2D()
       		//return directPath;
 			printf("Count:%d,maxPow: %0.3f,sample size:%d, ",count_d, power,(int) input.size() );
 			input.clear();
-			return r_yaw;
+			return ret_yaw;
 		}
 
 	}
@@ -348,13 +344,38 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
+	csi.clear();
   	t_stamp_csi = msg->header.stamp.toNSec()*1e-6;
-  	complex<double> csi1tmp (msg->csi1_real, msg->csi1_image);
-  	csi1 = csi1tmp;
-  	complex<double> csi2tmp (msg->csi2_real, msg->csi2_image);
-  	csi2 = csi2tmp;
-  	//csi_ready = !msg->check_csi;
-	csi_ready = true;
+	vector<double> real1;
+	vector<double> image1;
+	vector<double> real2;
+	vector<double> image2;
+	//Extract csi
+	for(std::vector<double>::const_iterator pos = msg->csi1_real.data.begin(); pos != msg->csi1_real.data.end(); ++pos)
+	{
+		real1.push_back(*pos);
+	}
+	for(std::vector<double>::const_iterator pos = msg->csi1_image.data.begin(); pos != msg->csi1_image.data.end(); ++pos)
+	{
+		image1.push_back(*pos);
+	}
+	for(std::vector<double>::const_iterator pos = msg->csi2_real.data.begin(); pos != msg->csi2_real.data.end(); ++pos)
+	{
+		real2.push_back(*pos);
+	}
+	for(std::vector<double>::const_iterator pos = msg->csi2_image.data.begin(); pos != msg->csi2_image.data.end(); ++pos)
+	{
+		image2.push_back(*pos);
+	}
+	assert(real1.size() == image1.size() == real2.size() == image2.size() );
+	for(int i = 0; i < (int) real1.size(); ++i)
+	{
+		complex<double> csi1tmp(real1[i], image1[i]);
+		complex<double> csi2tmp(real2[i], image2[i]);
+		csi.push_back(make_pair(csi1tmp, csi2tmp) );
+	}
+  	csi_ready = !msg->check_csi;
+	//csi_ready = true;
 }
 // %EndTag(CALLBACK)%
 /*

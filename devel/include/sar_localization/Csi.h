@@ -30,6 +30,7 @@ struct Csi_
 
   Csi_()
     : header()
+    , Ntx(0)
     , csi1_real()
     , csi1_image()
     , csi2_real()
@@ -38,6 +39,7 @@ struct Csi_
     }
   Csi_(const ContainerAllocator& _alloc)
     : header(_alloc)
+    , Ntx(0)
     , csi1_real(_alloc)
     , csi1_image(_alloc)
     , csi2_real(_alloc)
@@ -49,6 +51,9 @@ struct Csi_
 
    typedef  ::std_msgs::Header_<ContainerAllocator>  _header_type;
   _header_type header;
+
+   typedef uint8_t _Ntx_type;
+  _Ntx_type Ntx;
 
    typedef  ::std_msgs::Float64MultiArray_<ContainerAllocator>  _csi1_real_type;
   _csi1_real_type csi1_real;
@@ -142,12 +147,12 @@ struct MD5Sum< ::sar_localization::Csi_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "2417f8913f2c71dba718fe873b5cb64c";
+    return "d4390fb55572f1efc2a1c6b8190d5e0d";
   }
 
   static const char* value(const ::sar_localization::Csi_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x2417f8913f2c71dbULL;
-  static const uint64_t static_value2 = 0xa718fe873b5cb64cULL;
+  static const uint64_t static_value1 = 0xd4390fb55572f1efULL;
+  static const uint64_t static_value2 = 0xc2a1c6b8190d5e0dULL;
 };
 
 template<class ContainerAllocator>
@@ -167,6 +172,7 @@ struct Definition< ::sar_localization::Csi_<ContainerAllocator> >
   static const char* value()
   {
     return "Header header\n\
+uint8 Ntx\n\
 std_msgs/Float64MultiArray csi1_real\n\
 std_msgs/Float64MultiArray csi1_image\n\
 std_msgs/Float64MultiArray csi2_real\n\
@@ -252,6 +258,7 @@ namespace serialization
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
       stream.next(m.header);
+      stream.next(m.Ntx);
       stream.next(m.csi1_real);
       stream.next(m.csi1_image);
       stream.next(m.csi2_real);
@@ -278,6 +285,8 @@ struct Printer< ::sar_localization::Csi_<ContainerAllocator> >
     s << indent << "header: ";
     s << std::endl;
     Printer< ::std_msgs::Header_<ContainerAllocator> >::stream(s, indent + "  ", v.header);
+    s << indent << "Ntx: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.Ntx);
     s << indent << "csi1_real: ";
     s << std::endl;
     Printer< ::std_msgs::Float64MultiArray_<ContainerAllocator> >::stream(s, indent + "  ", v.csi1_real);

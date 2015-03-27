@@ -210,10 +210,6 @@ target_link_libraries(
 add_dependencies(multipath_2D_listener sar_localization_generate_messages_cpp)
 
 
-add_executable(2D_listener src/2D_listener.cpp)
-target_link_libraries(2D_listener ${catkin_LIBRARIES})
-add_dependencies(2D_listener sar_localization_generate_messages_cpp)
-
 
 add_executable(log_csi_stream src/log_csi_stream.cpp)
 target_link_libraries(log_csi_stream ${catkin_LIBRARIES})

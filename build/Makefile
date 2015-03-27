@@ -228,19 +228,6 @@ gtest_main/fast:
 .PHONY : gtest_main/fast
 
 #=============================================================================
-# Target rules for targets named 2D_listener
-
-# Build rule for target.
-2D_listener: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 2D_listener
-.PHONY : 2D_listener
-
-# fast build rule for target.
-2D_listener/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/2D_listener.dir/build.make sar_localization/CMakeFiles/2D_listener.dir/build
-.PHONY : 2D_listener/fast
-
-#=============================================================================
 # Target rules for targets named _sar_localization_generate_messages_check_deps_Csi
 
 # Build rule for target.
@@ -571,7 +558,6 @@ help:
 	@echo "... tests"
 	@echo "... gtest"
 	@echo "... gtest_main"
-	@echo "... 2D_listener"
 	@echo "... _sar_localization_generate_messages_check_deps_Csi"
 	@echo "... _sar_localization_generate_messages_check_deps_Imu"
 	@echo "... _sar_localization_generate_messages_check_deps_Motor"
