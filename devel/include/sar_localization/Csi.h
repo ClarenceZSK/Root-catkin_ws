@@ -16,6 +16,10 @@
 #include <ros/message_operations.h>
 
 #include <std_msgs/Header.h>
+#include <std_msgs/Float64MultiArray.h>
+#include <std_msgs/Float64MultiArray.h>
+#include <std_msgs/Float64MultiArray.h>
+#include <std_msgs/Float64MultiArray.h>
 
 namespace sar_localization
 {
@@ -26,18 +30,18 @@ struct Csi_
 
   Csi_()
     : header()
-    , csi1_real(0.0)
-    , csi1_image(0.0)
-    , csi2_real(0.0)
-    , csi2_image(0.0)
+    , csi1_real()
+    , csi1_image()
+    , csi2_real()
+    , csi2_image()
     , check_csi(false)  {
     }
   Csi_(const ContainerAllocator& _alloc)
     : header(_alloc)
-    , csi1_real(0.0)
-    , csi1_image(0.0)
-    , csi2_real(0.0)
-    , csi2_image(0.0)
+    , csi1_real(_alloc)
+    , csi1_image(_alloc)
+    , csi2_real(_alloc)
+    , csi2_image(_alloc)
     , check_csi(false)  {
     }
 
@@ -46,16 +50,16 @@ struct Csi_
    typedef  ::std_msgs::Header_<ContainerAllocator>  _header_type;
   _header_type header;
 
-   typedef double _csi1_real_type;
+   typedef  ::std_msgs::Float64MultiArray_<ContainerAllocator>  _csi1_real_type;
   _csi1_real_type csi1_real;
 
-   typedef double _csi1_image_type;
+   typedef  ::std_msgs::Float64MultiArray_<ContainerAllocator>  _csi1_image_type;
   _csi1_image_type csi1_image;
 
-   typedef double _csi2_real_type;
+   typedef  ::std_msgs::Float64MultiArray_<ContainerAllocator>  _csi2_real_type;
   _csi2_real_type csi2_real;
 
-   typedef double _csi2_image_type;
+   typedef  ::std_msgs::Float64MultiArray_<ContainerAllocator>  _csi2_image_type;
   _csi2_image_type csi2_image;
 
    typedef uint8_t _check_csi_type;
@@ -138,12 +142,12 @@ struct MD5Sum< ::sar_localization::Csi_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "b594aad3c2552cffe0f0dc5378a20944";
+    return "2417f8913f2c71dba718fe873b5cb64c";
   }
 
   static const char* value(const ::sar_localization::Csi_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0xb594aad3c2552cffULL;
-  static const uint64_t static_value2 = 0xe0f0dc5378a20944ULL;
+  static const uint64_t static_value1 = 0x2417f8913f2c71dbULL;
+  static const uint64_t static_value2 = 0xa718fe873b5cb64cULL;
 };
 
 template<class ContainerAllocator>
@@ -163,10 +167,10 @@ struct Definition< ::sar_localization::Csi_<ContainerAllocator> >
   static const char* value()
   {
     return "Header header\n\
-float64 csi1_real\n\
-float64 csi1_image\n\
-float64 csi2_real\n\
-float64 csi2_image\n\
+std_msgs/Float64MultiArray csi1_real\n\
+std_msgs/Float64MultiArray csi1_image\n\
+std_msgs/Float64MultiArray csi2_real\n\
+std_msgs/Float64MultiArray csi2_image\n\
 bool check_csi\n\
 \n\
 ================================================================================\n\
@@ -186,6 +190,49 @@ time stamp\n\
 # 0: no frame\n\
 # 1: global frame\n\
 string frame_id\n\
+\n\
+================================================================================\n\
+MSG: std_msgs/Float64MultiArray\n\
+# Please look at the MultiArrayLayout message definition for\n\
+# documentation on all multiarrays.\n\
+\n\
+MultiArrayLayout  layout        # specification of data layout\n\
+float64[]         data          # array of data\n\
+\n\
+\n\
+================================================================================\n\
+MSG: std_msgs/MultiArrayLayout\n\
+# The multiarray declares a generic multi-dimensional array of a\n\
+# particular data type.  Dimensions are ordered from outer most\n\
+# to inner most.\n\
+\n\
+MultiArrayDimension[] dim # Array of dimension properties\n\
+uint32 data_offset        # padding bytes at front of data\n\
+\n\
+# Accessors should ALWAYS be written in terms of dimension stride\n\
+# and specified outer-most dimension first.\n\
+# \n\
+# multiarray(i,j,k) = data[data_offset + dim_stride[1]*i + dim_stride[2]*j + k]\n\
+#\n\
+# A standard, 3-channel 640x480 image with interleaved color channels\n\
+# would be specified as:\n\
+#\n\
+# dim[0].label  = \"height\"\n\
+# dim[0].size   = 480\n\
+# dim[0].stride = 3*640*480 = 921600  (note dim[0] stride is just size of image)\n\
+# dim[1].label  = \"width\"\n\
+# dim[1].size   = 640\n\
+# dim[1].stride = 3*640 = 1920\n\
+# dim[2].label  = \"channel\"\n\
+# dim[2].size   = 3\n\
+# dim[2].stride = 3\n\
+#\n\
+# multiarray(i,j,k) refers to the ith row, jth column, and kth channel.\n\
+================================================================================\n\
+MSG: std_msgs/MultiArrayDimension\n\
+string label   # label of given dimension\n\
+uint32 size    # size of given dimension (in type units)\n\
+uint32 stride  # stride of given dimension\n\
 ";
   }
 
@@ -232,13 +279,17 @@ struct Printer< ::sar_localization::Csi_<ContainerAllocator> >
     s << std::endl;
     Printer< ::std_msgs::Header_<ContainerAllocator> >::stream(s, indent + "  ", v.header);
     s << indent << "csi1_real: ";
-    Printer<double>::stream(s, indent + "  ", v.csi1_real);
+    s << std::endl;
+    Printer< ::std_msgs::Float64MultiArray_<ContainerAllocator> >::stream(s, indent + "  ", v.csi1_real);
     s << indent << "csi1_image: ";
-    Printer<double>::stream(s, indent + "  ", v.csi1_image);
+    s << std::endl;
+    Printer< ::std_msgs::Float64MultiArray_<ContainerAllocator> >::stream(s, indent + "  ", v.csi1_image);
     s << indent << "csi2_real: ";
-    Printer<double>::stream(s, indent + "  ", v.csi2_real);
+    s << std::endl;
+    Printer< ::std_msgs::Float64MultiArray_<ContainerAllocator> >::stream(s, indent + "  ", v.csi2_real);
     s << indent << "csi2_image: ";
-    Printer<double>::stream(s, indent + "  ", v.csi2_image);
+    s << std::endl;
+    Printer< ::std_msgs::Float64MultiArray_<ContainerAllocator> >::stream(s, indent + "  ", v.csi2_image);
     s << indent << "check_csi: ";
     Printer<uint8_t>::stream(s, indent + "  ", v.check_csi);
   }

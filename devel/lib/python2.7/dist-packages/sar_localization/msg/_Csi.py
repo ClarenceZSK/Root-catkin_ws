@@ -7,14 +7,14 @@ import struct
 import std_msgs.msg
 
 class Csi(genpy.Message):
-  _md5sum = "b594aad3c2552cffe0f0dc5378a20944"
+  _md5sum = "2417f8913f2c71dba718fe873b5cb64c"
   _type = "sar_localization/Csi"
   _has_header = True #flag to mark the presence of a Header object
   _full_text = """Header header
-float64 csi1_real
-float64 csi1_image
-float64 csi2_real
-float64 csi2_image
+std_msgs/Float64MultiArray csi1_real
+std_msgs/Float64MultiArray csi1_image
+std_msgs/Float64MultiArray csi2_real
+std_msgs/Float64MultiArray csi2_image
 bool check_csi
 
 ================================================================================
@@ -35,9 +35,51 @@ time stamp
 # 1: global frame
 string frame_id
 
+================================================================================
+MSG: std_msgs/Float64MultiArray
+# Please look at the MultiArrayLayout message definition for
+# documentation on all multiarrays.
+
+MultiArrayLayout  layout        # specification of data layout
+float64[]         data          # array of data
+
+
+================================================================================
+MSG: std_msgs/MultiArrayLayout
+# The multiarray declares a generic multi-dimensional array of a
+# particular data type.  Dimensions are ordered from outer most
+# to inner most.
+
+MultiArrayDimension[] dim # Array of dimension properties
+uint32 data_offset        # padding bytes at front of data
+
+# Accessors should ALWAYS be written in terms of dimension stride
+# and specified outer-most dimension first.
+# 
+# multiarray(i,j,k) = data[data_offset + dim_stride[1]*i + dim_stride[2]*j + k]
+#
+# A standard, 3-channel 640x480 image with interleaved color channels
+# would be specified as:
+#
+# dim[0].label  = "height"
+# dim[0].size   = 480
+# dim[0].stride = 3*640*480 = 921600  (note dim[0] stride is just size of image)
+# dim[1].label  = "width"
+# dim[1].size   = 640
+# dim[1].stride = 3*640 = 1920
+# dim[2].label  = "channel"
+# dim[2].size   = 3
+# dim[2].stride = 3
+#
+# multiarray(i,j,k) refers to the ith row, jth column, and kth channel.
+================================================================================
+MSG: std_msgs/MultiArrayDimension
+string label   # label of given dimension
+uint32 size    # size of given dimension (in type units)
+uint32 stride  # stride of given dimension
 """
   __slots__ = ['header','csi1_real','csi1_image','csi2_real','csi2_image','check_csi']
-  _slot_types = ['std_msgs/Header','float64','float64','float64','float64','bool']
+  _slot_types = ['std_msgs/Header','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','std_msgs/Float64MultiArray','bool']
 
   def __init__(self, *args, **kwds):
     """
@@ -59,21 +101,21 @@ string frame_id
       if self.header is None:
         self.header = std_msgs.msg.Header()
       if self.csi1_real is None:
-        self.csi1_real = 0.
+        self.csi1_real = std_msgs.msg.Float64MultiArray()
       if self.csi1_image is None:
-        self.csi1_image = 0.
+        self.csi1_image = std_msgs.msg.Float64MultiArray()
       if self.csi2_real is None:
-        self.csi2_real = 0.
+        self.csi2_real = std_msgs.msg.Float64MultiArray()
       if self.csi2_image is None:
-        self.csi2_image = 0.
+        self.csi2_image = std_msgs.msg.Float64MultiArray()
       if self.check_csi is None:
         self.check_csi = False
     else:
       self.header = std_msgs.msg.Header()
-      self.csi1_real = 0.
-      self.csi1_image = 0.
-      self.csi2_real = 0.
-      self.csi2_image = 0.
+      self.csi1_real = std_msgs.msg.Float64MultiArray()
+      self.csi1_image = std_msgs.msg.Float64MultiArray()
+      self.csi2_real = std_msgs.msg.Float64MultiArray()
+      self.csi2_image = std_msgs.msg.Float64MultiArray()
       self.check_csi = False
 
   def _get_types(self):
@@ -99,8 +141,83 @@ string frame_id
         buff.write(struct.pack('<I%sB'%length, length, *_x))
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
-      _x = self
-      buff.write(_struct_4dB.pack(_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi))
+      length = len(self.csi1_real.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi1_real.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi1_real.layout.data_offset))
+      length = len(self.csi1_real.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(struct.pack(pattern, *self.csi1_real.data))
+      length = len(self.csi1_image.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi1_image.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi1_image.layout.data_offset))
+      length = len(self.csi1_image.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(struct.pack(pattern, *self.csi1_image.data))
+      length = len(self.csi2_real.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi2_real.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi2_real.layout.data_offset))
+      length = len(self.csi2_real.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(struct.pack(pattern, *self.csi2_real.data))
+      length = len(self.csi2_image.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi2_image.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi2_image.layout.data_offset))
+      length = len(self.csi2_image.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(struct.pack(pattern, *self.csi2_image.data))
+      buff.write(_struct_B.pack(self.check_csi))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -112,6 +229,14 @@ string frame_id
     try:
       if self.header is None:
         self.header = std_msgs.msg.Header()
+      if self.csi1_real is None:
+        self.csi1_real = std_msgs.msg.Float64MultiArray()
+      if self.csi1_image is None:
+        self.csi1_image = std_msgs.msg.Float64MultiArray()
+      if self.csi2_real is None:
+        self.csi2_real = std_msgs.msg.Float64MultiArray()
+      if self.csi2_image is None:
+        self.csi2_image = std_msgs.msg.Float64MultiArray()
       end = 0
       _x = self
       start = end
@@ -126,10 +251,129 @@ string frame_id
         self.header.frame_id = str[start:end].decode('utf-8')
       else:
         self.header.frame_id = str[start:end]
-      _x = self
       start = end
-      end += 33
-      (_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi,) = _struct_4dB.unpack(str[start:end])
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi1_real.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi1_real.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi1_real.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi1_real.data = struct.unpack(pattern, str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi1_image.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi1_image.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi1_image.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi1_image.data = struct.unpack(pattern, str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi2_real.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi2_real.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi2_real.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi2_real.data = struct.unpack(pattern, str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi2_image.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi2_image.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi2_image.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi2_image.data = struct.unpack(pattern, str[start:end])
+      start = end
+      end += 1
+      (self.check_csi,) = _struct_B.unpack(str[start:end])
       self.check_csi = bool(self.check_csi)
       return self
     except struct.error as e:
@@ -154,8 +398,83 @@ string frame_id
         buff.write(struct.pack('<I%sB'%length, length, *_x))
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
-      _x = self
-      buff.write(_struct_4dB.pack(_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi))
+      length = len(self.csi1_real.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi1_real.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi1_real.layout.data_offset))
+      length = len(self.csi1_real.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(self.csi1_real.data.tostring())
+      length = len(self.csi1_image.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi1_image.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi1_image.layout.data_offset))
+      length = len(self.csi1_image.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(self.csi1_image.data.tostring())
+      length = len(self.csi2_real.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi2_real.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi2_real.layout.data_offset))
+      length = len(self.csi2_real.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(self.csi2_real.data.tostring())
+      length = len(self.csi2_image.layout.dim)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.csi2_image.layout.dim:
+        _x = val1.label
+        length = len(_x)
+        if python3 or type(_x) == unicode:
+          _x = _x.encode('utf-8')
+          length = len(_x)
+        if python3:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_2I.pack(_x.size, _x.stride))
+      buff.write(_struct_I.pack(self.csi2_image.layout.data_offset))
+      length = len(self.csi2_image.data)
+      buff.write(_struct_I.pack(length))
+      pattern = '<%sd'%length
+      buff.write(self.csi2_image.data.tostring())
+      buff.write(_struct_B.pack(self.check_csi))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -168,6 +487,14 @@ string frame_id
     try:
       if self.header is None:
         self.header = std_msgs.msg.Header()
+      if self.csi1_real is None:
+        self.csi1_real = std_msgs.msg.Float64MultiArray()
+      if self.csi1_image is None:
+        self.csi1_image = std_msgs.msg.Float64MultiArray()
+      if self.csi2_real is None:
+        self.csi2_real = std_msgs.msg.Float64MultiArray()
+      if self.csi2_image is None:
+        self.csi2_image = std_msgs.msg.Float64MultiArray()
       end = 0
       _x = self
       start = end
@@ -182,15 +509,135 @@ string frame_id
         self.header.frame_id = str[start:end].decode('utf-8')
       else:
         self.header.frame_id = str[start:end]
-      _x = self
       start = end
-      end += 33
-      (_x.csi1_real, _x.csi1_image, _x.csi2_real, _x.csi2_image, _x.check_csi,) = _struct_4dB.unpack(str[start:end])
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi1_real.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi1_real.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi1_real.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi1_real.data = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi1_image.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi1_image.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi1_image.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi1_image.data = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi2_real.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi2_real.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi2_real.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi2_real.data = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.csi2_image.layout.dim = []
+      for i in range(0, length):
+        val1 = std_msgs.msg.MultiArrayDimension()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        if python3:
+          val1.label = str[start:end].decode('utf-8')
+        else:
+          val1.label = str[start:end]
+        _x = val1
+        start = end
+        end += 8
+        (_x.size, _x.stride,) = _struct_2I.unpack(str[start:end])
+        self.csi2_image.layout.dim.append(val1)
+      start = end
+      end += 4
+      (self.csi2_image.layout.data_offset,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      pattern = '<%sd'%length
+      start = end
+      end += struct.calcsize(pattern)
+      self.csi2_image.data = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
+      start = end
+      end += 1
+      (self.check_csi,) = _struct_B.unpack(str[start:end])
       self.check_csi = bool(self.check_csi)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = genpy.struct_I
-_struct_4dB = struct.Struct("<4dB")
 _struct_3I = struct.Struct("<3I")
+_struct_B = struct.Struct("<B")
+_struct_2I = struct.Struct("<2I")

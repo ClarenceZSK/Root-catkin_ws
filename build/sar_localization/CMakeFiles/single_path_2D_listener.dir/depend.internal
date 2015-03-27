@@ -261,8 +261,11 @@ sar_localization/CMakeFiles/single_path_2D_listener.dir/src/single_path_2D_liste
  /opt/ros/indigo/include/ros/wall_timer_options.h
  /opt/ros/indigo/include/rosconsole/macros_generated.h
  /opt/ros/indigo/include/std_msgs/Float32.h
+ /opt/ros/indigo/include/std_msgs/Float64MultiArray.h
  /opt/ros/indigo/include/std_msgs/Header.h
  /opt/ros/indigo/include/std_msgs/Int16.h
+ /opt/ros/indigo/include/std_msgs/MultiArrayDimension.h
+ /opt/ros/indigo/include/std_msgs/MultiArrayLayout.h
  /opt/ros/indigo/include/std_msgs/String.h
  /root/catkin_ws/devel/include/sar_localization/Csi.h
  /root/catkin_ws/devel/include/sar_localization/Imu.h

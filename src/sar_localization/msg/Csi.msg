@@ -1,6 +1,6 @@
 Header header
-Float64MultiArray csi1_real
-Float64MultiArray csi1_image
-Float64MultiArray csi2_real
-Float64MultiArray csi2_image
+std_msgs/Float64MultiArray csi1_real
+std_msgs/Float64MultiArray csi1_image
+std_msgs/Float64MultiArray csi2_real
+std_msgs/Float64MultiArray csi2_image
 bool check_csi

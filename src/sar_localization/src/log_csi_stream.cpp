@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "csi_publisher");
 	ros::NodeHandle handle;
 	csi_pub = handle.advertise<sar_localization::Csi>("csi", 1000);
-	ros::Rate listen_rate(100);
+	//ros::Rate listen_rate(100);
 	/* Local variables */
 	struct sockaddr_nl proc_addr, kern_addr;	// addrs for recv, send, bind
 	struct cn_msg *cmsg;
@@ -202,46 +202,46 @@ int main(int argc, char** argv)
 				}
 			}
 			//Get scaled entry
-	                Eigen::MatrixXcd csi1_entry_conj(Ntx, 30);
-	                Eigen::MatrixXcd csi2_entry_conj(Ntx, 30);
-	                Eigen::MatrixXcd csi1_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
-	                Eigen::MatrixXcd csi2_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
-        	        csi1_entry_conj = csi1_entry.conjugate();
-        	        csi2_entry_conj = csi2_entry.conjugate();
-                	csi1_entry_sq = csi1_entry.array() * csi1_entry_conj.array();
-                	csi2_entry_sq = csi2_entry.array() * csi2_entry_conj.array();
-	                double csi1_entry_pwr = csi1_entry_sq.sum().real();
-	                double csi2_entry_pwr = csi2_entry_sq.sum().real();
-					double csi_entry_pwr = csi1_entry_pwr + csi2_entry_pwr;
-	                //Compute total rssi
-	                double rssi_mag = 0;
-	                if(rssi_a != 0)
-	                {
-	                        rssi_mag = rssi_mag + pow(10, (rssi_a/10.0) );
-	                }
-	                if(rssi_b != 0)
-	                {
-	                        rssi_mag = rssi_mag + pow(10, (rssi_b/10.0) );
-	                }
-	                if(rssi_c != 0)
-	                {
-	                        rssi_mag = rssi_mag + pow(10, (rssi_c/10.0) );
-	                }
-	                double rssi_total = 10*log10(rssi_mag) - 44 - agc;
-	                double rssi_pwr = pow(10, (rssi_total/10.0) );
-	                double scale = rssi_pwr / (csi_entry_pwr / 30);
-	                double noise_db = 0;
-	                if( (double) noise == -127)
-	                {
-	                        noise_db = -92;
-	                }
-	                else
-	                {
-	                        noise_db = (double) noise;
-	                }
-	                double thermal_noise_pwr = pow(10, (noise_db/10) );
-	                double quant_error_pwr = scale * (Nrx * Ntx);
-	                double total_noise_pwr = thermal_noise_pwr + quant_error_pwr;
+	        Eigen::MatrixXcd csi1_entry_conj(Ntx, 30);
+	        Eigen::MatrixXcd csi2_entry_conj(Ntx, 30);
+	        Eigen::MatrixXcd csi1_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
+	        Eigen::MatrixXcd csi2_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
+        	csi1_entry_conj = csi1_entry.conjugate();
+        	csi2_entry_conj = csi2_entry.conjugate();
+            csi1_entry_sq = csi1_entry.array() * csi1_entry_conj.array();
+            csi2_entry_sq = csi2_entry.array() * csi2_entry_conj.array();
+	        double csi1_entry_pwr = csi1_entry_sq.sum().real();
+	        double csi2_entry_pwr = csi2_entry_sq.sum().real();
+			double csi_entry_pwr = csi1_entry_pwr + csi2_entry_pwr;
+	        //Compute total rssi
+	        double rssi_mag = 0;
+	        if(rssi_a != 0)
+	        {
+	        	rssi_mag = rssi_mag + pow(10, (rssi_a/10.0) );
+	        }
+	        if(rssi_b != 0)
+	        {
+	            rssi_mag = rssi_mag + pow(10, (rssi_b/10.0) );
+	        }
+	        if(rssi_c != 0)
+	        {
+	            rssi_mag = rssi_mag + pow(10, (rssi_c/10.0) );
+	        }
+	        double rssi_total = 10*log10(rssi_mag) - 44 - agc;
+	        double rssi_pwr = pow(10, (rssi_total/10.0) );
+	        double scale = rssi_pwr / (csi_entry_pwr / 30);
+	        double noise_db = 0;
+	        if( (double) noise == -127)
+	        {
+	            noise_db = -92;
+	        }
+	        else
+	        {
+	        	noise_db = (double) noise;
+	        }
+	        double thermal_noise_pwr = pow(10, (noise_db/10) );
+	        double quant_error_pwr = scale * (Nrx * Ntx);
+	        double total_noise_pwr = thermal_noise_pwr + quant_error_pwr;
 			Eigen::MatrixXcd csi1(Ntx, 30);
 			Eigen::MatrixXcd csi2(Ntx, 30);
 			csi1 = csi1_entry * sqrt(scale / total_noise_pwr);
@@ -262,18 +262,25 @@ int main(int argc, char** argv)
 			//Start to publish CSI by ROS Msg
 			sar_localization::Csi msg;
 			msg.header.stamp = ros::Time::now();
-			/*!!!We only publish the first subcarrier's CSI other than the whole 30 subcarriers'!!!*/
-			//if(check_csi || 1)
-				//printf("csi(0,0).real is %lf, csi(0,0).imag is %lf\n", csi(0,0).real(), csi(0,0).imag() );
+			//initialization
+			msg.csi1_real.data.clear();
+			msg.csi1_image.data.clear();
+			msg.csi2_real.data.clear();
+			msg.csi2_image.data.clear();
+			for (int i = 0; i < Ntx; ++i)
+			{
+				for (int j = 0; j < 30; ++j)
+				{
+					msg.csi1_real.data.push_back(csi1(i, j).real() );
+					msg.csi1_image.data.push_back(csi1(i, j).imag() );
+					msg.csi2_real.data.push_back(csi2(i, j).real() );
+					msg.csi2_image.data.push_back(csi2(i, j).imag() );
+				}
+			}
 
-			msg.csi1_real = csi(0,0).real();
-			msg.csi1_image = csi(0,0).imag();
-
-			msg.csi2_real = csi(1,0).real();
-			msg.csi2_image = csi(1,0).imag();
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
-			printf("csi(0):%f %fi; csi(1):%f %fi\n",csi(0,0).real(), csi(0,0).imag(), csi(1,0).real(), csi(1,0).imag() );
+
 			++count;
 			 if (count % 100 == 0)
 				 printf("receive %d bytes [msgcnt=%u]\n", ret, count);

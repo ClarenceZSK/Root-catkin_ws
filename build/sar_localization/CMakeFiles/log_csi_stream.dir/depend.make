@@ -260,8 +260,11 @@ sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ro
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/ros/wall_timer_options.h
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/rosconsole/macros_generated.h
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/std_msgs/Float32.h
+sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/std_msgs/Float64MultiArray.h
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/std_msgs/Header.h
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/std_msgs/Int16.h
+sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/std_msgs/MultiArrayDimension.h
+sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/std_msgs/MultiArrayLayout.h
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /opt/ros/indigo/include/std_msgs/String.h
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /root/catkin_ws/devel/include/sar_localization/Csi.h
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /root/catkin_ws/src/sar_localization/src/log_csi_stream.cpp

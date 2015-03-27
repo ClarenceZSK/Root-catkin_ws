@@ -15,23 +15,23 @@
    (csi1_real
     :reader csi1_real
     :initarg :csi1_real
-    :type cl:float
-    :initform 0.0)
+    :type std_msgs-msg:Float64MultiArray
+    :initform (cl:make-instance 'std_msgs-msg:Float64MultiArray))
    (csi1_image
     :reader csi1_image
     :initarg :csi1_image
-    :type cl:float
-    :initform 0.0)
+    :type std_msgs-msg:Float64MultiArray
+    :initform (cl:make-instance 'std_msgs-msg:Float64MultiArray))
    (csi2_real
     :reader csi2_real
     :initarg :csi2_real
-    :type cl:float
-    :initform 0.0)
+    :type std_msgs-msg:Float64MultiArray
+    :initform (cl:make-instance 'std_msgs-msg:Float64MultiArray))
    (csi2_image
     :reader csi2_image
     :initarg :csi2_image
-    :type cl:float
-    :initform 0.0)
+    :type std_msgs-msg:Float64MultiArray
+    :initform (cl:make-instance 'std_msgs-msg:Float64MultiArray))
    (check_csi
     :reader check_csi
     :initarg :check_csi
@@ -79,87 +79,19 @@
 (cl:defmethod roslisp-msg-protocol:serialize ((msg <Csi>) ostream)
   "Serializes a message object of type '<Csi>"
   (roslisp-msg-protocol:serialize (cl:slot-value msg 'header) ostream)
-  (cl:let ((bits (roslisp-utils:encode-double-float-bits (cl:slot-value msg 'csi1_real))))
-    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 32) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 40) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream))
-  (cl:let ((bits (roslisp-utils:encode-double-float-bits (cl:slot-value msg 'csi1_image))))
-    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 32) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 40) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream))
-  (cl:let ((bits (roslisp-utils:encode-double-float-bits (cl:slot-value msg 'csi2_real))))
-    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 32) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 40) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream))
-  (cl:let ((bits (roslisp-utils:encode-double-float-bits (cl:slot-value msg 'csi2_image))))
-    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 32) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 40) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream))
+  (roslisp-msg-protocol:serialize (cl:slot-value msg 'csi1_real) ostream)
+  (roslisp-msg-protocol:serialize (cl:slot-value msg 'csi1_image) ostream)
+  (roslisp-msg-protocol:serialize (cl:slot-value msg 'csi2_real) ostream)
+  (roslisp-msg-protocol:serialize (cl:slot-value msg 'csi2_image) ostream)
   (cl:write-byte (cl:ldb (cl:byte 8 0) (cl:if (cl:slot-value msg 'check_csi) 1 0)) ostream)
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <Csi>) istream)
   "Deserializes a message object of type '<Csi>"
   (roslisp-msg-protocol:deserialize (cl:slot-value msg 'header) istream)
-    (cl:let ((bits 0))
-      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 32) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 40) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 48) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 56) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'csi1_real) (roslisp-utils:decode-double-float-bits bits)))
-    (cl:let ((bits 0))
-      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 32) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 40) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 48) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 56) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'csi1_image) (roslisp-utils:decode-double-float-bits bits)))
-    (cl:let ((bits 0))
-      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 32) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 40) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 48) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 56) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'csi2_real) (roslisp-utils:decode-double-float-bits bits)))
-    (cl:let ((bits 0))
-      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 32) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 40) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 48) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 56) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'csi2_image) (roslisp-utils:decode-double-float-bits bits)))
+  (roslisp-msg-protocol:deserialize (cl:slot-value msg 'csi1_real) istream)
+  (roslisp-msg-protocol:deserialize (cl:slot-value msg 'csi1_image) istream)
+  (roslisp-msg-protocol:deserialize (cl:slot-value msg 'csi2_real) istream)
+  (roslisp-msg-protocol:deserialize (cl:slot-value msg 'csi2_image) istream)
     (cl:setf (cl:slot-value msg 'check_csi) (cl:not (cl:zerop (cl:read-byte istream))))
   msg
 )
@@ -171,23 +103,23 @@
   "sar_localization/Csi")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<Csi>)))
   "Returns md5sum for a message object of type '<Csi>"
-  "b594aad3c2552cffe0f0dc5378a20944")
+  "2417f8913f2c71dba718fe873b5cb64c")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'Csi)))
   "Returns md5sum for a message object of type 'Csi"
-  "b594aad3c2552cffe0f0dc5378a20944")
+  "2417f8913f2c71dba718fe873b5cb64c")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<Csi>)))
   "Returns full string definition for message of type '<Csi>"
-  (cl:format cl:nil "Header header~%float64 csi1_real~%float64 csi1_image~%float64 csi2_real~%float64 csi2_image~%bool check_csi~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
+  (cl:format cl:nil "Header header~%std_msgs/Float64MultiArray csi1_real~%std_msgs/Float64MultiArray csi1_image~%std_msgs/Float64MultiArray csi2_real~%std_msgs/Float64MultiArray csi2_image~%bool check_csi~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%================================================================================~%MSG: std_msgs/Float64MultiArray~%# Please look at the MultiArrayLayout message definition for~%# documentation on all multiarrays.~%~%MultiArrayLayout  layout        # specification of data layout~%float64[]         data          # array of data~%~%~%================================================================================~%MSG: std_msgs/MultiArrayLayout~%# The multiarray declares a generic multi-dimensional array of a~%# particular data type.  Dimensions are ordered from outer most~%# to inner most.~%~%MultiArrayDimension[] dim # Array of dimension properties~%uint32 data_offset        # padding bytes at front of data~%~%# Accessors should ALWAYS be written in terms of dimension stride~%# and specified outer-most dimension first.~%# ~%# multiarray(i,j,k) = data[data_offset + dim_stride[1]*i + dim_stride[2]*j + k]~%#~%# A standard, 3-channel 640x480 image with interleaved color channels~%# would be specified as:~%#~%# dim[0].label  = \"height\"~%# dim[0].size   = 480~%# dim[0].stride = 3*640*480 = 921600  (note dim[0] stride is just size of image)~%# dim[1].label  = \"width\"~%# dim[1].size   = 640~%# dim[1].stride = 3*640 = 1920~%# dim[2].label  = \"channel\"~%# dim[2].size   = 3~%# dim[2].stride = 3~%#~%# multiarray(i,j,k) refers to the ith row, jth column, and kth channel.~%================================================================================~%MSG: std_msgs/MultiArrayDimension~%string label   # label of given dimension~%uint32 size    # size of given dimension (in type units)~%uint32 stride  # stride of given dimension~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'Csi)))
   "Returns full string definition for message of type 'Csi"
-  (cl:format cl:nil "Header header~%float64 csi1_real~%float64 csi1_image~%float64 csi2_real~%float64 csi2_image~%bool check_csi~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%~%"))
+  (cl:format cl:nil "Header header~%std_msgs/Float64MultiArray csi1_real~%std_msgs/Float64MultiArray csi1_image~%std_msgs/Float64MultiArray csi2_real~%std_msgs/Float64MultiArray csi2_image~%bool check_csi~%~%================================================================================~%MSG: std_msgs/Header~%# Standard metadata for higher-level stamped data types.~%# This is generally used to communicate timestamped data ~%# in a particular coordinate frame.~%# ~%# sequence ID: consecutively increasing ID ~%uint32 seq~%#Two-integer timestamp that is expressed as:~%# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')~%# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')~%# time-handling sugar is provided by the client library~%time stamp~%#Frame this data is associated with~%# 0: no frame~%# 1: global frame~%string frame_id~%~%================================================================================~%MSG: std_msgs/Float64MultiArray~%# Please look at the MultiArrayLayout message definition for~%# documentation on all multiarrays.~%~%MultiArrayLayout  layout        # specification of data layout~%float64[]         data          # array of data~%~%~%================================================================================~%MSG: std_msgs/MultiArrayLayout~%# The multiarray declares a generic multi-dimensional array of a~%# particular data type.  Dimensions are ordered from outer most~%# to inner most.~%~%MultiArrayDimension[] dim # Array of dimension properties~%uint32 data_offset        # padding bytes at front of data~%~%# Accessors should ALWAYS be written in terms of dimension stride~%# and specified outer-most dimension first.~%# ~%# multiarray(i,j,k) = data[data_offset + dim_stride[1]*i + dim_stride[2]*j + k]~%#~%# A standard, 3-channel 640x480 image with interleaved color channels~%# would be specified as:~%#~%# dim[0].label  = \"height\"~%# dim[0].size   = 480~%# dim[0].stride = 3*640*480 = 921600  (note dim[0] stride is just size of image)~%# dim[1].label  = \"width\"~%# dim[1].size   = 640~%# dim[1].stride = 3*640 = 1920~%# dim[2].label  = \"channel\"~%# dim[2].size   = 3~%# dim[2].stride = 3~%#~%# multiarray(i,j,k) refers to the ith row, jth column, and kth channel.~%================================================================================~%MSG: std_msgs/MultiArrayDimension~%string label   # label of given dimension~%uint32 size    # size of given dimension (in type units)~%uint32 stride  # stride of given dimension~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <Csi>))
   (cl:+ 0
      (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'header))
-     8
-     8
-     8
-     8
+     (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'csi1_real))
+     (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'csi1_image))
+     (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'csi2_real))
+     (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'csi2_image))
      1
 ))
 (cl:defmethod roslisp-msg-protocol:ros-message-to-list ((msg <Csi>))

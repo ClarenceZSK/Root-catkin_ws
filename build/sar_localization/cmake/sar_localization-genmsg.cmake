@@ -27,7 +27,7 @@ add_custom_target(_sar_localization_generate_messages_check_deps_${_filename}
 
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
 add_custom_target(_sar_localization_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "sar_localization" "/root/catkin_ws/src/sar_localization/msg/Csi.msg" "std_msgs/Header"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "sar_localization" "/root/catkin_ws/src/sar_localization/msg/Csi.msg" "std_msgs/Float64MultiArray:std_msgs/Header:std_msgs/MultiArrayDimension:std_msgs/MultiArrayLayout"
 )
 
 #
@@ -45,7 +45,7 @@ _generate_msg_cpp(sar_localization
 _generate_msg_cpp(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Csi.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Float64MultiArray.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayDimension.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayLayout.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/sar_localization
 )
 _generate_msg_cpp(sar_localization
@@ -94,7 +94,7 @@ _generate_msg_lisp(sar_localization
 _generate_msg_lisp(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Csi.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Float64MultiArray.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayDimension.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayLayout.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/sar_localization
 )
 _generate_msg_lisp(sar_localization
@@ -143,7 +143,7 @@ _generate_msg_py(sar_localization
 _generate_msg_py(sar_localization
   "/root/catkin_ws/src/sar_localization/msg/Csi.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
+  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Float64MultiArray.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayDimension.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayLayout.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/sar_localization
 )
 _generate_msg_py(sar_localization
