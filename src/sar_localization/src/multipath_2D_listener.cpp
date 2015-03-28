@@ -35,6 +35,7 @@
 
 #define interval_threshold 13
 #define circle_threshold 353
+#define comp_threshold 3
 //for debug
 #define stepSize 1
 
@@ -59,8 +60,9 @@ double yaw;
 vector<pair<complex<double>, complex<double> > > csi;
 //multipath effect processing
 Eigen::VectorXi peak_mat(360);
-int vib_threshold = 8;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
-int comp_time = 2;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
+int vib_threshold = 12;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int comp_time = comp_threshold;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
+int processingSize = 60;
 
 double landa = 0.06;			//The aperture size is 6cm
 double r = 0.06;			//The radius (antenna interval)
@@ -92,8 +94,9 @@ int preIdx = 0;
 double maxT_D = 0;
 ofstream myfile1;		//power
 ofstream myfile2;		//peaks
-ofstream myfile3;		//statistics
-int test_target = 353;	//test peak near XX degree
+//ofstream myfile3;		//statistics
+int test_target = 270;	//test peak near XX degree
+vector<int> targetDistance;
 int detect_range1 = vib_threshold;
 int detect_range2 = detect_range1+1;
 int detect_range3 = detect_range2+1;
@@ -135,7 +138,7 @@ void testNearTarget(int alpha)
 	}
 
 }
-
+/*
 void getStatistics(Eigen::VectorXi cur_peaks)
 {
 	int range = vib_threshold;
@@ -163,14 +166,15 @@ void getStatistics(Eigen::VectorXi cur_peaks)
 		}
 	}
 }
-
+*/
 
 double PowerCalculation(double alpha)
 {
 	double ret = 0;
 	map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
 	//printf("Input size:%d\n", input.size() );
-	int div = (int) input_iter->second.size();
+	//int div = (int) input_iter->second.size();
+	int div = processingSize;
 	for(int i  = 0; i < div; ++i)
 	{
 		complex<double> avgCsiHat (0, 0);
@@ -342,9 +346,8 @@ vector<int> SAR_Profile_2D()
 					int s2 = (int) input_iter->second.size();
 					if(check_size != s2)
 					{
-						printf("Inconsistent data! Resampling! %d-%d\n", check_size, s2);
-						input.clear();
-						start = false;
+						printf("Inconsistent data!%d-%d! Process only 30 groups data.\n", check_size, s2);
+						processingSize = 30;
 						break;
 					}
 				}
@@ -366,10 +369,20 @@ vector<int> SAR_Profile_2D()
 				input.clear();
 			}
 
+			//limit compare times
+			if(comp_time == 0)
+			{
+				comp_time = comp_threshold;
+				printf("\nComp %d times, clear and restart!\n\n", comp_threshold);
+				start = false;
+				input.clear();
+				reset = 1;
+			}
 		}
 
 		if(start)
 		{
+			comp_time--;
 			Eigen::VectorXi cur_peak_mat(360);
 			cur_peak_mat.setZero();
 			printf("max T_D:%lf, ", maxT_D);
@@ -430,7 +443,7 @@ vector<int> SAR_Profile_2D()
 			myfile2 << cur_peak_mat(0) << endl;
 
 			//for debug, add statistical information
-			getStatistics(cur_peak_mat);
+			//getStatistics(cur_peak_mat);
 			///////////////////////////////////////
 
 			if(count_d == 1 || reset)
@@ -569,7 +582,7 @@ int main(int argc, char **argv)
 	}
 	myfile1.open("power.txt");
 	myfile2.open("peaks.txt");
-	myfile3.open("statistics.txt");
+	//myfile3.open("statistics.txt");
 
 	ros::spinOnce();		//empty the queue
 	csi_ready = false;
@@ -681,12 +694,12 @@ int main(int argc, char **argv)
 	map<int, int>::iterator stat_pos = statistics.begin();
 	while(stat_pos != statistics.end() )
 	{
-		myfile3 << stat_pos->first << " " << (float)stat_pos->second/(float)count_d << endl;
+		//myfile3 << stat_pos->first << " " << (float)stat_pos->second/(float)count_d << endl;
 		//print out
 		printf("Alpha:%d->%d/%d=%.2f\n", stat_pos->first, stat_pos->second, count_d, (float)stat_pos->second/(float)count_d );
 		++stat_pos;
 	}
-	myfile3.close();
+	//myfile3.close();
 
 	return 0;
 }
