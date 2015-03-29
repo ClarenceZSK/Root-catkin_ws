@@ -56,11 +56,12 @@ bool imu_ready = false;
 //double pitch;
 double yaw;
 vector<pair<complex<double>, complex<double> > > csi;		//CSI of antenna 1and antenna 2 of receiver for all subcarriers
+int processingSize = 60;
 
 Eigen::VectorXd multipathProfile(360);
 
 double landa = 0.06;			//The aperture size is 6cm
-double r = 0.06;			//The radius (antenna interval)
+double r = 0.08;			//The radius (antenna interval)
 
 int dataIndex = 0;
 int count_d = 0;
@@ -97,7 +98,8 @@ double PowerCalculation(double alpha)
 {
 	double ret = 0;
 	map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
-	int div = (int) input_iter->second.size();
+	//int div = (int) input_iter->second.size();
+	int div = processingSize;
 	for(int i = 0; i < div; ++i)	//compute power for each subcarrier, each transmitter
 	{
 		input_iter = input.begin();
@@ -252,15 +254,17 @@ int SAR_Profile_2D()
 				//check data consistancy
                 map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
                 int check_size = (int) input_iter->second.size();
+				processingSize = check_size;
                 do
                 {
                     ++input_iter;
                     int s2 = (int) input_iter->second.size();
                     if(check_size != s2)
                     {
-                        printf("Inconsistent data! Resampling! %d-%d\n", check_size, s2);
+                        printf("\n!!!Inconsistent data! Resampling!%d-%d\n\n!", check_size, s2);
                         input.clear();
                         start = false;
+						//processingSize = 30;
                         break;
                     }
                 }

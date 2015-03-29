@@ -36,6 +36,7 @@
 #define interval_threshold 13
 #define circle_threshold 353
 #define comp_threshold 3
+#define granularity 3600
 //for debug
 #define stepSize 1
 
@@ -59,13 +60,13 @@ bool imu_ready = false;
 double yaw;
 vector<pair<complex<double>, complex<double> > > csi;
 //multipath effect processing
-Eigen::VectorXi peak_mat(360);
-int vib_threshold = 12;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+Eigen::VectorXi peak_mat(granularity);
+int vib_threshold = 8*granularity/360;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
 int comp_time = comp_threshold;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 int processingSize = 60;
 
 double landa = 0.06;			//The aperture size is 6cm
-double r = 0.06;			//The radius (antenna interval)
+double r = 0.08;			//The radius (antenna interval)
 //Eigen::VectorXi std_profile(360);	//Store a standard multipath profile to recover from 0 result
 bool peakVanished = false;	//It indicates that after angle elimination, there is no angle left. In this case, we need to recover for continuing experiment
 bool reset = 0;
@@ -95,7 +96,7 @@ double maxT_D = 0;
 ofstream myfile1;		//power
 ofstream myfile2;		//peaks
 //ofstream myfile3;		//statistics
-int test_target = 270;	//test peak near XX degree
+int test_target = 218*granularity/360;	//test peak near XX degree
 vector<int> targetDistance;
 int detect_range1 = vib_threshold;
 int detect_range2 = detect_range1+1;
@@ -211,7 +212,7 @@ double PowerCalculation(double alpha)
 
 Eigen::VectorXi peakElimination(Eigen::VectorXi cur_peak_mat)
 {
-	Eigen::VectorXi ret(360);
+	Eigen::VectorXi ret(granularity);
 	for(int i  = 0; i < cur_peak_mat.size(); ++i)
 	{
 		if(cur_peak_mat(i) == true)
@@ -220,7 +221,7 @@ Eigen::VectorXi peakElimination(Eigen::VectorXi cur_peak_mat)
 			bool peakOr = false;
 			for(int j = i-vib_threshold; j <= i+vib_threshold; ++j)
 			{
-				int dx = (j+360)%360;
+				int dx = (j+granularity)%granularity;
 				peakOr = (peakOr || peak_mat(dx) );
 			}
 			ret(i) = peakOr;
@@ -340,14 +341,18 @@ vector<int> SAR_Profile_2D()
 				//check data consistancy
 				map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
 				int check_size = (int) input_iter->second.size();
+				processingSize = check_size;
 				do
 				{
 					++input_iter;
 					int s2 = (int) input_iter->second.size();
 					if(check_size != s2)
 					{
-						printf("Inconsistent data!%d-%d! Process only 30 groups data.\n", check_size, s2);
-						processingSize = 30;
+						//printf("Inconsistent data!%d-%d! Process only 30 groups data.\n", check_size, s2);
+						printf("\n!!!!Inconsistent data!%d-%d! Resampling!\n", check_size, s2);
+						//processingSize = 30;
+						input.clear();
+						start = false;
 						break;
 					}
 				}
@@ -366,6 +371,7 @@ vector<int> SAR_Profile_2D()
 					printf("Not a circle! circle_distance/threshold:%.2f/%d\n"  , circle_distance, circle_threshold);
 				}
 				reset = 1;
+				comp_time = comp_threshold;
 				input.clear();
 			}
 
@@ -383,7 +389,7 @@ vector<int> SAR_Profile_2D()
 		if(start)
 		{
 			comp_time--;
-			Eigen::VectorXi cur_peak_mat(360);
+			Eigen::VectorXi cur_peak_mat(granularity);
 			cur_peak_mat.setZero();
 			printf("max T_D:%lf, ", maxT_D);
 			start = false;
@@ -402,9 +408,9 @@ vector<int> SAR_Profile_2D()
 
 			myfile2 << "#" << count_d << endl;	//for peaks
 
-			for(int alpha = 1; alpha < 360; alpha += resolution)
+			for(int alpha = 1; alpha < granularity; alpha += resolution)
 			{
-				double alpha_r = alpha*PI/180.0;
+				double alpha_r = alpha/10.0*PI/180.0;
 				double powtmp = PowerCalculation(alpha_r);
 				if(powtmp > prePow)
 				{
@@ -604,7 +610,7 @@ int main(int argc, char **argv)
 			printf("%d peaks: ", (int) peakAngles.size() );
 			for(int i = 0; i < (int) peakAngles.size(); ++i)
 			{
-				printf("%d ", peakAngles[i]);
+				printf("%.1f ", peakAngles[i]/10.0);
 				if(peakAngles[i] >= test_target-detect_range4 && peakAngles[i] <= test_target+detect_range4)
 				{
 					++count_detected;
@@ -657,6 +663,7 @@ int main(int argc, char **argv)
 			{
 				angleSet.insert(make_pair(AP_ID, prePeakAngles[i]) );
 			}
+			comp_time = comp_threshold;
 			prePeakAngles.clear();
 		}
 
@@ -688,7 +695,7 @@ int main(int argc, char **argv)
 		printf("\n");
 	}
 	printf("%.2f correct peaks exist in the output\n", (float) count_finalOutput/(float)angleSet.size() );
-	printf("%d(%d, %d, %d) target peaks exist in %d detections -> %.2f(%.2f, %.2f, %.2f)\n", count1, count2, count3, count4, count_d, (float)count1/(float)count_d, (float)count2/(float)count_d, (float)count3/(float)count_d, (float)count4/(float)count_d);
+	printf("%d(%d, %d, %d) target peaks %.1f exist in %d detections -> %.2f(%.2f, %.2f, %.2f)\n", count1, count2, count3, count4, test_target/10.0, count_d, (float)count1/(float)count_d, (float)count2/(float)count_d, (float)count3/(float)count_d, (float)count4/(float)count_d);
 
 	//write statistics and print out
 	map<int, int>::iterator stat_pos = statistics.begin();
