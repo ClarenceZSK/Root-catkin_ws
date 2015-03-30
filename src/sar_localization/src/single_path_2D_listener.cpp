@@ -32,7 +32,7 @@
 #define sizeLimit 300
 #define profileLimit 20
 
-#define interval_threshold 10	//maximun interval must greater than X degree
+#define interval_threshold 13	//maximun interval must greater than X degree
 #define circle_threshold 353	//maxAngle-minAngle > 353 degree
 //for debug
 #define stepSize 1

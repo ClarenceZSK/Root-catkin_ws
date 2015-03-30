@@ -61,12 +61,12 @@ double yaw;
 vector<pair<complex<double>, complex<double> > > csi;
 //multipath effect processing
 Eigen::VectorXi peak_mat(granularity);
-int vib_threshold = 8*granularity/360;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
+int vib_threshold = 7*granularity/360;			//The peak vibration allowance, 0 means the persistent peak must be the degree exatly the same as before
 int comp_time = comp_threshold;			//The times of comparison of multiple power profiles for peak elimination, it should be greater than 1
 int processingSize = 60;
 
 double landa = 0.06;			//The aperture size is 6cm
-double r = 0.08;			//The radius (antenna interval)
+double r = 0.10;			//The radius (antenna interval)
 //Eigen::VectorXi std_profile(360);	//Store a standard multipath profile to recover from 0 result
 bool peakVanished = false;	//It indicates that after angle elimination, there is no angle left. In this case, we need to recover for continuing experiment
 bool reset = 0;
@@ -96,7 +96,7 @@ double maxT_D = 0;
 ofstream myfile1;		//power
 ofstream myfile2;		//peaks
 //ofstream myfile3;		//statistics
-int test_target = 218*granularity/360;	//test peak near XX degree
+int test_target = 220*granularity/360;	//test peak near XX degree
 vector<int> targetDistance;
 int detect_range1 = vib_threshold;
 int detect_range2 = detect_range1+1;
@@ -388,6 +388,19 @@ vector<int> SAR_Profile_2D()
 
 		if(start)
 		{
+			//for debug, print input angles
+			bool test = 0;
+			if(test)
+			{
+				map<double, vector<pair<complex<double>, complex<double> > > >::iterator input_iter = input.begin();
+				cout << "input angles: ";
+				while(input_iter != input.end() )
+				{
+					cout << input_iter->first << ", ";
+					++input_iter;
+				}
+				cout << endl;
+			}
 			comp_time--;
 			Eigen::VectorXi cur_peak_mat(granularity);
 			cur_peak_mat.setZero();
@@ -458,6 +471,7 @@ vector<int> SAR_Profile_2D()
 				peak_mat = cur_peak_mat;
 				ret = countPeak();
 				printf("Vib:%d,Count:%d,peak_num: %d\n", vib_threshold, count_d, (int) ret.size());
+				comp_time = comp_threshold;
 				input.clear();
 			}
 			else	//start peak elimination
@@ -474,10 +488,12 @@ vector<int> SAR_Profile_2D()
 					peakVanished = true;
 					//peak_mat.setZero();	//store the last moment peak situation
 					reset = 1;
+					comp_time = comp_threshold;
 				}
 				else if(ret.size() == 1)		//It indicates that we have obtained the final converged result. At this time, we restart the process based on the current peak situation
 				{
 					reset = 1;
+					comp_time = comp_threshold;
 					//peak_mat.setZero();
 				}
 				return ret;
@@ -624,7 +640,7 @@ int main(int argc, char **argv)
 				printf("\n");
 			}
 
-			if(peakAngles.size() == 1)
+			if(peakAngles.size() == 1 || comp_time == 0)
 			{
 				//Store this potential result
 				angleSet.insert(make_pair(AP_ID, peakAngles[0]) );
