@@ -36,7 +36,7 @@
 #define interval_threshold 13
 #define circle_threshold 353
 #define comp_threshold 3
-#define granularity 3600
+#define granularity 360
 //for debug
 #define stepSize 1
 
@@ -410,7 +410,7 @@ vector<int> SAR_Profile_2D()
 
 			for(int alpha = 1; alpha < granularity; alpha += resolution)
 			{
-				double alpha_r = alpha/10.0*PI/180.0;
+				double alpha_r = alpha/(granularity/360.0)*PI/180.0;
 				double powtmp = PowerCalculation(alpha_r);
 				if(powtmp > prePow)
 				{
@@ -610,7 +610,7 @@ int main(int argc, char **argv)
 			printf("%d peaks: ", (int) peakAngles.size() );
 			for(int i = 0; i < (int) peakAngles.size(); ++i)
 			{
-				printf("%.1f ", peakAngles[i]/10.0);
+				printf("%.1f ", peakAngles[i]/(granularity/360.0));
 				if(peakAngles[i] >= test_target-detect_range4 && peakAngles[i] <= test_target+detect_range4)
 				{
 					++count_detected;
@@ -695,7 +695,7 @@ int main(int argc, char **argv)
 		printf("\n");
 	}
 	printf("%.2f correct peaks exist in the output\n", (float) count_finalOutput/(float)angleSet.size() );
-	printf("%d(%d, %d, %d) target peaks %.1f exist in %d detections -> %.2f(%.2f, %.2f, %.2f)\n", count1, count2, count3, count4, test_target/10.0, count_d, (float)count1/(float)count_d, (float)count2/(float)count_d, (float)count3/(float)count_d, (float)count4/(float)count_d);
+	printf("%d(%d, %d, %d) target peaks %.1f exist in %d detections -> %.2f(%.2f, %.2f, %.2f)\n", count1, count2, count3, count4, test_target/(granularity/360.0), count_d, (float)count1/(float)count_d, (float)count2/(float)count_d, (float)count3/(float)count_d, (float)count4/(float)count_d);
 
 	//write statistics and print out
 	map<int, int>::iterator stat_pos = statistics.begin();

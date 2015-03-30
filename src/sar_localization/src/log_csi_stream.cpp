@@ -165,6 +165,11 @@ int main(int argc, char** argv)
 			//Note!!! We must use all transmitters' csi_entry, but only need two receivers' csi
 			Eigen::MatrixXcd csi1_entry(Ntx, 30);
 			Eigen::MatrixXcd csi2_entry(Ntx, 30);
+			Eigen::MatrixXcd csi3_entry(Ntx, 30);
+			Eigen::MatrixXcd csi1_ordered_entry(Ntx, 30);
+			Eigen::MatrixXcd csi2_ordered_entry(Ntx, 30);
+			Eigen::MatrixXcd csi3_ordered_entry(Ntx, 30);
+			Eigen::Matrix3i perm;
 			//Check that length matches what it should
 			bool check_csi = false;
 			if(len != calc_len)
@@ -197,22 +202,95 @@ int main(int argc, char** argv)
 						{
 							csi2_entry(k, i) = tmpCpmlex;
 						}
+						else if(j == 2)
+						{
+							csi3_entry(k, i) = tmpCpmlex;
+						}
 						index += 16;
 					}
 				}
 			}
+			perm(0) = ((antenna_sel) & 0x3) + 1;
+			perm(1) = ((antenna_sel >> 2) & 0x3) + 1;
+			perm(2) = ((antenna_sel >> 4) & 0x3) + 1;
+			cout << "perm: " << perm(0) << ", " << perm(1) << ", " << perm(2) << endl;
+			//Get ordered entry. From antenna A to C
+			if(perm(0) == 1)
+			{
+				csi1_ordered_entry = csi1_entry;
+				if(perm(1) == 2)
+				{
+					csi2_ordered_entry = csi2_entry;
+					csi3_ordered_entry = csi3_entry;
+				}
+				else if(perm(1) == 3)
+				{
+					csi2_ordered_entry = csi3_entry;
+					csi3_ordered_entry = csi2_entry;
+				}
+				else
+				{
+					perror("perm wrong!\n");
+				}
+			}
+			else if(perm(0) == 2)
+			{
+				csi1_ordered_entry = csi2_entry;
+				if(perm(1) == 1)
+				{
+					csi2_ordered_entry = csi1_entry;
+					csi3_ordered_entry = csi3_entry;
+				}
+				else if(perm(1) == 3)
+				{
+					csi2_ordered_entry = csi3_entry;
+					csi3_ordered_entry = csi1_entry;
+				}
+				else
+				{
+					perror("perm wrong!\n");
+				}
+			}
+			else if(perm(0) == 3)
+			{
+				csi1_ordered_entry = csi3_entry;
+				if(perm(1) == 1)
+				{
+					csi2_ordered_entry = csi1_entry;
+					csi3_ordered_entry = csi2_entry;
+				}
+				else if(perm(1) == 2)
+				{
+					csi2_ordered_entry = csi2_entry;
+					csi3_ordered_entry = csi1_entry;
+				}
+				else
+				{
+					perror("perm wrong!\n");
+				}
+			}
+			else
+			{
+				perror("perm wrong!\n");
+			}
+
 			//Get scaled entry
-	        Eigen::MatrixXcd csi1_entry_conj(Ntx, 30);
-	        Eigen::MatrixXcd csi2_entry_conj(Ntx, 30);
-	        Eigen::MatrixXcd csi1_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
-	        Eigen::MatrixXcd csi2_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
-        	csi1_entry_conj = csi1_entry.conjugate();
-        	csi2_entry_conj = csi2_entry.conjugate();
-            csi1_entry_sq = csi1_entry.array() * csi1_entry_conj.array();
-            csi2_entry_sq = csi2_entry.array() * csi2_entry_conj.array();
-	        double csi1_entry_pwr = csi1_entry_sq.sum().real();
-	        double csi2_entry_pwr = csi2_entry_sq.sum().real();
-			double csi_entry_pwr = csi1_entry_pwr + csi2_entry_pwr;
+	        Eigen::MatrixXcd csi1_ordered_entry_conj(Ntx, 30);
+	        Eigen::MatrixXcd csi2_ordered_entry_conj(Ntx, 30);
+	        Eigen::MatrixXcd csi3_ordered_entry_conj(Ntx, 30);
+	        Eigen::MatrixXcd csi1_ordered_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
+	        Eigen::MatrixXcd csi2_ordered_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
+	        Eigen::MatrixXcd csi3_ordered_entry_sq(Ntx, 30);  //dot product with csi_entry's conjugate
+        	csi1_ordered_entry_conj = csi1_ordered_entry.conjugate();
+        	csi2_ordered_entry_conj = csi2_ordered_entry.conjugate();
+        	csi3_ordered_entry_conj = csi3_ordered_entry.conjugate();
+            csi1_ordered_entry_sq = csi1_ordered_entry.array() * csi1_ordered_entry_conj.array();
+            csi2_ordered_entry_sq = csi2_ordered_entry.array() * csi2_ordered_entry_conj.array();
+            csi3_ordered_entry_sq = csi3_ordered_entry.array() * csi3_ordered_entry_conj.array();
+	        double csi1_ordered_entry_pwr = csi1_ordered_entry_sq.sum().real();
+	        double csi2_ordered_entry_pwr = csi2_ordered_entry_sq.sum().real();
+	        double csi3_ordered_entry_pwr = csi3_ordered_entry_sq.sum().real();
+			double csi_ordered_entry_pwr = csi1_ordered_entry_pwr + csi2_ordered_entry_pwr + csi3_ordered_entry_pwr;
 	        //Compute total rssi
 	        double rssi_mag = 0;
 	        if(rssi_a != 0)
@@ -229,7 +307,7 @@ int main(int argc, char** argv)
 	        }
 	        double rssi_total = 10*log10(rssi_mag) - 44 - agc;
 	        double rssi_pwr = pow(10, (rssi_total/10.0) );
-	        double scale = rssi_pwr / (csi_entry_pwr / 30);
+	        double scale = rssi_pwr / (csi_ordered_entry_pwr / 30);
 	        double noise_db = 0;
 	        if( (double) noise == -127)
 	        {
@@ -244,17 +322,21 @@ int main(int argc, char** argv)
 	        double total_noise_pwr = thermal_noise_pwr + quant_error_pwr;
 			Eigen::MatrixXcd csi1(Ntx, 30);
 			Eigen::MatrixXcd csi2(Ntx, 30);
-			csi1 = csi1_entry * sqrt(scale / total_noise_pwr);
-			csi2 = csi2_entry * sqrt(scale / total_noise_pwr);
+			Eigen::MatrixXcd csi3(Ntx, 30);
+			csi1 = csi1_ordered_entry * sqrt(scale / total_noise_pwr);
+			csi2 = csi2_ordered_entry * sqrt(scale / total_noise_pwr);
+			csi3 = csi3_ordered_entry * sqrt(scale / total_noise_pwr);
 			if(Ntx == 2)
 			{
 				csi1 = csi1*sqrt(2);
 				csi2 = csi2*sqrt(2);
+				csi3 = csi3*sqrt(2);
 			}
 			else if(Ntx == 3)
 			{
 				csi1 = csi1*1.6788;
 				csi2 = csi2*1.6788;
+				csi3 = csi3*1.6788;
 			}
 			//End of CSI extraction
 
@@ -268,19 +350,23 @@ int main(int argc, char** argv)
 			msg.csi1_image.data.clear();
 			msg.csi2_real.data.clear();
 			msg.csi2_image.data.clear();
-			//cout << "msg:";
+			bool test = 0;
+			if(test)
+				cout << "msg:";
 			for (int i = 0; i < Ntx; ++i)
 			{
 				for (int j = 0; j < 30; ++j)
 				{
-					msg.csi1_real.data.push_back(csi1(i, j).real() );
-					msg.csi1_image.data.push_back(csi1(i, j).imag() );
-					msg.csi2_real.data.push_back(csi2(i, j).real() );
-					msg.csi2_image.data.push_back(csi2(i, j).imag() );
-					//cout << csi1(i,j) << csi2(i, j);
+					msg.csi1_real.data.push_back(csi2(i, j).real() );
+					msg.csi1_image.data.push_back(csi2(i, j).imag() );
+					msg.csi2_real.data.push_back(csi3(i, j).real() );
+					msg.csi2_image.data.push_back(csi3(i, j).imag() );
+					if(test)
+						cout << csi2(i,j) << csi3(i, j);
 				}
 			}
-			//cout << endl;
+			if(test)
+				cout << endl;
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
 
