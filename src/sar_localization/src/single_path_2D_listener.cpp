@@ -33,7 +33,7 @@
 #define SIZE_LIMIT 		300
 #define PROFILE_LIMIT 	20
 #define INTERVAL_THRE 	13		//maximun interval must greater than X degree
-#define CIRCLE_THRE 	353		//maxAngle-minAngle > 353 degree
+#define CIRCLE_THRE 	173		//maxAngle-minAngle > 353 degree
 #define LANDA 			0.06	//The aperture size is 6cm
 #define R 				0.08	//The antenna interval
 //for debug
@@ -197,7 +197,7 @@ bool DataCheck()
     double circle_distance = maxAngle - minAngle;
 	if(max_interval < INTERVAL_THRE && circle_distance >= CIRCLE_THRE)
     {
-    	printf("Max interval:%.2f, min interval:%lf, max angle:%.2f, m  in angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle,   minAngle, circle_distance);
+    	printf("Max interval:%.2f, min interval:%lf, max angle:%.2f, min angle:%.2f, circle distance:%.2f\n", max_interval, min_interval, maxAngle,   minAngle, circle_distance);
     	ret = true;
         //check data consistancy
         map<double, PairCSIVector>::iterator input_iter = Sar.input.begin();
@@ -218,13 +218,13 @@ bool DataCheck()
         }
         while(input_iter != --Sar.input.end() );
 	}
-    else if(Sar.input.size() > SIZE_LIMIT)   //it indicates some unpredicta  ble situations causing very large input map
+    else if(Sar.input.size() > SIZE_LIMIT)   //it indicates some unpredictable situations causing very large input map
     {
     	printf("Too many samples! Clear and Resampling!\n");
         printf("Reason: \n");
         if(max_interval >= INTERVAL_THRE)
         {
-        	printf("Too large interval! max_interval/threshold:%.2f/%d  \n", max_interval, INTERVAL_THRE);
+        	printf("Too large interval! max_interval/threshold:%.2f/%d\n", max_interval, INTERVAL_THRE);
         }
         if(circle_distance < CIRCLE_THRE)
         {
@@ -256,6 +256,12 @@ int SAR_Profile_2D()
 		{
 			std_input_yaw -= 360;
 		}
+		//for semi-circulate arc of rotation
+		if(std_input_yaw >= 180)
+		{
+			std_input_yaw -= 180;
+		}
+		///////////////////////////////////
 		//keep 0.1 value
 		int tp = std_input_yaw*10;
 		std_input_yaw = tp/10.0;
@@ -277,7 +283,6 @@ int SAR_Profile_2D()
 			Sar.maxTimeDiff = 0;
 			++Sar.countD;
 			int ret_yaw;
-			//When csi and imu data vectors reach size limit, start angle generation
 			int resolution = STEP_SIZE;      //search resolution
 			double maxPower = 0;
 			myfile << "#" << Sar.countD << endl;
