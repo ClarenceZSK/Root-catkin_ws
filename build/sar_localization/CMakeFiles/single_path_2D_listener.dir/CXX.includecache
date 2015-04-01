@@ -1865,6 +1865,8 @@ map
 -
 set
 -
+queue
+-
 complex
 -
 math.h
