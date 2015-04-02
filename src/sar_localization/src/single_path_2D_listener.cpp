@@ -83,10 +83,15 @@ struct SAR
 	bool globalStart;	//This is a tag that start to record data as long as the normalization yaw has come
 	bool stdFlag;
 	bool autoSwitch;
+	bool dataControl;
+	int outputFrequency;
+	int dataSizeControl;
 	Vector360d multipathProfile;
 	map<double, PairCSIVector> input;   //map<imu, csi1, csi2>
 	map<double, CSI> CSIQueue;			//for data synchronization
 	map<double, IMU> IMUQueue;
+	vector<pair<IMU, CSI> > SyncInput;
+	vector<double> inputTimeSequence;
 };
 
 //Define some global variables
@@ -101,6 +106,9 @@ struct SAR Sar = {
 	false,		//globalStart
 	false,		//stdFlag
 	0,			//autoSwitch
+	0,			//dataControl
+	0,			//outputFrequency
+	60,			//dataSizeControl
 };
 
 ofstream myfile;
@@ -237,42 +245,50 @@ bool DataCheck()
 	return ret;
 }
 
+void InputData()
+{
+	//cout << "Input " << Sar.SyncInput.size() << "synced data." << endl;
+	for (int i = 0; i < (int) Sar.SyncInput.size(); ++i)
+	{
+		Imu = Sar.SyncInput[i].first;
+		Csi = Sar.SyncInput[i].second;
+		double timeDifference = fabs(Csi.t_stamp_csi - Imu.t_stamp_imu);
+    	if(Sar.maxTimeDiff < timeDifference)
+    	{
+        	Sar.maxTimeDiff = timeDifference;
+    	}
+    	double std_input_yaw = RadianToDegree(Imu.yaw - Sar.stdYaw);
+    	if (std_input_yaw < 0)
+    	{
+        	std_input_yaw += 360;
+    	}
+    	else if(std_input_yaw >= 360)
+    	{
+        	std_input_yaw -= 360;
+    	}
+		//for semi-circulate arc of rotation
+    	if(std_input_yaw >= 180)
+    	{
+        	std_input_yaw -= 180;
+    	}
+    	///////////////////////////////////
+    	//0.1 precision
+    	int tp = std_input_yaw*10;
+    	std_input_yaw = tp/10.0;
+    	//printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
+    	Sar.input[std_input_yaw] = Csi.csi;
+    	Sar.inputTimeSequence.push_back(std_input_yaw);
+	}
+	Sar.SyncInput.clear();
+}
+
 int SAR_Profile_2D()
 {
 	if(Sar.csiReady && Sar.imuReady && Sar.globalStart)
 	{
 		Sar.csiReady = false;
 		Sar.imuReady = false;
-		double timeDifference = fabs(Csi.t_stamp_csi - Imu.t_stamp_imu);
-		if(Sar.maxTimeDiff < timeDifference)
-		{
-			Sar.maxTimeDiff = timeDifference;
-		}
-
-		double std_input_yaw = RadianToDegree(Imu.yaw - Sar.stdYaw);
-		if (std_input_yaw < 0)
-		{
-			std_input_yaw += 360;
-		}
-		else if(std_input_yaw >= 360)
-		{
-			std_input_yaw -= 360;
-		}
-		//for semi-circulate arc of rotation
-		if(std_input_yaw >= 180)
-		{
-			std_input_yaw -= 180;
-		}
-		///////////////////////////////////
-		//keep 0.1 value
-		int tp = std_input_yaw*10;
-		std_input_yaw = tp/10.0;
-		//printf("STD_INPUT_YAW:%.2f\n",std_input_yaw );
-		Sar.input[std_input_yaw] = Csi.csi;
-		//input[RadianToDegree(yaw)] =  make_pair(csi1, csi2);
-		//printf("std input %.2f\n", std_input_yaw);
-		//if(dataIndex > 0 && dataIndex % sizeLimit == 0 && !start)
-		//if(input.size() == sizeLimit || 1)
+		InputData();
 		if(Sar.input.size() > 1 )
 		{
 			//start data preprocessing
@@ -305,11 +321,7 @@ int SAR_Profile_2D()
       			}
 				myfile << sumpow << endl;
 			}
-			//int directPath = findDirectPath();
-			//++dataIndex;
-      		//return directPath;
 			printf("Count:%d,maxPow: %0.3f,sample size:%d, ", Sar.countD, maxPower, (int) Sar.input.size() );
-			Sar.input.clear();
 			return ret_yaw;
 		}
 	}
@@ -394,25 +406,72 @@ void DataSynchronize()
 		map<double, IMU>::iterator IMUiter;
 		map<double, CSI>::iterator CSIiter;
 		double minTD = 0xffff;
-		for(CSIiter = Sar.CSIQueue.begin(); CSIiter != Sar.CSIQueue.end(); ++CSIiter)
+		if(Sar.CSIQueue.size() <= Sar.IMUQueue.size() )
 		{
-			double csiT = CSIiter->first;
+			for(CSIiter = Sar.CSIQueue.begin(); CSIiter != Sar.CSIQueue.end(); ++CSIiter)
+			{
+				//double minTD = 0xffff;
+				double csiT = CSIiter->first;
+				for(IMUiter = Sar.IMUQueue.begin(); IMUiter != Sar.IMUQueue.end(); ++IMUiter)
+				{
+					double imuT = IMUiter->first;
+					double TD = fabs(imuT - csiT);
+					if(minTD > TD)
+					{
+						minTD = TD;
+						Imu = IMUiter->second;
+						Csi = CSIiter->second;
+					}
+				}
+				//Sar.SyncInput.push_back(make_pair(Imu, Csi) );
+			}
+			Sar.SyncInput.push_back(make_pair(Imu, Csi) );
+		}
+		else
+		{
 			for(IMUiter = Sar.IMUQueue.begin(); IMUiter != Sar.IMUQueue.end(); ++IMUiter)
 			{
-				double imuT = IMUiter->first;
-				double TD = fabs(imuT - csiT);
-				if(minTD > TD)
+				//double minTD = 0xffff;
+                double imuT = IMUiter->first;
+				for(CSIiter = Sar.CSIQueue.begin(); CSIiter != Sar.CSIQueue.end(); ++CSIiter)
 				{
-					minTD = TD;
-					Imu = IMUiter->second;
-					Csi = CSIiter->second;
+					double csiT = IMUiter->first;
+                    double TD = fabs(imuT - csiT);
+                    if(minTD > TD)
+                    {
+                        minTD = TD;
+                        Imu = IMUiter->second;
+                        Csi = CSIiter->second;
+                    }
 				}
+				//Sar.SyncInput.push_back(make_pair(Imu, Csi) );
 			}
+			Sar.SyncInput.push_back(make_pair(Imu, Csi) );
 		}
 		Sar.imuReady = true;
 		Sar.csiReady = true;
+		//cout << "IMUQueue size:" << Sar.IMUQueue.size() << endl;
+		//cout << "CSIQueue size:" << Sar.CSIQueue.size() << endl;
 		Sar.IMUQueue.clear();
 		Sar.CSIQueue.clear();
+	}
+}
+
+void DataControl()
+{
+	vector<double>::iterator inputSeqIter;
+	while((int) Sar.input.size() > Sar.dataSizeControl)
+	{
+		//Get rid of older data from input
+		inputSeqIter = Sar.inputTimeSequence.begin();
+		double ty = *inputSeqIter;
+		map<double, PairCSIVector>::iterator input_iter;
+		input_iter = Sar.input.find(ty);
+		if(input_iter != Sar.input.end() )
+		{
+			Sar.input.erase(input_iter);
+		}
+		Sar.inputTimeSequence.erase(inputSeqIter);
 	}
 }
 
@@ -446,16 +505,23 @@ int main(int argc, char **argv)
 	ros::spinOnce();		//empty the queue
 	Sar.csiReady = false;
 	Sar.imuReady = false;
-	//input.clear();
 	//std_flag = false;
 	while(n.ok() )
 	{
 		//spinner.spinOnce();
 		ros::spinOnce();
 		DataSynchronize();
+		if(Sar.dataControl)
+		{
+			DataControl();		//Limit a upper bound of the size of input
+		}
 		int angle = SAR_Profile_2D();
 		if(angle >= 0)
 		{
+			if(!Sar.dataControl)
+			{
+				Sar.input.clear();
+			}
 			printf("Alpha:%d\n", angle);
             //Switch to another AP
 			if(Sar.autoSwitch)
@@ -472,7 +538,6 @@ int main(int argc, char **argv)
 					ros::spinOnce();
 					Sar.csiReady = false;
 					Sar.imuReady = false;
-					//input.clear();
                		break;
             	case 1:
               		Ap.apID = (Ap.apID+1)%Ap.apNum;
@@ -483,7 +548,6 @@ int main(int argc, char **argv)
 					ros::spinOnce();
 					Sar.csiReady = false;
 					Sar.imuReady = false;
-					//input.clear();
            			break;
            		}
 			}
