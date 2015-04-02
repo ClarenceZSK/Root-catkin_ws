@@ -128,6 +128,8 @@ int main(int argc, char** argv)
 		unsigned char data_code = (unsigned char) *pt;
 		//++pt;
 		//printf("Data code is: %d\n", (unsigned short) data_code);
+		sar_localization::Csi msg;
+		msg.header.stamp = ros::Time::now();
 		if(data_code == 187)	//Get beamforming
 		{
 			//printf("Enter data decode\n");
@@ -342,8 +344,8 @@ int main(int argc, char** argv)
 
 			//Next
 			//Start to publish CSI by ROS Msg
-			sar_localization::Csi msg;
-			msg.header.stamp = ros::Time::now();
+			//sar_localization::Csi msg;
+			//msg.header.stamp = ros::Time::now();
 			msg.Ntx = Ntx;
 			//initialization
 			msg.csi1_real.data.clear();

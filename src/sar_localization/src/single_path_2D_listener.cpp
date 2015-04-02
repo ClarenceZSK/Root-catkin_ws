@@ -85,6 +85,8 @@ struct SAR
 	bool autoSwitch;
 	Vector360d multipathProfile;
 	map<double, PairCSIVector> input;   //map<imu, csi1, csi2>
+	map<double, CSI> CSIQueue;			//for data synchronization
+	map<double, IMU> IMUQueue;
 };
 
 //Define some global variables
@@ -343,7 +345,8 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
 		Sar.stdFlag = true;
 		//printf("T_D:%.2f, std_yaw:%.2f, yaw:%.2f, offset yaw:%.2f\n", fabs(t_stamp_motor-t_stamp_imu), RadianToDegree(std_yaw), RadianToDegree(yaw), offset_yaw);
 	}
-  	Sar.imuReady = true;
+	Sar.IMUQueue.insert(make_pair(Imu.t_stamp_imu, Imu) );
+  	//Sar.imuReady = true;
 }
 
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
@@ -378,10 +381,40 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 		complex<double> csi2tmp(real2[i], image2[i]);
 		Csi.csi.push_back(make_pair(csi1tmp, csi2tmp) );
 	}
-  	Sar.csiReady = !msg->check_csi;
+  	//Sar.csiReady = !msg->check_csi;
+	Sar.CSIQueue.insert(make_pair(Csi.t_stamp_csi, Csi) );
 	//csiReady = true;
 }
 // %EndTag(CALLBACK)%
+
+void DataSynchronize()
+{
+	if(!Sar.IMUQueue.empty() && !Sar.CSIQueue.empty() )
+	{
+		map<double, IMU>::iterator IMUiter;
+		map<double, CSI>::iterator CSIiter;
+		double minTD = 0xffff;
+		for(CSIiter = Sar.CSIQueue.begin(); CSIiter != Sar.CSIQueue.end(); ++CSIiter)
+		{
+			double csiT = CSIiter->first;
+			for(IMUiter = Sar.IMUQueue.begin(); IMUiter != Sar.IMUQueue.end(); ++IMUiter)
+			{
+				double imuT = IMUiter->first;
+				double TD = fabs(imuT - csiT);
+				if(minTD > TD)
+				{
+					minTD = TD;
+					Imu = IMUiter->second;
+					Csi = CSIiter->second;
+				}
+			}
+		}
+		Sar.imuReady = true;
+		Sar.csiReady = true;
+		Sar.IMUQueue.clear();
+		Sar.CSIQueue.clear();
+	}
+}
 
 int main(int argc, char **argv)
 {
@@ -419,6 +452,7 @@ int main(int argc, char **argv)
 	{
 		//spinner.spinOnce();
 		ros::spinOnce();
+		DataSynchronize();
 		int angle = SAR_Profile_2D();
 		if(angle >= 0)
 		{
