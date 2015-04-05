@@ -190,24 +190,32 @@ target_link_libraries(motor_message ${catkin_LIBRARIES})
 add_dependencies(motor_message sar_localization_generate_messages_cpp)
 
 
-add_executable(single_path_2D_listener src/single_path_2D_listener.cpp)
+add_executable(LOS_2D_listener src/LOS_2D_listener.cpp)
 target_link_libraries(
-	single_path_2D_listener 
+	LOS_2D_listener
 	${catkin_LIBRARIES}
 	${GLIB2_LIBRARY}
    	${GTHREAD2_LIBRARY}
 )
-#add_dependencies(listener sar_localization_generate_messages_cpp)
-add_dependencies(single_path_2D_listener sar_localization_generate_messages_cpp)
+add_dependencies(LOS_2D_listener sar_localization_generate_messages_cpp)
 
-add_executable(multipath_2D_listener src/multipath_2D_listener.cpp)
+add_executable(LOS_3D_listener src/LOS_3D_listener.cpp)
 target_link_libraries(
-    multipath_2D_listener 
+    LOS_3D_listener
     ${catkin_LIBRARIES}
-    ${GLIB2_LIBRARY}                                                            
+    ${GLIB2_LIBRARY}
     ${GTHREAD2_LIBRARY}
 )
-add_dependencies(multipath_2D_listener sar_localization_generate_messages_cpp)
+add_dependencies(LOS_3D_listener sar_localization_generate_messages_cpp)
+
+add_executable(NLOS_2D_listener src/NLOS_2D_listener.cpp)
+target_link_libraries(
+	NLOS_2D_listener
+    ${catkin_LIBRARIES}
+    ${GLIB2_LIBRARY}
+    ${GTHREAD2_LIBRARY}
+)
+add_dependencies(NLOS_2D_listener sar_localization_generate_messages_cpp)
 
 
 

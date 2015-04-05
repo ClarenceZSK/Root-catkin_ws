@@ -228,6 +228,45 @@ gtest_main/fast:
 .PHONY : gtest_main/fast
 
 #=============================================================================
+# Target rules for targets named LOS_2D_listener
+
+# Build rule for target.
+LOS_2D_listener: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 LOS_2D_listener
+.PHONY : LOS_2D_listener
+
+# fast build rule for target.
+LOS_2D_listener/fast:
+	$(MAKE) -f sar_localization/CMakeFiles/LOS_2D_listener.dir/build.make sar_localization/CMakeFiles/LOS_2D_listener.dir/build
+.PHONY : LOS_2D_listener/fast
+
+#=============================================================================
+# Target rules for targets named LOS_3D_listener
+
+# Build rule for target.
+LOS_3D_listener: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 LOS_3D_listener
+.PHONY : LOS_3D_listener
+
+# fast build rule for target.
+LOS_3D_listener/fast:
+	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D_listener.dir/build.make sar_localization/CMakeFiles/LOS_3D_listener.dir/build
+.PHONY : LOS_3D_listener/fast
+
+#=============================================================================
+# Target rules for targets named NLOS_2D_listener
+
+# Build rule for target.
+NLOS_2D_listener: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 NLOS_2D_listener
+.PHONY : NLOS_2D_listener
+
+# fast build rule for target.
+NLOS_2D_listener/fast:
+	$(MAKE) -f sar_localization/CMakeFiles/NLOS_2D_listener.dir/build.make sar_localization/CMakeFiles/NLOS_2D_listener.dir/build
+.PHONY : NLOS_2D_listener/fast
+
+#=============================================================================
 # Target rules for targets named _sar_localization_generate_messages_check_deps_Csi
 
 # Build rule for target.
@@ -291,19 +330,6 @@ motor_message: cmake_check_build_system
 motor_message/fast:
 	$(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/build
 .PHONY : motor_message/fast
-
-#=============================================================================
-# Target rules for targets named multipath_2D_listener
-
-# Build rule for target.
-multipath_2D_listener: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 multipath_2D_listener
-.PHONY : multipath_2D_listener
-
-# fast build rule for target.
-multipath_2D_listener/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/multipath_2D_listener.dir/build.make sar_localization/CMakeFiles/multipath_2D_listener.dir/build
-.PHONY : multipath_2D_listener/fast
 
 #=============================================================================
 # Target rules for targets named roscpp_generate_messages_cpp
@@ -488,19 +514,6 @@ serial_message/fast:
 .PHONY : serial_message/fast
 
 #=============================================================================
-# Target rules for targets named single_path_2D_listener
-
-# Build rule for target.
-single_path_2D_listener: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 single_path_2D_listener
-.PHONY : single_path_2D_listener
-
-# fast build rule for target.
-single_path_2D_listener/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/single_path_2D_listener.dir/build.make sar_localization/CMakeFiles/single_path_2D_listener.dir/build
-.PHONY : single_path_2D_listener/fast
-
-#=============================================================================
 # Target rules for targets named std_msgs_generate_messages_cpp
 
 # Build rule for target.
@@ -558,12 +571,14 @@ help:
 	@echo "... tests"
 	@echo "... gtest"
 	@echo "... gtest_main"
+	@echo "... LOS_2D_listener"
+	@echo "... LOS_3D_listener"
+	@echo "... NLOS_2D_listener"
 	@echo "... _sar_localization_generate_messages_check_deps_Csi"
 	@echo "... _sar_localization_generate_messages_check_deps_Imu"
 	@echo "... _sar_localization_generate_messages_check_deps_Motor"
 	@echo "... log_csi_stream"
 	@echo "... motor_message"
-	@echo "... multipath_2D_listener"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... roscpp_generate_messages_lisp"
 	@echo "... roscpp_generate_messages_py"
@@ -578,7 +593,6 @@ help:
 	@echo "... sar_localization_genlisp"
 	@echo "... sar_localization_genpy"
 	@echo "... serial_message"
-	@echo "... single_path_2D_listener"
 	@echo "... std_msgs_generate_messages_cpp"
 	@echo "... std_msgs_generate_messages_lisp"
 	@echo "... std_msgs_generate_messages_py"
