@@ -23,6 +23,8 @@
 #include <stdio.h>
 //#include <glib.h>
 
+#include <visualization_msgs/Marker.h>
+
 //for multiple processes processing
 #include <signal.h>
 #include <sys/types.h>
@@ -36,8 +38,8 @@
 #define CIRCLE_THRE 	173		//maxAngle-minAngle > 353 degree
 #define LANDA 			0.06	//The aperture size is 6cm
 #define R 				0.08	//The antenna interval
-//for debug
-#define STEP_SIZE 1
+
+#define STEP_SIZE 		1
 
 using namespace std;
 using namespace Eigen;
@@ -92,7 +94,7 @@ struct SAR
 	bool dataControl;
 	int outputFrequency;
 	int dataSizeControl;
-	Vector360d multipathProfile;
+	//Vector360d multipathProfile;
 	map<double, COM> input;   //map<imu, csi1, csi2>
 	map<double, CSI> CSIQueue;			//for data synchronization
 	map<double, IMU> IMUQueue;
@@ -115,6 +117,11 @@ struct SAR Sar = {
 	0,			//dataControl
 	0,			//outputFrequency
 	60,			//dataSizeControl
+	map<double, COM>(),
+	map<double, CSI>(),
+	map<double, IMU>(),
+	vector<pair<IMU, CSI> >(),
+	vector<double>(),
 };
 
 ofstream myfile;
@@ -126,6 +133,38 @@ double RadianToDegree(double radian)
 double DegreeToRadian(double degree)
 {
     return degree/180.0*PI;
+}
+
+double PowerCalculation_2D(double alpha)
+{
+	double ret = 0;
+    map<double, COM>::iterator input_iter = Sar.input.begin();
+    //int div = (int) input_iter->second.size();
+    int div = Sar.processingSize;
+    for(int i = 0; i < div; ++i)    //compute power for each subcarrier, each transmitter
+    {
+        input_iter = Sar.input.begin();
+        complex<double> avgCsiHat(0, 0);
+        while(input_iter != Sar.input.end() )
+        {
+            double input_yaw = DegreeToRadian(input_iter->first);
+            //double input_pitch = input_iter->second.Comimu.pitch;   //Radian
+            complex<double> input_csi1 = input_iter->second.Comcsi.csi[i].first;
+            complex<double> input_csi2 = input_iter->second.Comcsi.csi[i].second;
+            double theta = 2*PI/LANDA*R*cos(alpha-input_yaw);
+            double real_tmp = cos(theta);
+            double image_tmp = sin(theta);
+			complex<double> tmp (real_tmp, image_tmp);
+            //cout << "Relative csi:" << CSI1[i]*conj(CSI2[i]) << endl;
+            avgCsiHat += input_csi1*conj(input_csi2)*tmp;
+            ++input_iter;
+        }
+        avgCsiHat /= Sar.input.size();
+        ret += avgCsiHat.real()*avgCsiHat.real() + avgCsiHat.imag()*avgCsiHat.  imag();
+    }
+    ret /= div;
+    //printf("Power calculation: %lf\n", ret);
+    return ret;
 }
 
 double PowerCalculation(double alpha, double beta)
@@ -312,21 +351,29 @@ vector<int> SAR_Profile_3D()
 			int ret_yaw;
 			int ret_pitch;
 			double maxPower = 0;
+			double resolution = STEP_SIZE;
 			myfile << "#" << Sar.countD << endl;
-			for(int alpha = 0; alpha < 360; ++alpha)
+			for(int alpha = 0; alpha < 360; alpha += resolution)
 			{
-				for(int beta = 0; beta < 180; ++beta)
-				{
-       				double powtmp = PowerCalculation(DegreeToRadian(alpha), DegreeToRadian(beta) );
+       				double powtmp = PowerCalculation_2D(DegreeToRadian(alpha));
 					if(maxPower < powtmp)
 					{
 						maxPower= powtmp;
 						ret_yaw = alpha;
-						ret_pitch = beta;
 					}
-					myfile << powtmp << endl;
+					//myfile << alpha << "," << beta << "," << powtmp << endl;
+			}
+			maxPower = 0;
+			for (int beta = 0; beta < 180; beta += resolution)
+			{
+				double powtmp = PowerCalculation(DegreeToRadian(ret_yaw), DegreeToRadian(beta) );
+				if(maxPower < powtmp)
+				{
+					maxPower = powtmp;
+					ret_pitch = beta;
 				}
 			}
+			//cout << endl;
 			printf("Count:%d,maxPow: %0.3f,sample size:%d, ", Sar.countD, maxPower, (int) Sar.input.size() );
 			ret.push_back(ret_yaw);
 			ret.push_back(ret_pitch);
@@ -354,7 +401,7 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
   	Imu.t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
   	Imu.yaw = msg->yaw;
 	Imu.yaw = DegreeToRadian(Imu.yaw);
-	Imu.pitch = msg->pitch;
+	Imu.pitch = msg->pitch - 90;
 	Imu.pitch = DegreeToRadian(Imu.pitch);
 	//if(!std_flag && input.size() > 2)
 	if(!Sar.stdFlag)
@@ -485,13 +532,50 @@ void DataControl()
 	}
 }
 
+vector<visualization_msgs::Marker> markers;
+void initMarkers(int num)
+{
+	for (int i = 0; i < num; ++i)
+	{
+		visualization_msgs::Marker marker;
+        marker.header.frame_id = "/my_frame";
+        marker.header.stamp = ros::Time::now();
+        marker.ns = "listener";
+        marker.id = 0;
+		uint32_t shape = visualization_msgs::Marker::ARROW;
+        marker.type = shape;
+        marker.action = visualization_msgs::Marker::ADD;
+
+        marker.pose.position.x = 0;
+        marker.pose.position.y = 0;
+        marker.pose.position.z = 0;
+        marker.pose.orientation.x = 0.0;
+        marker.pose.orientation.y = 0.0;
+        marker.pose.orientation.z = 0.0;
+        marker.pose.orientation.w = 1.0;
+
+        marker.scale.x = 1.0;
+        marker.scale.y = 1.0;
+        marker.scale.z = 1.0;
+
+		marker.color.r = 0.0f;
+        marker.color.g = 1.0f;
+        marker.color.b = 0.0f;
+        marker.color.a = 1.0;
+        marker.lifetime = ros::Duration();
+		markers.push_back(marker);
+	}
+}
+
 int main(int argc, char **argv)
 {
-	Sar.multipathProfile.setZero();
+	//Sar.multipathProfile.setZero();
 	Ap.apNum = 2;
 	Ap.apID = 0;
 	ros::init(argc, argv, "listener");
   	ros::NodeHandle n;
+	ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+	//uint32_t shape = visualization_msgs::Marker::ARROW;
   	ros::Subscriber sub1 = n.subscribe("imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
@@ -525,7 +609,7 @@ int main(int argc, char **argv)
 		{
 			DataControl();		//Limit a upper bound of the size of input
 		}
-		vector<int> angles;
+		vector<int> angles;		//alpha, beta
 		angles = SAR_Profile_3D();
 		if(!angles.empty() )
 		{
@@ -538,10 +622,16 @@ int main(int argc, char **argv)
             //Switch to another AP
 			if(Sar.autoSwitch)
 			{
+				//publish one markers
+				initMarkers(Ap.apNum);
+				assert(markers.size() == Ap.apNum);
        	    	switch(Ap.apID)
             	{
             	case 0:
 					//Switch to from AP1 to AP2
+					markers[Ap.apID].pose.orientation.x = cos(DegreeToRadian(angles[0]))*sin(DegreeToRadian(angles[1]));
+                    markers[Ap.apID].pose.orientation.y = sin(DegreeToRadian(angles[0]))*sin(DegreeToRadian(angles[1]));
+                    markers[Ap.apID].pose.orientation.z = cos(DegreeToRadian(angles[1]));
               		Ap.apID = (Ap.apID+1)%Ap.apNum;
                 	system("pkill -n ping");   //kill the child process first
                		system("iwconfig wlan0 essid TP5G1");
@@ -552,6 +642,9 @@ int main(int argc, char **argv)
 					Sar.imuReady = false;
                		break;
             	case 1:
+					markers[Ap.apID].pose.orientation.x = cos(DegreeToRadian(angles[0]))*sin(DegreeToRadian(angles[1]));
+                    markers[Ap.apID].pose.orientation.y = sin(DegreeToRadian(angles[0]))*sin(DegreeToRadian(angles[1]));
+                    markers[Ap.apID].pose.orientation.z = cos(DegreeToRadian(angles[1]));
               		Ap.apID = (Ap.apID+1)%Ap.apNum;
               		system("pkill -n ping");      //kill the child process first
               		system("iwconfig wlan0 essid TP5G2");
@@ -562,6 +655,42 @@ int main(int argc, char **argv)
 					Sar.imuReady = false;
            			break;
            		}
+				while (marker_pub.getNumSubscribers() < 1)
+                {
+                    if (!ros::ok() )
+                    {
+                        return 0;
+                    }
+                    ROS_WARN_ONCE("Please create a Subscriber to the marker");
+                }
+                for(int i = 0; i < (int) markers.size(); ++i)
+                {
+                    marker_pub.publish(markers[i]);
+                }
+				markers.clear();
+			}
+			else
+			{
+				//publish one markers
+				initMarkers(1);
+				while (marker_pub.getNumSubscribers() < 1)
+				{
+					if (!ros::ok() )
+					{
+						return 0;
+					}
+					ROS_WARN_ONCE("Please create a Subscriber to the marker");
+				}
+				for(int i = 0; i < (int) markers.size(); ++i)
+				{
+					//specify orientation
+					markers[i].pose.orientation.x = cos(DegreeToRadian(angles[0]))*sin(DegreeToRadian(angles[1]));
+			        markers[i].pose.orientation.y = sin(DegreeToRadian(angles[0]))*sin(DegreeToRadian(angles[1]));
+        			markers[i].pose.orientation.z = cos(DegreeToRadian(angles[1]));
+					cout << "Mark orientation:" << markers[i].pose.orientation.x << ", " << markers[i].pose.orientation.y << ", " << markers[i].pose.orientation.z << endl;
+					marker_pub.publish(markers[i]);
+				}
+				markers.clear();
 			}
 		}
 	}

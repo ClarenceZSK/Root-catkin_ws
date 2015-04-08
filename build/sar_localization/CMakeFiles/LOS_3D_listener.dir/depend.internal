@@ -206,6 +206,10 @@ sar_localization/CMakeFiles/LOS_3D_listener.dir/src/LOS_3D_listener.cpp.o
  /opt/eigen/Eigen/src/plugins/MatrixCwiseUnaryOps.h
  /opt/ros/indigo/include/XmlRpcDecl.h
  /opt/ros/indigo/include/XmlRpcValue.h
+ /opt/ros/indigo/include/geometry_msgs/Point.h
+ /opt/ros/indigo/include/geometry_msgs/Pose.h
+ /opt/ros/indigo/include/geometry_msgs/Quaternion.h
+ /opt/ros/indigo/include/geometry_msgs/Vector3.h
  /opt/ros/indigo/include/ros/advertise_options.h
  /opt/ros/indigo/include/ros/advertise_service_options.h
  /opt/ros/indigo/include/ros/assert.h
@@ -260,6 +264,7 @@ sar_localization/CMakeFiles/LOS_3D_listener.dir/src/LOS_3D_listener.cpp.o
  /opt/ros/indigo/include/ros/wall_timer.h
  /opt/ros/indigo/include/ros/wall_timer_options.h
  /opt/ros/indigo/include/rosconsole/macros_generated.h
+ /opt/ros/indigo/include/std_msgs/ColorRGBA.h
  /opt/ros/indigo/include/std_msgs/Float32.h
  /opt/ros/indigo/include/std_msgs/Float64MultiArray.h
  /opt/ros/indigo/include/std_msgs/Header.h
@@ -267,6 +272,7 @@ sar_localization/CMakeFiles/LOS_3D_listener.dir/src/LOS_3D_listener.cpp.o
  /opt/ros/indigo/include/std_msgs/MultiArrayDimension.h
  /opt/ros/indigo/include/std_msgs/MultiArrayLayout.h
  /opt/ros/indigo/include/std_msgs/String.h
+ /opt/ros/indigo/include/visualization_msgs/Marker.h
  /root/catkin_ws/devel/include/sar_localization/Csi.h
  /root/catkin_ws/devel/include/sar_localization/Imu.h
  /root/catkin_ws/devel/include/sar_localization/Motor.h
