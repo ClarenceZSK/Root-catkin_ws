@@ -4,6 +4,8 @@ project(sar_localization)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+set(CMAKE_CXX_FLAGS "-DNDEBUG -std=c++11 -march=native -Ofast -Wall -fopenmp")
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy

@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: imu_3dm_gx4
+Description: Description of imu_3dm_gx4
+Version: 0.0.2
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib 
+Requires: 

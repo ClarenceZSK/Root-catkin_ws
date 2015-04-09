@@ -1,0 +1,8 @@
+prefix=/home/eeshaojie/Desktop/code/slam/drivers/imu_3dm_gx4/devel
+
+Name: imu_3dm_gx4
+Description: Description of imu_3dm_gx4
+Version: 0.0.2
+Cflags: -I/home/eeshaojie/Desktop/code/slam/drivers/imu_3dm_gx4/devel/include
+Libs: -L/home/eeshaojie/Desktop/code/slam/drivers/imu_3dm_gx4/devel/lib 
+Requires: 

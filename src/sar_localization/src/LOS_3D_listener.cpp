@@ -36,7 +36,7 @@
 #define PROFILE_LIMIT 	20
 #define INTERVAL_THRE 	13		//maximun interval must greater than X degree
 #define CIRCLE_THRE 	173		//maxAngle-minAngle > 353 degree
-#define LANDA 			0.06	//The aperture size is 6cm
+#define LANDA 			0.05222	//The aperture size is 6cm
 #define R 				0.08	//The antenna interval
 
 #define STEP_SIZE 		1
@@ -355,16 +355,22 @@ vector<int> SAR_Profile_3D()
 			myfile << "#" << Sar.countD << endl;
 			for(int alpha = 0; alpha < 360; alpha += resolution)
 			{
-       				double powtmp = PowerCalculation_2D(DegreeToRadian(alpha));
+				//for (int beta = 0; beta < 180; beta += resolution)
+				//{
+					//double powtmp = PowerCalculation(DegreeToRadian(alpha), DegreeToRadian(beta) );
+					double powtmp = PowerCalculation_2D(DegreeToRadian(alpha));
 					if(maxPower < powtmp)
 					{
 						maxPower= powtmp;
 						ret_yaw = alpha;
+						//ret_pitch = beta;
 					}
 					//myfile << alpha << "," << beta << "," << powtmp << endl;
+				//}
 			}
+			//cout << endl;
 			maxPower = 0;
-			for (int beta = 0; beta < 180; beta += resolution)
+			for(int beta = 0; beta < 180; beta += resolution)
 			{
 				double powtmp = PowerCalculation(DegreeToRadian(ret_yaw), DegreeToRadian(beta) );
 				if(maxPower < powtmp)
@@ -373,7 +379,6 @@ vector<int> SAR_Profile_3D()
 					ret_pitch = beta;
 				}
 			}
-			//cout << endl;
 			printf("Count:%d,maxPow: %0.3f,sample size:%d, ", Sar.countD, maxPower, (int) Sar.input.size() );
 			ret.push_back(ret_yaw);
 			ret.push_back(ret_pitch);
@@ -401,7 +406,7 @@ void imuCallback(const sar_localization::Imu::ConstPtr& msg)
   	Imu.t_stamp_imu = msg->header.stamp.toNSec()*1e-6;
   	Imu.yaw = msg->yaw;
 	Imu.yaw = DegreeToRadian(Imu.yaw);
-	Imu.pitch = msg->pitch - 90;
+	Imu.pitch = msg->pitch;
 	Imu.pitch = DegreeToRadian(Imu.pitch);
 	//if(!std_flag && input.size() > 2)
 	if(!Sar.stdFlag)

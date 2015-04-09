@@ -34,7 +34,7 @@
 #define PROFILE_LIMIT 	20
 #define INTERVAL_THRE 	13		//maximun interval must greater than X degree
 #define CIRCLE_THRE 	173		//maxAngle-minAngle > 353 degree
-#define LANDA 			0.06	//The aperture size is 6cm
+#define LANDA 			0.05222	//The aperture size is 6cm
 #define R 				0.08	//The antenna interval
 //for debug
 #define STEP_SIZE 1

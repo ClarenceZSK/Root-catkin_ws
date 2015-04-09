@@ -262,90 +262,6 @@ motor_message/fast:
 .PHONY : motor_message/fast
 
 # Convenience name for target.
-sar_localization/CMakeFiles/roscpp_generate_messages_cpp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
-.PHONY : sar_localization/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-roscpp_generate_messages_cpp: sar_localization/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
-.PHONY : roscpp_generate_messages_cpp
-
-# fast build rule for target.
-roscpp_generate_messages_cpp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make sar_localization/CMakeFiles/roscpp_generate_messages_cpp.dir/build
-.PHONY : roscpp_generate_messages_cpp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/roscpp_generate_messages_lisp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/roscpp_generate_messages_lisp.dir/rule
-.PHONY : sar_localization/CMakeFiles/roscpp_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-roscpp_generate_messages_lisp: sar_localization/CMakeFiles/roscpp_generate_messages_lisp.dir/rule
-.PHONY : roscpp_generate_messages_lisp
-
-# fast build rule for target.
-roscpp_generate_messages_lisp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/roscpp_generate_messages_lisp.dir/build.make sar_localization/CMakeFiles/roscpp_generate_messages_lisp.dir/build
-.PHONY : roscpp_generate_messages_lisp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/roscpp_generate_messages_py.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/roscpp_generate_messages_py.dir/rule
-.PHONY : sar_localization/CMakeFiles/roscpp_generate_messages_py.dir/rule
-
-# Convenience name for target.
-roscpp_generate_messages_py: sar_localization/CMakeFiles/roscpp_generate_messages_py.dir/rule
-.PHONY : roscpp_generate_messages_py
-
-# fast build rule for target.
-roscpp_generate_messages_py/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/roscpp_generate_messages_py.dir/build.make sar_localization/CMakeFiles/roscpp_generate_messages_py.dir/build
-.PHONY : roscpp_generate_messages_py/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-.PHONY : sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_cpp: sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-.PHONY : rosgraph_msgs_generate_messages_cpp
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_cpp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
-.PHONY : rosgraph_msgs_generate_messages_cpp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-.PHONY : sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_lisp: sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-.PHONY : rosgraph_msgs_generate_messages_lisp
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_lisp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
-.PHONY : rosgraph_msgs_generate_messages_lisp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-.PHONY : sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_py: sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-.PHONY : rosgraph_msgs_generate_messages_py
-
-# fast build rule for target.
-rosgraph_msgs_generate_messages_py/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make sar_localization/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
-.PHONY : rosgraph_msgs_generate_messages_py/fast
-
-# Convenience name for target.
 sar_localization/CMakeFiles/sar_localization_gencpp.dir/rule:
 	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/sar_localization_gencpp.dir/rule
 .PHONY : sar_localization/CMakeFiles/sar_localization_gencpp.dir/rule
@@ -456,48 +372,6 @@ serial_message: sar_localization/CMakeFiles/serial_message.dir/rule
 serial_message/fast:
 	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/serial_message.dir/build.make sar_localization/CMakeFiles/serial_message.dir/build
 .PHONY : serial_message/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
-.PHONY : sar_localization/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-std_msgs_generate_messages_cpp: sar_localization/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
-.PHONY : std_msgs_generate_messages_cpp
-
-# fast build rule for target.
-std_msgs_generate_messages_cpp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make sar_localization/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
-.PHONY : std_msgs_generate_messages_cpp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
-.PHONY : sar_localization/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-std_msgs_generate_messages_lisp: sar_localization/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
-.PHONY : std_msgs_generate_messages_lisp
-
-# fast build rule for target.
-std_msgs_generate_messages_lisp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make sar_localization/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
-.PHONY : std_msgs_generate_messages_lisp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/std_msgs_generate_messages_py.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-.PHONY : sar_localization/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-std_msgs_generate_messages_py: sar_localization/CMakeFiles/std_msgs_generate_messages_py.dir/rule
-.PHONY : std_msgs_generate_messages_py
-
-# fast build rule for target.
-std_msgs_generate_messages_py/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/std_msgs_generate_messages_py.dir/build.make sar_localization/CMakeFiles/std_msgs_generate_messages_py.dir/build
-.PHONY : std_msgs_generate_messages_py/fast
 
 src/LOS_2D_listener.o: src/LOS_2D_listener.cpp.o
 .PHONY : src/LOS_2D_listener.o
@@ -663,12 +537,6 @@ help:
 	@echo "... log_csi_stream"
 	@echo "... motor_message"
 	@echo "... rebuild_cache"
-	@echo "... roscpp_generate_messages_cpp"
-	@echo "... roscpp_generate_messages_lisp"
-	@echo "... roscpp_generate_messages_py"
-	@echo "... rosgraph_msgs_generate_messages_cpp"
-	@echo "... rosgraph_msgs_generate_messages_lisp"
-	@echo "... rosgraph_msgs_generate_messages_py"
 	@echo "... sar_localization_gencpp"
 	@echo "... sar_localization_generate_messages"
 	@echo "... sar_localization_generate_messages_cpp"
@@ -677,9 +545,6 @@ help:
 	@echo "... sar_localization_genlisp"
 	@echo "... sar_localization_genpy"
 	@echo "... serial_message"
-	@echo "... std_msgs_generate_messages_cpp"
-	@echo "... std_msgs_generate_messages_lisp"
-	@echo "... std_msgs_generate_messages_py"
 	@echo "... test"
 	@echo "... src/LOS_2D_listener.o"
 	@echo "... src/LOS_2D_listener.i"
