@@ -1,8 +1,9 @@
 #include "SAR.h"
 
+using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.05222), frame_count(0), current_time(-1)
+SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), maxTimeDiff(0)
 {
 	dataReady = false;
 	ROS_INFO("SAR init finished");
@@ -26,6 +27,21 @@ void SAR::processIMU(double t, Vector3d angular_velocity)
 	}
 }
 
+void SAR::init()
+{
+	frame_count = 0;
+	maxTimeDiff = 0;
+    if(motor.stdYaw < 1e-5)
+    {
+        baseDirection << 0, 1, 0;
+    }
+    else
+    {
+        baseDirection << 0, -1, 0;
+    }
+    input.clear();
+}
+
 double SAR::degreeToRadian(double degree)
 {
 	return degree/180.0*PI;
@@ -34,11 +50,6 @@ double SAR::degreeToRadian(double degree)
 double SAR::radianToDegree(double radian)
 {
 	return radian/PI*180;
-}
-
-double SAR::powerCalculation(Vector3d alpha)
-{
-
 }
 
 void SAR::inputData()
@@ -50,16 +61,8 @@ void SAR::inputData()
 	dataReady = false;
 	if(motor.nearStartPoint() )
 	{
-		frame_count = 0;
-		if(motor.stdYaw-0 < 1e-5)
-		{
-			baseDirection << 0, 1, 0;
-		}
-		else
-		{
-			baseDirection << 0, -1, 0;
-		}
-		input.clear();
+		init();
+		cout << "Reach start point, init SAR!" << endl;
 		input.push_back(make_pair(baseDirection, csi) );
 	}
 	else
@@ -77,8 +80,146 @@ void SAR::inputData()
 
 bool SAR::checkData()
 {
-	
+	if(frame_count == 0)
+	{
+		return false;
+	}
+	//check if semi-circulate arc
+	int size = (int) input.size();
+	double cosArc = input[--size].first.dot(baseDirection);
+	assert(cosArc <= 1 && cosArc >= -1);
+	if(cosArc > cos(degreeToRadian(ARC) ) )
+	{
+		return false;
+	}
+	else
+	{
+		//check max interval
+		double maxInterval = 0;
+		Vector3d pre = input[0].first;
+		for(int i = 1; i < size; ++i)
+		{
+			Vector3d next = input[i].first;
+			double cosTmp = pre.dot(next);
+			if(maxInterval < cosTmp)
+			{
+				maxInterval = cosTmp;
+			}
+			pre = next;
+		}
+		if(maxInterval < cos(degreeToRadian(INTERVAL) ) )
+		{
+			cout << "Too large interval!" << maxInterval <<"--" << cos(degreeToRadian(INTERVAL) ) << endl;
+			return false;
+		}
+		else
+		{
+			//check data consistancy
+			int checkSubcarrierNum = (int) input[0].second.pairVector.size();
+			for (int i = 1; i < size; ++i)
+			{
+				int subcarrierNum = (int) input[i].second.pairVector.size();
+				if(subcarrierNum != checkSubcarrierNum)
+				{
+					cout << "!Data inconsistant!" << checkSubcarrierNum << "--" << subcarrierNum << endl;
+					return false;
+				}
+			}
+			return true;
+		}
+	}
 }
+
+double SAR::powerCalculation(Vector3d dr_std)
+{
+	double ret = 0;
+	int div = (int) input[0].second.pairVector.size();
+	for(int i = 0; i < div; ++i)
+	{
+		complex<double> avgCsiHat(0, 0);
+		for(int j = 0; j < (int) input.size(); ++j)
+		{
+			Vector3d directionV = input[j].first;
+			complex<double> input_csi1 = input[j].second.pairVector[i].first;
+			complex<double> input_csi2 = input[j].second.pairVector[i].second;
+			double theta = (2*PI/Landa) * R * directionV.dot(dr_std);
+			assert(directionV.norm() == 1);
+			double real_tmp = cos(theta);
+			double image_tmp = sin(theta);
+			complex<double> tmp (real_tmp, image_tmp);
+			avgCsiHat += input_csi1 * conj(input_csi2) * tmp;
+		}
+		avgCsiHat /= input.size();
+		ret += avgCsiHat.real() * avgCsiHat.real() + avgCsiHat.imag() * avgCsiHat.imag();
+	}
+	ret /= div;
+	return ret;
+}
+
+int SAR::SAR_Profile_2D()
+{
+	int ret_yaw;
+	int resolution = STEP_SIZE;      //search resolution
+	double maxPower = 0;
+	++round_count;
+	myfile << "#" << round_count << endl;
+	for(int alpha = 0; alpha < 360; alpha += resolution)
+	{
+		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 0);
+		double powtmp = powerCalculation(dr);
+		if(maxPower < powtmp)
+		{
+			maxPower= powtmp;
+			ret_yaw = alpha;
+		}
+		myfile << powtmp << endl;
+	}
+	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
+	return ret_yaw;
+}
+
+vector<int> SAR::SAR_Profile_3D()
+{
+	vector<int> ret;
+	int resolution = STEP_SIZE;      //search resolution
+	myfile << "#" << round_count << endl;
+	for(int alpha = 0; alpha < 360; alpha += resolution)
+	{
+		for(int beta = 0; beta < 180; beta += resolution)
+		{
+
+		}
+	}
+}
+
+void SAR::switchAP()
+{
+    switch(ap.apID)
+    {
+    case 0:
+    //Switch to from AP1 to AP2
+        ap.apID = (ap.apID+1)%ap.apNum;
+        system("pkill -n ping");   //kill the child process first
+        system("iwconfig wlan0 essid TP5G1");
+        printf("Switch to TP5G1 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.2");
+        ros::spinOnce();
+	    dataReady = false;
+        Landa = 0.05222;		//channel 149, frequency 5745MHz
+        break;
+	case 1:
+	    ap.apID = (ap.apID+1)%ap.apNum;
+        system("pkill -n ping");      //kill the child process fir  st
+        system("iwconfig wlan0 essid TP5G2");
+        printf("Switch to TP5G2 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.3");
+        ros::spinOnce();
+        dataReady = false;
+		Landa = 0.05186;		//channel 157, frequency 5785MHz
+        break;
+    }
+}
+
 
 //AP
 AP::AP():autoSwitch(0), apID(0), apNum(2)
@@ -103,6 +244,23 @@ void AP::mysystem(const char *cmdstr)
         execl("/bin/sh", "sh", "-c", cmdstr, (char *) 0);
         _exit(127);
     }
+}
+
+void AP::init()
+{
+    system("iwconfig wlan0 essid TP5G1");
+    printf("iwconfig to TP5G1\n");
+
+    system("dhclient wlan0");
+    printf("dhclient from TP5G1 completed\n");
+
+    system("iwconfig wlan0 essid TP5G2");
+    printf("iwconfig to TP5G2\n");
+
+    system("dhclient wlan0");
+    printf("dhclient from TP5G2 completed\n");
+
+    mysystem("ping -q -n -i 0.02 192.168.0.3");
 }
 
 //MOTOR
