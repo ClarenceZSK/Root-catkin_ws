@@ -182,14 +182,33 @@ vector<int> SAR::SAR_Profile_3D()
 {
 	vector<int> ret;
 	int resolution = STEP_SIZE;      //search resolution
+	double maxPower = 0;
+	int ret_yaw, ret_pitch;
+    ++round_count;
 	myfile << "#" << round_count << endl;
 	for(int alpha = 0; alpha < 360; alpha += resolution)
 	{
 		for(int beta = 0; beta < 180; beta += resolution)
 		{
-
+			Vector3d dr (cos(degreeToRadian(beta) ) * cos(degreeToRadian(alpha) ), cos(degreeToRadian(beta) ) * sin(degreeToRadian(alpha) ), sin(degreeToRadian(beta) ) );
+			double powtmp = powerCalculation(dr);
+          	if(maxPower < powtmp)
+          	{
+              	maxPower= powtmp;
+              	ret_yaw = alpha;
+				ret_pitch = beta;
+          	}
+          	myfile << powtmp << endl;
 		}
 	}
+	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
+	ret.push_back(ret_yaw);
+    ret.push_back(ret_pitch);
+	return ret;
+}
+
+vector<int> SAR::SAR_Profile_3D_fast()
+{
 }
 
 void SAR::switchAP()
