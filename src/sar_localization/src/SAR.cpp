@@ -7,6 +7,7 @@ SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), max
 {
 	baseDirection << 0, 1, 0;
 	dataReady = false;
+	firstNearStart = true;
 	ROS_INFO("SAR init finished");
 }
 
@@ -68,11 +69,16 @@ void SAR::inputData()
 	if(motor.nearStartPoint())
 	{
 		init();
-		cout << "Reach start point, init SAR!" << endl;
+		if(firstNearStart)
+		{
+			cout << "Reach start point, init SAR!" << endl;
+			firstNearStart = false;
+		}
 		input.push_back(make_pair(baseDirection, csi) );
 	}
 	else
 	{
+		firstNearStart = true;
 		Matrix3d rotation = Matrix3d::Identity();
 		for(int i = frame_count; i >= 0; --i)
 		{
@@ -120,6 +126,7 @@ bool SAR::checkData()
 		if(maxInterval < cos(degreeToRadian(INTERVAL) ) )
 		{
 			cout << "Too large interval! Pre:\n" << intervalPre << " Next:\n" << intervalNext << endl;
+			init();
 			return false;
 		}
 		else
@@ -132,6 +139,7 @@ bool SAR::checkData()
 				if(subcarrierNum != checkSubcarrierNum)
 				{
 					cout << "!Data inconsistant!" << checkSubcarrierNum << "--" << subcarrierNum << endl;
+					init();
 					return false;
 				}
 			}
@@ -227,7 +235,7 @@ vector<int> SAR::SAR_Profile_3D_fast()
 	myfile << "#" << round_count << endl;
     for(int alpha = 0; alpha < 360; alpha += resolution)
     {
-		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 0);
+		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 1);
 		double powtmp = powerCalculation(dr);
 		if(maxPower < powtmp)
 		{

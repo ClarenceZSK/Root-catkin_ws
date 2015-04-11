@@ -77,6 +77,7 @@ public:
 	double current_time;
 	double maxTimeDiff;
 	bool dataReady;
+	bool firstNearStart;
 	ofstream myfile;
 	CSI csi;
 	MOTOR motor;

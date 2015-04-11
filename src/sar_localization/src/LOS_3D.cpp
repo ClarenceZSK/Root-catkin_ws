@@ -180,9 +180,10 @@ int main(int argc, char **argv)
 		if (sar.checkData() )
 		{
 			vector<int> angles;     //alpha, beta
-			angles = sar.SAR_Profile_3D();
+			angles = sar.SAR_Profile_3D_fast();
 			assert(angles.size() == 2);
 			printf("Alpha&Beta:%d&%d\n", angles[0], angles[1]);
+			sar.init();
 			//init marker
 			initMarker();
 			setMarkerOrientation(angles[0], angles[1]);

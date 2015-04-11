@@ -181,9 +181,10 @@ int main(int argc, char **argv)
 		{
 			int angle = sar.SAR_Profile_2D();
 			printf("Alpha:%d\n", angle);
+			sar.init();
 			//init marker
 			initMarker();
-			setMarkerOrientation(angle, 0);
+			setMarkerOrientation(angle, 90);
 			marker_pub.publish(marker);
             //Switch to another AP
 			if(sar.ap.autoSwitch)
