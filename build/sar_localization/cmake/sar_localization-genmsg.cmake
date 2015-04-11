@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.cmake.em
 
-message(STATUS "sar_localization: 3 messages, 0 services")
+message(STATUS "sar_localization: 2 messages, 0 services")
 
 set(MSG_I_FLAGS "-Isar_localization:/root/catkin_ws/src/sar_localization/msg;-Istd_msgs:/opt/ros/indigo/share/std_msgs/cmake/../msg")
 
@@ -18,11 +18,6 @@ add_custom_target(sar_localization_generate_messages ALL)
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Motor.msg" NAME_WE)
 add_custom_target(_sar_localization_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "sar_localization" "/root/catkin_ws/src/sar_localization/msg/Motor.msg" "std_msgs/Header"
-)
-
-get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
-add_custom_target(_sar_localization_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "sar_localization" "/root/catkin_ws/src/sar_localization/msg/Imu.msg" "std_msgs/Header"
 )
 
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
@@ -48,12 +43,6 @@ _generate_msg_cpp(sar_localization
   "/opt/ros/indigo/share/std_msgs/cmake/../msg/Float64MultiArray.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayDimension.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayLayout.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/sar_localization
 )
-_generate_msg_cpp(sar_localization
-  "/root/catkin_ws/src/sar_localization/msg/Imu.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/sar_localization
-)
 
 ### Generating Services
 
@@ -70,8 +59,6 @@ add_dependencies(sar_localization_generate_messages sar_localization_generate_me
 
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Motor.msg" NAME_WE)
-add_dependencies(sar_localization_generate_messages_cpp _sar_localization_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
 add_dependencies(sar_localization_generate_messages_cpp _sar_localization_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
 add_dependencies(sar_localization_generate_messages_cpp _sar_localization_generate_messages_check_deps_${_filename})
@@ -97,12 +84,6 @@ _generate_msg_lisp(sar_localization
   "/opt/ros/indigo/share/std_msgs/cmake/../msg/Float64MultiArray.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayDimension.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayLayout.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/sar_localization
 )
-_generate_msg_lisp(sar_localization
-  "/root/catkin_ws/src/sar_localization/msg/Imu.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/sar_localization
-)
 
 ### Generating Services
 
@@ -119,8 +100,6 @@ add_dependencies(sar_localization_generate_messages sar_localization_generate_me
 
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Motor.msg" NAME_WE)
-add_dependencies(sar_localization_generate_messages_lisp _sar_localization_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
 add_dependencies(sar_localization_generate_messages_lisp _sar_localization_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
 add_dependencies(sar_localization_generate_messages_lisp _sar_localization_generate_messages_check_deps_${_filename})
@@ -146,12 +125,6 @@ _generate_msg_py(sar_localization
   "/opt/ros/indigo/share/std_msgs/cmake/../msg/Float64MultiArray.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayDimension.msg;/opt/ros/indigo/share/std_msgs/cmake/../msg/MultiArrayLayout.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/sar_localization
 )
-_generate_msg_py(sar_localization
-  "/root/catkin_ws/src/sar_localization/msg/Imu.msg"
-  "${MSG_I_FLAGS}"
-  "/opt/ros/indigo/share/std_msgs/cmake/../msg/Header.msg"
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/sar_localization
-)
 
 ### Generating Services
 
@@ -168,8 +141,6 @@ add_dependencies(sar_localization_generate_messages sar_localization_generate_me
 
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Motor.msg" NAME_WE)
-add_dependencies(sar_localization_generate_messages_py _sar_localization_generate_messages_check_deps_${_filename})
-get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Imu.msg" NAME_WE)
 add_dependencies(sar_localization_generate_messages_py _sar_localization_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/root/catkin_ws/src/sar_localization/msg/Csi.msg" NAME_WE)
 add_dependencies(sar_localization_generate_messages_py _sar_localization_generate_messages_check_deps_${_filename})

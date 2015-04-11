@@ -34,7 +34,6 @@ ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/sar_localization/msg" TYPE FILE FILES
-    "/root/catkin_ws/src/sar_localization/msg/Imu.msg"
     "/root/catkin_ws/src/sar_localization/msg/Csi.msg"
     "/root/catkin_ws/src/sar_localization/msg/Motor.msg"
     )

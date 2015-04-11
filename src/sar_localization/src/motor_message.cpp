@@ -50,7 +50,7 @@ void Decode_frame(unsigned char data);
 volatile unsigned char rx_buffer[RX_BUFFER_SIZE];
 volatile unsigned char rx_wr_index;
 volatile unsigned char RC_Flag;
-float offset_yaw;
+float std_yaw;
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 int16_t hx, hy, hz;
@@ -251,7 +251,7 @@ void UART2_Get_Motor(void)
 		temp = 0-(temp&0x7fff);
 	}
 	else temp = (temp&0x7fff);
-	offset_yaw=(float)temp / 10.0f;
+	std_yaw = (float)temp / 10.0f;
 
 }
 
@@ -379,9 +379,9 @@ void UART2_CommandRoute(void)
 				sar_localization::Motor msg;
 				//ros::ROS_WARN("The yaw angle: ");
 				msg.header.stamp = ros::Time::now();
-				msg.offset_yaw = offset_yaw;
+				msg.std_yaw = std_yaw;
 				motor_pub.publish(msg);
-				printf("STD_Yaw:%lf\n",offset_yaw);
+				printf("STD_Yaw:%lf\n",std_yaw);
 			}
 			if(rx_buffer[1]==0xA2){
 				UART2_Get_Motion();

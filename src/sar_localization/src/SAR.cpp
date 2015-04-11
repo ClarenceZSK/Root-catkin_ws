@@ -5,6 +5,7 @@ using namespace Eigen;
 //SAR
 SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), maxTimeDiff(0)
 {
+	baseDirection << 0, 1, 0;
 	dataReady = false;
 	ROS_INFO("SAR init finished");
 }
@@ -24,6 +25,7 @@ void SAR::processIMU(double t, Vector3d angular_velocity)
                        angular_velocity(2) * dt / 2);
         dq.w() = 1 - dq.vec().transpose() * dq.vec();
         imuAngular[frame_count] = (q * dq).normalized();
+		//cout << "Frame:" << frame_count << " IMU:\n" << imuAngular[frame_count] << endl;
 	}
 }
 
@@ -39,6 +41,10 @@ void SAR::init()
     {
         baseDirection << 0, -1, 0;
     }
+	for(int i = 0; i < WINDOW_SIZE; ++i)
+	{
+		imuAngular[i].setIdentity();
+	}
     input.clear();
 }
 
@@ -59,7 +65,7 @@ void SAR::inputData()
 		return;
 	}
 	dataReady = false;
-	if(motor.nearStartPoint() )
+	if(motor.nearStartPoint())
 	{
 		init();
 		cout << "Reach start point, init SAR!" << endl;
@@ -97,6 +103,8 @@ bool SAR::checkData()
 		//check max interval
 		double maxInterval = 0;
 		Vector3d pre = input[0].first;
+		Vector3d intervalPre;
+		Vector3d intervalNext;
 		for(int i = 1; i < size; ++i)
 		{
 			Vector3d next = input[i].first;
@@ -104,12 +112,14 @@ bool SAR::checkData()
 			if(maxInterval < cosTmp)
 			{
 				maxInterval = cosTmp;
+				intervalPre = pre;
+				intervalNext = next;
 			}
 			pre = next;
 		}
 		if(maxInterval < cos(degreeToRadian(INTERVAL) ) )
 		{
-			cout << "Too large interval!" << maxInterval <<"--" << cos(degreeToRadian(INTERVAL) ) << endl;
+			cout << "Too large interval! Pre:\n" << intervalPre << " Next:\n" << intervalNext << endl;
 			return false;
 		}
 		else
@@ -158,7 +168,7 @@ double SAR::powerCalculation(Vector3d dr_std)
 
 int SAR::SAR_Profile_2D()
 {
-	int ret_yaw;
+	int ret_yaw = 0;
 	int resolution = STEP_SIZE;      //search resolution
 	double maxPower = 0;
 	++round_count;
@@ -209,6 +219,39 @@ vector<int> SAR::SAR_Profile_3D()
 
 vector<int> SAR::SAR_Profile_3D_fast()
 {
+	vector<int> ret;
+    int resolution = STEP_SIZE;      //search resolution
+    double maxPower = 0;
+    int ret_yaw, ret_pitch;
+    ++round_count;
+	myfile << "#" << round_count << endl;
+    for(int alpha = 0; alpha < 360; alpha += resolution)
+    {
+		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 0);
+		double powtmp = powerCalculation(dr);
+		if(maxPower < powtmp)
+		{
+			maxPower = powtmp;
+			ret_yaw = alpha;
+		}
+		myfile << powtmp << endl;
+	}
+	maxPower = 0;
+	for(int beta = 0; beta < 180; beta += resolution)
+	{
+		Vector3d dr (cos(degreeToRadian(beta) ) * cos(degreeToRadian(ret_yaw) ), cos(degreeToRadian(beta) ) * sin(degreeToRadian(ret_yaw) ), sin(degreeToRadian(beta) ) );
+		double powtmp = powerCalculation(dr);
+		if(maxPower < powtmp)
+		{
+			maxPower = powtmp;
+			ret_pitch = beta;
+		}
+		myfile << powtmp << endl;
+	}
+	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
+	ret.push_back(ret_yaw);
+    ret.push_back(ret_pitch);
+    return ret;
 }
 
 void SAR::switchAP()

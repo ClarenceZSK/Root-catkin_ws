@@ -7,11 +7,11 @@ import struct
 import std_msgs.msg
 
 class Motor(genpy.Message):
-  _md5sum = "2ef70324b9512c82d22b5ddc37808372"
+  _md5sum = "479d24b37cd725e6116c15eda2b65f55"
   _type = "sar_localization/Motor"
   _has_header = True #flag to mark the presence of a Header object
   _full_text = """Header header
-float32 offset_yaw
+float32 std_yaw
 
 ================================================================================
 MSG: std_msgs/Header
@@ -32,7 +32,7 @@ time stamp
 string frame_id
 
 """
-  __slots__ = ['header','offset_yaw']
+  __slots__ = ['header','std_yaw']
   _slot_types = ['std_msgs/Header','float32']
 
   def __init__(self, *args, **kwds):
@@ -43,7 +43,7 @@ string frame_id
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       header,offset_yaw
+       header,std_yaw
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -54,11 +54,11 @@ string frame_id
       #message fields cannot be None, assign default values for those that are
       if self.header is None:
         self.header = std_msgs.msg.Header()
-      if self.offset_yaw is None:
-        self.offset_yaw = 0.
+      if self.std_yaw is None:
+        self.std_yaw = 0.
     else:
       self.header = std_msgs.msg.Header()
-      self.offset_yaw = 0.
+      self.std_yaw = 0.
 
   def _get_types(self):
     """
@@ -83,7 +83,7 @@ string frame_id
         buff.write(struct.pack('<I%sB'%length, length, *_x))
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
-      buff.write(_struct_f.pack(self.offset_yaw))
+      buff.write(_struct_f.pack(self.std_yaw))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -111,7 +111,7 @@ string frame_id
         self.header.frame_id = str[start:end]
       start = end
       end += 4
-      (self.offset_yaw,) = _struct_f.unpack(str[start:end])
+      (self.std_yaw,) = _struct_f.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -135,7 +135,7 @@ string frame_id
         buff.write(struct.pack('<I%sB'%length, length, *_x))
       else:
         buff.write(struct.pack('<I%ss'%length, length, _x))
-      buff.write(_struct_f.pack(self.offset_yaw))
+      buff.write(_struct_f.pack(self.std_yaw))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(_x))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(_x))))
 
@@ -164,7 +164,7 @@ string frame_id
         self.header.frame_id = str[start:end]
       start = end
       end += 4
-      (self.offset_yaw,) = _struct_f.unpack(str[start:end])
+      (self.std_yaw,) = _struct_f.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill

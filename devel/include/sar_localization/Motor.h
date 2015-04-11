@@ -26,11 +26,11 @@ struct Motor_
 
   Motor_()
     : header()
-    , offset_yaw(0.0)  {
+    , std_yaw(0.0)  {
     }
   Motor_(const ContainerAllocator& _alloc)
     : header(_alloc)
-    , offset_yaw(0.0)  {
+    , std_yaw(0.0)  {
     }
 
 
@@ -38,8 +38,8 @@ struct Motor_
    typedef  ::std_msgs::Header_<ContainerAllocator>  _header_type;
   _header_type header;
 
-   typedef float _offset_yaw_type;
-  _offset_yaw_type offset_yaw;
+   typedef float _std_yaw_type;
+  _std_yaw_type std_yaw;
 
 
 
@@ -118,12 +118,12 @@ struct MD5Sum< ::sar_localization::Motor_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "2ef70324b9512c82d22b5ddc37808372";
+    return "479d24b37cd725e6116c15eda2b65f55";
   }
 
   static const char* value(const ::sar_localization::Motor_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x2ef70324b9512c82ULL;
-  static const uint64_t static_value2 = 0xd22b5ddc37808372ULL;
+  static const uint64_t static_value1 = 0x479d24b37cd725e6ULL;
+  static const uint64_t static_value2 = 0x116c15eda2b65f55ULL;
 };
 
 template<class ContainerAllocator>
@@ -143,7 +143,7 @@ struct Definition< ::sar_localization::Motor_<ContainerAllocator> >
   static const char* value()
   {
     return "Header header\n\
-float32 offset_yaw\n\
+float32 std_yaw\n\
 \n\
 ================================================================================\n\
 MSG: std_msgs/Header\n\
@@ -181,7 +181,7 @@ namespace serialization
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
       stream.next(m.header);
-      stream.next(m.offset_yaw);
+      stream.next(m.std_yaw);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER;
@@ -203,8 +203,8 @@ struct Printer< ::sar_localization::Motor_<ContainerAllocator> >
     s << indent << "header: ";
     s << std::endl;
     Printer< ::std_msgs::Header_<ContainerAllocator> >::stream(s, indent + "  ", v.header);
-    s << indent << "offset_yaw: ";
-    Printer<float>::stream(s, indent + "  ", v.offset_yaw);
+    s << indent << "std_yaw: ";
+    Printer<float>::stream(s, indent + "  ", v.std_yaw);
   }
 };
 

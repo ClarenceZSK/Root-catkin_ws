@@ -579,43 +579,30 @@ std_msgs_generate_messages_py/fast:
 .PHONY : std_msgs_generate_messages_py/fast
 
 #=============================================================================
-# Target rules for targets named LOS_2D_listener
+# Target rules for targets named LOS_2D
 
 # Build rule for target.
-LOS_2D_listener: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 LOS_2D_listener
-.PHONY : LOS_2D_listener
+LOS_2D: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 LOS_2D
+.PHONY : LOS_2D
 
 # fast build rule for target.
-LOS_2D_listener/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/LOS_2D_listener.dir/build.make sar_localization/CMakeFiles/LOS_2D_listener.dir/build
-.PHONY : LOS_2D_listener/fast
+LOS_2D/fast:
+	$(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/build
+.PHONY : LOS_2D/fast
 
 #=============================================================================
-# Target rules for targets named LOS_3D_listener
+# Target rules for targets named LOS_3D
 
 # Build rule for target.
-LOS_3D_listener: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 LOS_3D_listener
-.PHONY : LOS_3D_listener
+LOS_3D: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 LOS_3D
+.PHONY : LOS_3D
 
 # fast build rule for target.
-LOS_3D_listener/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D_listener.dir/build.make sar_localization/CMakeFiles/LOS_3D_listener.dir/build
-.PHONY : LOS_3D_listener/fast
-
-#=============================================================================
-# Target rules for targets named NLOS_2D_listener
-
-# Build rule for target.
-NLOS_2D_listener: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 NLOS_2D_listener
-.PHONY : NLOS_2D_listener
-
-# fast build rule for target.
-NLOS_2D_listener/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/NLOS_2D_listener.dir/build.make sar_localization/CMakeFiles/NLOS_2D_listener.dir/build
-.PHONY : NLOS_2D_listener/fast
+LOS_3D/fast:
+	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/build
+.PHONY : LOS_3D/fast
 
 #=============================================================================
 # Target rules for targets named _sar_localization_generate_messages_check_deps_Csi
@@ -629,19 +616,6 @@ _sar_localization_generate_messages_check_deps_Csi: cmake_check_build_system
 _sar_localization_generate_messages_check_deps_Csi/fast:
 	$(MAKE) -f sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Csi.dir/build.make sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Csi.dir/build
 .PHONY : _sar_localization_generate_messages_check_deps_Csi/fast
-
-#=============================================================================
-# Target rules for targets named _sar_localization_generate_messages_check_deps_Imu
-
-# Build rule for target.
-_sar_localization_generate_messages_check_deps_Imu: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 _sar_localization_generate_messages_check_deps_Imu
-.PHONY : _sar_localization_generate_messages_check_deps_Imu
-
-# fast build rule for target.
-_sar_localization_generate_messages_check_deps_Imu/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Imu.dir/build.make sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Imu.dir/build
-.PHONY : _sar_localization_generate_messages_check_deps_Imu/fast
 
 #=============================================================================
 # Target rules for targets named _sar_localization_generate_messages_check_deps_Motor
@@ -773,19 +747,6 @@ sar_localization_genpy/fast:
 	$(MAKE) -f sar_localization/CMakeFiles/sar_localization_genpy.dir/build.make sar_localization/CMakeFiles/sar_localization_genpy.dir/build
 .PHONY : sar_localization_genpy/fast
 
-#=============================================================================
-# Target rules for targets named serial_message
-
-# Build rule for target.
-serial_message: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 serial_message
-.PHONY : serial_message
-
-# fast build rule for target.
-serial_message/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/serial_message.dir/build.make sar_localization/CMakeFiles/serial_message.dir/build
-.PHONY : serial_message/fast
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -832,11 +793,9 @@ help:
 	@echo "... std_msgs_generate_messages_cpp"
 	@echo "... std_msgs_generate_messages_lisp"
 	@echo "... std_msgs_generate_messages_py"
-	@echo "... LOS_2D_listener"
-	@echo "... LOS_3D_listener"
-	@echo "... NLOS_2D_listener"
+	@echo "... LOS_2D"
+	@echo "... LOS_3D"
 	@echo "... _sar_localization_generate_messages_check_deps_Csi"
-	@echo "... _sar_localization_generate_messages_check_deps_Imu"
 	@echo "... _sar_localization_generate_messages_check_deps_Motor"
 	@echo "... log_csi_stream"
 	@echo "... motor_message"
@@ -847,7 +806,6 @@ help:
 	@echo "... sar_localization_generate_messages_py"
 	@echo "... sar_localization_genlisp"
 	@echo "... sar_localization_genpy"
-	@echo "... serial_message"
 .PHONY : help
 
 

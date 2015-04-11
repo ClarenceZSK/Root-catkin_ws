@@ -10,6 +10,7 @@
 #include <sar_localization/Csi.h>
 #include <sar_localization/Motor.h>
 #include <sensor_msgs/Imu.h>
+#include <visualization_msgs/Marker.h>
 
 //for multiple processes processing
 #include <signal.h>
@@ -20,6 +21,8 @@ using namespace std;
 
 SAR sar;
 queue<sensor_msgs::Imu> imu_buf;
+visualization_msgs::Marker marker;
+ros::Publisher marker_pub;
 
 double RadianToDegree(double radian)
 {
@@ -40,7 +43,6 @@ void sendIMU(const sensor_msgs::Imu &imu_msg)
 	double rx = imu_msg.angular_velocity.x;
 	double ry = imu_msg.angular_velocity.y;
 	double rz = imu_msg.angular_velocity.z;
-
 	sar.processIMU(t, Vector3d(rx, ry, rz) );
 }
 
@@ -106,6 +108,54 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 }
 // %EndTag(CALLBACK)%
 
+//init marker
+void initMarker()
+{
+    marker.header.frame_id = "/my_frame";
+    marker.header.stamp = ros::Time::now();
+    marker.ns = "listener";
+    marker.id = 0;
+    uint32_t shape = visualization_msgs::Marker::ARROW;
+    marker.type = shape;
+    marker.action = visualization_msgs::Marker::ADD;
+
+    marker.pose.position.x = 0;
+    marker.pose.position.y = 0;
+    marker.pose.position.z = 0;
+    marker.pose.orientation.x = 0.0;
+    marker.pose.orientation.y = 0.0;
+    marker.pose.orientation.z = 0.0;
+    marker.pose.orientation.w = 1.0;
+
+	marker.scale.x = 1.0;
+    marker.scale.y = 1.0;
+    marker.scale.z = 1.0;
+
+    marker.color.r = 0.0f;
+    marker.color.g = 1.0f;
+    marker.color.b = 0.0f;
+    marker.color.a = 1.0;
+    marker.lifetime = ros::Duration();
+}
+
+void setMarkerOrientation(int alpha, int beta)
+{
+    while (marker_pub.getNumSubscribers() < 1)
+    {
+        if (!ros::ok() )
+        {
+            return;
+        }
+        ROS_WARN_ONCE("Please create a Subscriber to the marker");
+    }
+    //specify orientation
+    marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
+    marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
+    marker.pose.orientation.z = cos(DegreeToRadian(beta));
+    cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
+}
+
+
 int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "listener");
@@ -113,11 +163,13 @@ int main(int argc, char **argv)
   	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
+	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 	if(sar.ap.autoSwitch)
 	{
 		sar.ap.init();
 	}
 	sar.myfile.open("power.txt");
+	sar.init();
 	ros::spinOnce();		//empty the queue
 	//std_flag = false;
 	while(n.ok() )
@@ -129,6 +181,10 @@ int main(int argc, char **argv)
 		{
 			int angle = sar.SAR_Profile_2D();
 			printf("Alpha:%d\n", angle);
+			//init marker
+			initMarker();
+			setMarkerOrientation(angle, 0);
+			marker_pub.publish(marker);
             //Switch to another AP
 			if(sar.ap.autoSwitch)
 			{
