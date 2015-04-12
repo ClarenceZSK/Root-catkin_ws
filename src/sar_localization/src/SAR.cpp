@@ -8,6 +8,7 @@ SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), max
 	baseDirection << 0, 1, 0;
 	dataReady = false;
 	firstNearStart = true;
+	initInput = false;
 	ROS_INFO("SAR init finished");
 }
 
@@ -66,15 +67,15 @@ void SAR::inputData()
 		return;
 	}
 	dataReady = false;
-	if(motor.nearStartPoint())
+	if(initInput)
 	{
-		init();
 		if(firstNearStart)
 		{
-			cout << "Reach start point, init SAR!" << endl;
+			cout << "Reach start point, init input!" << endl;
 			firstNearStart = false;
 		}
 		input.push_back(make_pair(baseDirection, csi) );
+		initInput = false;
 	}
 	else
 	{
@@ -92,59 +93,57 @@ void SAR::inputData()
 
 bool SAR::checkData()
 {
-	if(frame_count == 0)
+	if(frame_count < 20)
 	{
 		return false;
 	}
 	//check if semi-circulate arc
 	int size = (int) input.size();
-	double cosArc = input[--size].first.dot(baseDirection);
-	assert(cosArc <= 1 && cosArc >= -1);
-	if(cosArc > cos(degreeToRadian(ARC) ) )
+	//double cosArc = input[--size].first.dot(baseDirection);
+	//assert(cosArc <= 1 && cosArc >= -1);
+	//if(cosArc > cos(degreeToRadian(ARC) ) )
+	//{
+	//	return false;
+	//}
+	
+	//check max interval
+	double maxInterval = 0;
+	Vector3d pre = input[0].first;
+	Vector3d intervalPre;
+	Vector3d intervalNext;
+	for(int i = 1; i < size; ++i)
 	{
+		Vector3d next = input[i].first;
+		double cosTmp = pre.dot(next);
+		if(maxInterval < cosTmp)
+		{
+			maxInterval = cosTmp;
+			intervalPre = pre;
+			intervalNext = next;
+		}
+		pre = next;
+	}
+	if(maxInterval < cos(degreeToRadian(INTERVAL) ) )
+	{
+		cout << "Too large interval! Pre:\n" << intervalPre << " Next:\n" << intervalNext << endl;
+		init();
 		return false;
 	}
 	else
 	{
-		//check max interval
-		double maxInterval = 0;
-		Vector3d pre = input[0].first;
-		Vector3d intervalPre;
-		Vector3d intervalNext;
-		for(int i = 1; i < size; ++i)
+		//check data consistancy
+		int checkSubcarrierNum = (int) input[0].second.pairVector.size();
+		for (int i = 1; i < size; ++i)
 		{
-			Vector3d next = input[i].first;
-			double cosTmp = pre.dot(next);
-			if(maxInterval < cosTmp)
+			int subcarrierNum = (int) input[i].second.pairVector.size();
+			if(subcarrierNum != checkSubcarrierNum)
 			{
-				maxInterval = cosTmp;
-				intervalPre = pre;
-				intervalNext = next;
+				cout << "!Data inconsistant!" << checkSubcarrierNum << "--" << subcarrierNum << endl;
+				init();
+				return false;
 			}
-			pre = next;
 		}
-		if(maxInterval < cos(degreeToRadian(INTERVAL) ) )
-		{
-			cout << "Too large interval! Pre:\n" << intervalPre << " Next:\n" << intervalNext << endl;
-			init();
-			return false;
-		}
-		else
-		{
-			//check data consistancy
-			int checkSubcarrierNum = (int) input[0].second.pairVector.size();
-			for (int i = 1; i < size; ++i)
-			{
-				int subcarrierNum = (int) input[i].second.pairVector.size();
-				if(subcarrierNum != checkSubcarrierNum)
-				{
-					cout << "!Data inconsistant!" << checkSubcarrierNum << "--" << subcarrierNum << endl;
-					init();
-					return false;
-				}
-			}
-			return true;
-		}
+		return true;
 	}
 }
 
@@ -206,9 +205,9 @@ vector<int> SAR::SAR_Profile_3D()
 	myfile << "#" << round_count << endl;
 	for(int alpha = 0; alpha < 360; alpha += resolution)
 	{
-		for(int beta = 0; beta < 180; beta += resolution)
+		for(int beta = 0; beta <= 180; beta += resolution)
 		{
-			Vector3d dr (cos(degreeToRadian(beta) ) * cos(degreeToRadian(alpha) ), cos(degreeToRadian(beta) ) * sin(degreeToRadian(alpha) ), sin(degreeToRadian(beta) ) );
+			Vector3d dr (sin(degreeToRadian(beta) ) * cos(degreeToRadian(alpha) ), sin(degreeToRadian(beta) ) * sin(degreeToRadian(alpha) ), cos(degreeToRadian(beta) ) );
 			double powtmp = powerCalculation(dr);
           	if(maxPower < powtmp)
           	{
@@ -245,9 +244,9 @@ vector<int> SAR::SAR_Profile_3D_fast()
 		myfile << powtmp << endl;
 	}
 	maxPower = 0;
-	for(int beta = 0; beta < 180; beta += resolution)
+	for(int beta = 0; beta <= 180; beta += resolution)
 	{
-		Vector3d dr (cos(degreeToRadian(beta) ) * cos(degreeToRadian(ret_yaw) ), cos(degreeToRadian(beta) ) * sin(degreeToRadian(ret_yaw) ), sin(degreeToRadian(beta) ) );
+		Vector3d dr (sin(degreeToRadian(beta) ) * cos(degreeToRadian(ret_yaw) ), sin(degreeToRadian(beta) ) * sin(degreeToRadian(ret_yaw) ), cos(degreeToRadian(beta) ) );
 		double powtmp = powerCalculation(dr);
 		if(maxPower < powtmp)
 		{

@@ -78,6 +78,7 @@ public:
 	double maxTimeDiff;
 	bool dataReady;
 	bool firstNearStart;
+	bool initInput;
 	ofstream myfile;
 	CSI csi;
 	MOTOR motor;

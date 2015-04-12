@@ -101,10 +101,13 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 		imu_buf.pop();
 		sar.dataReady = true;
 	}
-	double tD = sar.csi.t_stamp - imu_t;
-	if(sar.maxTimeDiff < tD)
+	if(imu_t != 0)
 	{
-		sar.maxTimeDiff = tD;
+		double tD = sar.csi.t_stamp - imu_t;
+		if(sar.maxTimeDiff < tD)
+		{
+			sar.maxTimeDiff = tD;
+		}
 	}
 }
 // %EndTag(CALLBACK)%
@@ -177,13 +180,19 @@ int main(int argc, char **argv)
 		//spinner.spinOnce();
 		ros::spinOnce();
 		sar.inputData();
-		if (sar.checkData() )
+		bool start = false;
+		if (sar.motor.nearStartPoint() )
+		{
+			start = sar.checkData();
+		}
+		if (start)
 		{
 			vector<int> angles;     //alpha, beta
 			angles = sar.SAR_Profile_3D_fast();
 			assert(angles.size() == 2);
 			printf("Alpha&Beta:%d&%d\n", angles[0], angles[1]);
 			sar.init();
+			sar.initInput = true;
 			//init marker
 			initMarker();
 			setMarkerOrientation(angles[0], angles[1]);
