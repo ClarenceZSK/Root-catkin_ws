@@ -26,11 +26,11 @@ ros::Publisher marker_pub;
 
 double RadianToDegree(double radian)
 {
-    return radian/PI*180;
+	return radian/PI*180;
 }
 double DegreeToRadian(double degree)
 {
-    return degree/180.0*PI;
+	return degree/180.0*PI;
 }
 
 
@@ -62,7 +62,7 @@ void imuCallback(const sensor_msgs::ImuConstPtr &imu_msg)
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
 	sar.csi.pairVector.clear();
-  	sar.csi.t_stamp = msg->header.stamp.toSec();
+	sar.csi.t_stamp = msg->header.stamp.toSec();
 	vector<double> real1;
 	vector<double> image1;
 	vector<double> real2;
@@ -114,56 +114,60 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 //init marker
 void initMarker()
 {
-    marker.header.frame_id = "/my_frame";
-    marker.header.stamp = ros::Time::now();
-    marker.ns = "listener";
-    marker.id = 0;
-    uint32_t shape = visualization_msgs::Marker::ARROW;
-    marker.type = shape;
-    marker.action = visualization_msgs::Marker::ADD;
+	marker.header.frame_id = "/my_frame";
+	marker.header.stamp = ros::Time::now();
+	marker.ns = "listener";
+	marker.id = 0;
+	uint32_t shape = visualization_msgs::Marker::ARROW;
+	marker.type = shape;
+	marker.action = visualization_msgs::Marker::ADD;
 
-    marker.pose.position.x = 0;
-    marker.pose.position.y = 0;
-    marker.pose.position.z = 0;
-    marker.pose.orientation.x = 0.0;
-    marker.pose.orientation.y = 0.0;
-    marker.pose.orientation.z = 0.0;
-    marker.pose.orientation.w = 1.0;
+	marker.pose.position.x = 0;
+	marker.pose.position.y = 0;
+	marker.pose.position.z = 0;
+	marker.pose.orientation.x = 0.0;
+	marker.pose.orientation.y = 0.0;
+	marker.pose.orientation.z = 0.0;
+	marker.pose.orientation.w = 1.0;
 
 	marker.scale.x = 1.0;
-    marker.scale.y = 1.0;
-    marker.scale.z = 1.0;
+	marker.scale.y = 1.0;
+	marker.scale.z = 1.0;
 
-    marker.color.r = 0.0f;
-    marker.color.g = 1.0f;
-    marker.color.b = 0.0f;
-    marker.color.a = 1.0;
-    marker.lifetime = ros::Duration();
+	marker.color.r = 0.0f;
+	marker.color.g = 1.0f;
+	marker.color.b = 0.0f;
+	marker.color.a = 1.0;
+	marker.lifetime = ros::Duration();
 }
 
 void setMarkerOrientation(int alpha, int beta)
 {
-    while (marker_pub.getNumSubscribers() < 1)
-    {
-        if (!ros::ok() )
-        {
-            return;
-        }
-        ROS_WARN_ONCE("Please create a Subscriber to the marker");
-    }
-    //specify orientation
-    marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
-    marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
-    marker.pose.orientation.z = cos(DegreeToRadian(beta));
-    cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
+	//while (marker_pub.getNumSubscribers() < 1)
+	//{
+	//	if (!ros::ok() )
+	//	{
+	//		return;
+	//	}
+	//	ROS_WARN_ONCE("Please create a Subscriber to the marker");
+	//}
+	//specify orientation
+	marker.pose.position.x = cos(DegreeToRadian(alpha));
+	marker.pose.position.y = sin(DegreeToRadian(alpha));
+	printf("%lf %lf\n", marker.pose.position.x,
+			marker.pose.position.y);
+	//marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
+	//marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
+	//marker.pose.orientation.z = cos(DegreeToRadian(beta));
+	//cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
 }
 
 
 int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "listener");
-  	ros::NodeHandle n;
-  	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
+	ros::NodeHandle n;
+	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
 	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
@@ -195,7 +199,7 @@ int main(int argc, char **argv)
 			initMarker();
 			setMarkerOrientation(angle, 90);
 			marker_pub.publish(marker);
-            //Switch to another AP
+			//Switch to another AP
 			if(sar.ap.autoSwitch)
 			{
 				sar.switchAP();
