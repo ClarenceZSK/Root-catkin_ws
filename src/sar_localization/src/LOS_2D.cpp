@@ -10,19 +10,27 @@
 #include <sar_localization/Csi.h>
 #include <sar_localization/Motor.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/PointCloud.h>
 #include <visualization_msgs/Marker.h>
 
 //for multiple processes processing
 #include <signal.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <glib.h>
 
 using namespace std;
 
 SAR sar;
 queue<sensor_msgs::Imu> imu_buf;
 visualization_msgs::Marker marker;
-ros::Publisher marker_pub;
+
+/*
+struct shared_data
+{
+	vector<pair<Matrix3d, CSI> > inputQueue;	//<imuAngular[], csi>
+} shared;
+*/
 
 double RadianToDegree(double radian)
 {
@@ -34,6 +42,25 @@ double DegreeToRadian(double degree)
 }
 
 
+void processIMU(double t, Vector3d angular_velocity)
+{
+    if (sar.current_time < 0)
+        sar.current_time = t;
+    double dt = t - sar.current_time;
+    sar.current_time = t;
+    if (sar.frame_count != sar.WINDOW_SIZE)
+    {
+        Quaterniond q(sar.imuAngular[sar.frame_count]);
+        Quaterniond dq(1,
+                       angular_velocity(0) * dt / 2,
+                       angular_velocity(1) * dt / 2,
+                       angular_velocity(2) * dt / 2);
+        dq.w() = 1 - dq.vec().transpose() * dq.vec();
+        sar.imuAngular[sar.frame_count] = (q * dq).normalized();
+        //cout << "Frame:" << frame_count << " IMU:\n" << imuAngular[frame_count] << endl;
+    }
+}
+
 void sendIMU(const sensor_msgs::Imu &imu_msg)
 {
 	double t = imu_msg.header.stamp.toSec();
@@ -43,7 +70,7 @@ void sendIMU(const sensor_msgs::Imu &imu_msg)
 	double rx = imu_msg.angular_velocity.x;
 	double ry = imu_msg.angular_velocity.y;
 	double rz = imu_msg.angular_velocity.z;
-	sar.processIMU(t, Vector3d(rx, ry, rz) );
+	processIMU(t, Vector3d(rx, ry, rz) );
 }
 
 // %Tag(CALLBACK)%
@@ -92,22 +119,18 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 		sar.csi.pairVector.push_back(make_pair(csi1tmp, csi2tmp) );
 	}
 
-	double imu_t = 0;
 	while(!imu_buf.empty() && sar.csi.t_stamp >= imu_buf.front().header.stamp.toSec() )
 	{
 		sendIMU(imu_buf.front());
-		imu_t = imu_buf.front().header.stamp.toSec();
 		imu_buf.pop();
 		sar.dataReady = true;
 	}
-	if(imu_t != 0)
-	{
-		double tD = sar.csi.t_stamp - imu_t;
-		if(sar.maxTimeDiff < tD)
-		{
-			sar.maxTimeDiff = tD;
-		}
-	}
+	//maintain a queue
+	//Gmutex
+	g_mutex_lock(&sar.mutex);
+	sar.inputQueue.push_back(make_pair(sar.imuAngular[sar.frame_count], sar.csi) );
+	++sar.frame_count;	//for each csi, we set a frame
+	g_mutex_unlock(&sar.mutex);
 }
 // %EndTag(CALLBACK)%
 
@@ -143,23 +166,73 @@ void initMarker()
 
 void setMarkerOrientation(int alpha, int beta)
 {
-	//while (marker_pub.getNumSubscribers() < 1)
-	//{
-	//	if (!ros::ok() )
-	//	{
-	//		return;
-	//	}
-	//	ROS_WARN_ONCE("Please create a Subscriber to the marker");
-	//}
-	//specify orientation
-	marker.pose.position.x = cos(DegreeToRadian(alpha));
-	marker.pose.position.y = sin(DegreeToRadian(alpha));
-	printf("%lf %lf\n", marker.pose.position.x,
-			marker.pose.position.y);
-	//marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
-	//marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
-	//marker.pose.orientation.z = cos(DegreeToRadian(beta));
-	//cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
+	marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
+	marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
+	marker.pose.orientation.z = cos(DegreeToRadian(beta));
+	cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
+}
+
+void SAR_processing(void* data_ptr)
+{
+	SharedVector *shared_ptr = (SharedVector*)data_ptr;
+	ros::NodeHandle n2;
+	ros::Publisher marker_pub = n2.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+	ros::Publisher wifi_pub = n2.advertise<sensor_msgs::PointCloud>("wifi_estimator", 1);
+	queue<sensor_msgs::Imu> imu_buf;
+	visualization_msgs::Marker marker;
+	sensor_msgs::PointCloud wifi_msg;
+	if(sar.ap.autoSwitch)
+    {
+        sar.ap.init();
+    }
+	sar.myfile.open("power.txt");
+	sar.init();
+	int countWiFimsg = 0;
+	while(n2.ok())
+	{
+		sar.inputData(shared_ptr);
+		bool start = false;
+		if (sar.motor.nearStartPoint() )
+		{
+			start = sar.checkData();
+		}
+		if (start)
+		{
+			int angle = sar.SAR_Profile_2D();
+			printf("Alpha:%d\n", angle);
+			sar.initInput = true;
+			//init marker
+			initMarker();
+			setMarkerOrientation(angle, 90);
+			marker_pub.publish(marker);
+			//init wifi msg
+			sensor_msgs::PointCloud wifi_msg;
+			geometry_msgs::Point32 point_msg;
+			sensor_msgs::ChannelFloat32 channel_msg;
+			point_msg.x = cos(DegreeToRadian(angle) );
+			point_msg.y = sin(DegreeToRadian(angle) );
+			point_msg.z = 0;
+			channel_msg.values.push_back(sar.ap.apID);
+			wifi_msg.header.stamp = ros::Time::now();
+			wifi_msg.channels.push_back(channel_msg);
+			wifi_msg.points.push_back(point_msg);
+			countWiFimsg++;
+			if(countWiFimsg != 0 && countWiFimsg%sar.ap.apNum == 0)
+			{
+				wifi_pub.publish(wifi_msg);
+			}
+			//Switch to another AP
+			if(sar.ap.autoSwitch)
+			{
+				sar.switchAP();
+			}
+		}
+	}
+	sar.myfile.close();
+    if(sar.ap.autoSwitch)
+    {
+    	system("pkill -n ping");
+    }
 }
 
 
@@ -170,47 +243,17 @@ int main(int argc, char **argv)
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
-	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-	if(sar.ap.autoSwitch)
+	int countWiFimsg = 0;
+	//multithread
+	g_mutex_init(&sar.mutex);
+	GThread* data_thread;
+	GError* err=NULL;
+	SharedVector *data_ptr = &sar.inputQueue;
+	if ((data_thread = g_thread_new( "sar", (GThreadFunc) SAR_processing, (void *)data_ptr)) == NULL)
 	{
-		sar.ap.init();
+		printf("Failed to create serial handling thread: %s!!\n", err->message);
+		g_error_free(err);
 	}
-	sar.myfile.open("power.txt");
-	sar.init();
-	ros::spinOnce();		//empty the queue
-	//std_flag = false;
-	while(n.ok() )
-	{
-		//spinner.spinOnce();
-		ros::spinOnce();
-		sar.inputData();
-		bool start = false;
-		if (sar.motor.nearStartPoint() )
-		{
-			start = sar.checkData();
-		}
-		if (start)
-		{
-			int angle = sar.SAR_Profile_2D();
-			printf("Alpha:%d\n", angle);
-			sar.init();
-			sar.initInput = true;
-			//init marker
-			initMarker();
-			setMarkerOrientation(angle, 90);
-			marker_pub.publish(marker);
-			//Switch to another AP
-			if(sar.ap.autoSwitch)
-			{
-				sar.switchAP();
-			}
-		}
-	}
-
-	sar.myfile.close();
-	if(sar.ap.autoSwitch)
-	{
-		system("pkill -n ping");
-	}
+	ros::spin();
 	return 0;
 }

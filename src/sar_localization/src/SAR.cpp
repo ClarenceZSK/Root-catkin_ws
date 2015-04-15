@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), maxTimeDiff(0)
+SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), input_count(0), current_time(-1), maxTimeDiff(0), input(DATA_SIZE)
 {
 	baseDirection << 0, 1, 0;
 	dataReady = false;
@@ -47,7 +47,7 @@ void SAR::init()
 	{
 		imuAngular[i].setIdentity();
 	}
-    input.clear();
+	inputQueue.clear();
 }
 
 double SAR::degreeToRadian(double degree)
@@ -60,7 +60,7 @@ double SAR::radianToDegree(double radian)
 	return radian/PI*180;
 }
 
-void SAR::inputData()
+void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 {
 	if(!dataReady)
 	{
@@ -74,26 +74,44 @@ void SAR::inputData()
 			cout << "Reach start point, init input!" << endl;
 			firstNearStart = false;
 		}
-		input.push_back(make_pair(baseDirection, csi) );
+		input[input_count%DATA_SIZE] = make_pair(baseDirection, csi);
+		++input_count;
 		initInput = false;
 	}
 	else
 	{
 		firstNearStart = true;
-		Matrix3d rotation = Matrix3d::Identity();
-		for(int i = frame_count; i >= 0; --i)
+		/////////////////////
+		int idx = 0;
+		int endid = input.size() - 1;
+		Vector3d base = baseDirection;
+		g_mutex_lock(&mutex);
+		assert(frame_count == shared_ptr->size() );
+		//cout << "Shared data size:" << shared_ptr->size() << endl;
+		Vector3d direction;
+		while(idx != frame_count)
 		{
-			rotation *= imuAngular[i];
+			Matrix3d rotation = Matrix3d::Identity();
+			for(int i = idx; i >= 0; --i)
+			{
+				rotation *= shared_ptr->at(idx).first;
+			}
+			direction = rotation * base;
+			input[input_count%DATA_SIZE] = make_pair(direction, shared_ptr->at(idx).second);
+			++input_count;
+			++idx;
 		}
-		Vector3d direction = rotation * baseDirection;
-		input.push_back(make_pair(direction, csi) );
-		++frame_count;
+		baseDirection = direction;
+		shared_ptr->clear();
+		frame_count = 0;
+		g_mutex_unlock(&mutex);
+		//////////////////////
 	}
 }
 
 bool SAR::checkData()
 {
-	if(frame_count < 20)
+	if(input_count < DATA_SIZE)
 	{
 		return false;
 	}
@@ -105,7 +123,7 @@ bool SAR::checkData()
 	//{
 	//	return false;
 	//}
-	
+
 	//check max interval
 	double maxInterval = 0;
 	Vector3d pre = input[0].first;

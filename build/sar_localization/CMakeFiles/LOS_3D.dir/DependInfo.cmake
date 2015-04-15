@@ -5,7 +5,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
   "/root/catkin_ws/src/sar_localization/src/LOS_3D.cpp" "/root/catkin_ws/build/sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o"
-  "/root/catkin_ws/src/sar_localization/src/SAR.cpp" "/root/catkin_ws/build/sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o"
+  "/root/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp" "/root/catkin_ws/build/sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -23,6 +23,7 @@ SET(CMAKE_TARGET_LINKED_INFO_FILES
 # The include file search paths:
 SET(CMAKE_C_TARGET_INCLUDE_PATH
   "/root/catkin_ws/devel/include"
+  "/usr/include/opencv"
   "/opt/ros/indigo/include"
   "/usr/include/glib-2.0"
   "/usr/lib/x86_64-linux-gnu/glib-2.0/include"

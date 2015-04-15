@@ -72,50 +72,73 @@ sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o.provides: sar_localizati
 
 sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o.provides.build: sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o: sar_localization/CMakeFiles/LOS_3D.dir/flags.make
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o: /root/catkin_ws/src/sar_localization/src/SAR.cpp
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o: sar_localization/CMakeFiles/LOS_3D.dir/flags.make
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o: /root/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /root/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_2)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o"
-	cd /root/catkin_ws/build/sar_localization && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/LOS_3D.dir/src/SAR.cpp.o -c /root/catkin_ws/src/sar_localization/src/SAR.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o"
+	cd /root/catkin_ws/build/sar_localization && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o -c /root/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/LOS_3D.dir/src/SAR.cpp.i"
-	cd /root/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /root/catkin_ws/src/sar_localization/src/SAR.cpp > CMakeFiles/LOS_3D.dir/src/SAR.cpp.i
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.i"
+	cd /root/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /root/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp > CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.i
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/LOS_3D.dir/src/SAR.cpp.s"
-	cd /root/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /root/catkin_ws/src/sar_localization/src/SAR.cpp -o CMakeFiles/LOS_3D.dir/src/SAR.cpp.s
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.s"
+	cd /root/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /root/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp -o CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.s
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires:
-.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires:
+.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires
-	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides.build
-.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires
+	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides.build
+.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides.build: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides.build: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o
 
 # Object files for target LOS_3D
 LOS_3D_OBJECTS = \
 "CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o" \
-"CMakeFiles/LOS_3D.dir/src/SAR.cpp.o"
+"CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o"
 
 # External object files for target LOS_3D
 LOS_3D_EXTERNAL_OBJECTS =
 
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o
-/root/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/build.make
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libcv_bridge.so
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libtf.so
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libtf2_ros.so
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libactionlib.so
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libmessage_filters.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libroscpp.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libboost_signals.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libxmlrpcpp.so
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libtf2.so
+/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libroscpp_serialization.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/librosconsole.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/librosconsole_log4cxx.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/librosconsole_backend_interface.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/liblog4cxx.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libboost_regex.so
-/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libxmlrpcpp.so
-/root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libroscpp_serialization.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/librostime.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
 /root/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libcpp_common.so
@@ -134,7 +157,7 @@ sar_localization/CMakeFiles/LOS_3D.dir/build: /root/catkin_ws/devel/lib/sar_loca
 .PHONY : sar_localization/CMakeFiles/LOS_3D.dir/build
 
 sar_localization/CMakeFiles/LOS_3D.dir/requires: sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o.requires
-sar_localization/CMakeFiles/LOS_3D.dir/requires: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires
+sar_localization/CMakeFiles/LOS_3D.dir/requires: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires
 .PHONY : sar_localization/CMakeFiles/LOS_3D.dir/requires
 
 sar_localization/CMakeFiles/LOS_3D.dir/clean:

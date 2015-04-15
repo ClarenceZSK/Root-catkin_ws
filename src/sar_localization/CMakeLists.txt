@@ -11,7 +11,13 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  geometry_msgs
+  nav_msgs
+  cv_bridge
+  tf
 )
+
+find_package(OpenCV REQUIRED)
 
 #find_package(Eigen REQUIRED)
 
@@ -191,21 +197,33 @@ target_link_libraries(motor_message ${catkin_LIBRARIES})
 add_dependencies(motor_message sar_localization_generate_messages_cpp)
 
 
-add_executable(LOS_2D
-	src/LOS_2D.cpp
-	src/SAR.cpp
+add_executable(LOS_2D_singleThread
+	src/LOS_2D_singleThread.cpp
+	src/SAR_singleThread.cpp
 	)
 target_link_libraries(
-	LOS_2D
+	LOS_2D_singleThread
 	${catkin_LIBRARIES}
 	${GLIB2_LIBRARY}
    	${GTHREAD2_LIBRARY}
+)
+add_dependencies(LOS_2D_singleThread sar_localization_generate_messages_cpp)
+
+add_executable(LOS_2D
+    src/LOS_2D.cpp
+    src/SAR.cpp
+    )
+target_link_libraries(
+    LOS_2D
+    ${catkin_LIBRARIES}
+    ${GLIB2_LIBRARY}
+    ${GTHREAD2_LIBRARY}
 )
 add_dependencies(LOS_2D sar_localization_generate_messages_cpp)
 
 add_executable(LOS_3D
 	src/LOS_3D.cpp
-	src/SAR.cpp
+	src/SAR_singleThread.cpp
 	)
 target_link_libraries(
     LOS_3D
@@ -230,3 +248,8 @@ add_executable(log_csi_stream src/log_csi_stream.cpp)
 target_link_libraries(log_csi_stream ${catkin_LIBRARIES})
 add_dependencies(log_csi_stream sar_localization_generate_messages_cpp)
 
+add_executable(wifi_estimator
+    src/wifi_estimator_node.cpp
+    src/wifi_estimator.cpp
+)
+target_link_libraries(wifi_estimator ${catkin_LIBRARIES} ${OpenCV_LIBS})

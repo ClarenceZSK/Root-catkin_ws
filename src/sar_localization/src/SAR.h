@@ -15,6 +15,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <signal.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <glib.h>
+
+#define DATA_SIZE 	150
 #define PI 			3.1415926
 #define R			0.08
 #define STEP_SIZE	1
@@ -52,16 +58,18 @@ public:
 	int apNum;
 };
 
+typedef vector<pair<Matrix3d, CSI> > SharedVector;
 class SAR
 {
 public:
 	SAR();
 	void init();
+
 	void processIMU(double t, Vector3d angular_velocity);
 	double radianToDegree(double radian);
 	double degreeToRadian(double degree);
 	double powerCalculation(Vector3d alpha);
-	void inputData();
+	void inputData(SharedVector* shared_ptr);
 	bool checkData();
 	int SAR_Profile_2D();
 	vector<int> SAR_Profile_3D();		//search alpha and beta
@@ -74,6 +82,7 @@ public:
 	double Landa;
 	int frame_count;
 	int round_count;
+	int input_count;
 	double current_time;
 	double maxTimeDiff;
 	bool dataReady;
@@ -86,6 +95,9 @@ public:
 	Vector3d baseDirection;
 	Matrix3d imuAngular[WINDOW_SIZE];
 	vector<pair<Vector3d, CSI> > input;	//direct vector, CSI vectors
+
+	GMutex mutex;
+	SharedVector inputQueue;
 };
 
 #endif
