@@ -85,6 +85,8 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 		assert(frame_count == shared_ptr->size() );
 		//cout << "Shared data size:" << shared_ptr->size() << endl;
 		Vector3d direction (0, 0, 0);
+		//cout << "shared_ptr size:" << shared_ptr->size() << "-" << frame_count << endl;
+		//cout << "start base direction:\n" << baseDirection << endl;
 		while(idx != frame_count)
 		{
 			Matrix3d rotation = Matrix3d::Identity();
@@ -98,6 +100,7 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 			++idx;
 		}
 		baseDirection = direction;
+		//cout << "end base direction:\n" << baseDirection << endl;
 		shared_ptr->clear();
 		frame_count = 0;
 		g_mutex_unlock(&mutex);
@@ -167,6 +170,7 @@ double SAR::powerCalculation(Vector3d dr_std)
 {
 	double ret = 0;
 	int div = (int) input[0].second.pairVector.size();
+	//int div = 30;
 	for(int i = 0; i < div; ++i)
 	{
 		complex<double> avgCsiHat(0, 0);
