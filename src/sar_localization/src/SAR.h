@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	150
+#define DATA_SIZE 	300
 #define PI 			3.1415926
 #define R			0.08
 #define STEP_SIZE	1
@@ -84,8 +84,6 @@ public:
 	int round_count;
 	int input_count;
 	double current_time;
-	double maxTimeDiff;
-	bool dataReady;
 	bool firstNearStart;
 	bool initInput;
 	ofstream myfile;

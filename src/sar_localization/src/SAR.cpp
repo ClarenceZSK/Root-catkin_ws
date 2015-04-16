@@ -3,10 +3,9 @@
 using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), input_count(0), current_time(-1), maxTimeDiff(0), input(DATA_SIZE)
+SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), input_count(0), current_time(-1), input(DATA_SIZE)
 {
 	baseDirection << 0, 1, 0;
-	dataReady = false;
 	firstNearStart = true;
 	initInput = false;
 	ROS_INFO("SAR init finished");
@@ -34,7 +33,6 @@ void SAR::processIMU(double t, Vector3d angular_velocity)
 void SAR::init()
 {
 	frame_count = 0;
-	maxTimeDiff = 0;
     if(motor.stdYaw < 1e-5)
     {
         baseDirection << 0, 1, 0;
@@ -62,11 +60,10 @@ double SAR::radianToDegree(double radian)
 
 void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 {
-	if(!dataReady)
+	if(shared_ptr->empty() )
 	{
 		return;
 	}
-	dataReady = false;
 	if(initInput)
 	{
 		if(firstNearStart)
@@ -83,12 +80,11 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 		firstNearStart = true;
 		/////////////////////
 		int idx = 0;
-		int endid = input.size() - 1;
 		Vector3d base = baseDirection;
 		g_mutex_lock(&mutex);
 		assert(frame_count == shared_ptr->size() );
 		//cout << "Shared data size:" << shared_ptr->size() << endl;
-		Vector3d direction;
+		Vector3d direction (0, 0, 0);
 		while(idx != frame_count)
 		{
 			Matrix3d rotation = Matrix3d::Identity();
@@ -129,6 +125,7 @@ bool SAR::checkData()
 	Vector3d pre = input[0].first;
 	Vector3d intervalPre;
 	Vector3d intervalNext;
+	int nextid = 0;
 	for(int i = 1; i < size; ++i)
 	{
 		Vector3d next = input[i].first;
@@ -138,13 +135,14 @@ bool SAR::checkData()
 			maxInterval = cosTmp;
 			intervalPre = pre;
 			intervalNext = next;
+			nextid = i;
 		}
 		pre = next;
 	}
 	if(maxInterval < cos(degreeToRadian(INTERVAL) ) )
 	{
-		cout << "Too large interval! Pre:\n" << intervalPre << " Next:\n" << intervalNext << endl;
-		init();
+		cout << "Too large interval! Pre:\n" << intervalPre << "preid:" << nextid-1 << " Next:\n" << intervalNext << "nextid:" << nextid << endl;
+		//init();
 		return false;
 	}
 	else
@@ -157,7 +155,7 @@ bool SAR::checkData()
 			if(subcarrierNum != checkSubcarrierNum)
 			{
 				cout << "!Data inconsistant!" << checkSubcarrierNum << "--" << subcarrierNum << endl;
-				init();
+				//init();
 				return false;
 			}
 		}
@@ -209,7 +207,7 @@ int SAR::SAR_Profile_2D()
 		}
 		myfile << powtmp << endl;
 	}
-	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
+	printf("round:%d,maxPow:%0.3f,sample size:%d, ", round_count, maxPower, (int) input.size() );
 	return ret_yaw;
 }
 
@@ -236,7 +234,7 @@ vector<int> SAR::SAR_Profile_3D()
           	myfile << powtmp << endl;
 		}
 	}
-	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
+	printf("round:%d,maxPow:%0.3f,sample size:%d, ", round_count, maxPower, (int) input.size() );
 	ret.push_back(ret_yaw);
     ret.push_back(ret_pitch);
 	return ret;
@@ -273,7 +271,7 @@ vector<int> SAR::SAR_Profile_3D_fast()
 		}
 		myfile << powtmp << endl;
 	}
-	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
+	printf("round:%d,maxPow:%0.3f,sample size:%d, ", round_count, maxPower, (int) input.size() );
 	ret.push_back(ret_yaw);
     ret.push_back(ret_pitch);
     return ret;
@@ -290,8 +288,6 @@ void SAR::switchAP()
         system("iwconfig wlan0 essid TP5G1");
         printf("Switch to TP5G1 and start ping\n");
         ap.mysystem("ping -q -n -i 0.02 192.168.0.2");
-        ros::spinOnce();
-	    dataReady = false;
         Landa = 0.05222;		//channel 149, frequency 5745MHz
         break;
 	case 1:
@@ -300,8 +296,6 @@ void SAR::switchAP()
         system("iwconfig wlan0 essid TP5G2");
         printf("Switch to TP5G2 and start ping\n");
         ap.mysystem("ping -q -n -i 0.02 192.168.0.3");
-        ros::spinOnce();
-        dataReady = false;
 		Landa = 0.05186;		//channel 157, frequency 5785MHz
         break;
     }

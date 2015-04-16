@@ -79,6 +79,14 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 {
 	sar.motor.t_stamp = msg->header.stamp.toSec();
 	sar.motor.stdYaw = msg->std_yaw;
+	/*
+	if(sar.motor.nearStartPoint() )
+	{
+		g_mutex_lock(&sar.mutex);
+		sar.init();
+		g_mutex_unlock(&sar.mutex);
+	}
+	*/
 }
 
 void imuCallback(const sensor_msgs::ImuConstPtr &imu_msg)
@@ -123,7 +131,6 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 	{
 		sendIMU(imu_buf.front());
 		imu_buf.pop();
-		sar.dataReady = true;
 	}
 	//maintain a queue
 	//Gmutex
@@ -169,7 +176,7 @@ void setMarkerOrientation(int alpha, int beta)
 	marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
 	marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
 	marker.pose.orientation.z = cos(DegreeToRadian(beta));
-	cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
+	//cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
 }
 
 void SAR_processing(void* data_ptr)
@@ -192,15 +199,11 @@ void SAR_processing(void* data_ptr)
 	{
 		sar.inputData(shared_ptr);
 		bool start = false;
-		if (sar.motor.nearStartPoint() )
-		{
-			start = sar.checkData();
-		}
+		start = sar.checkData();
 		if (start)
 		{
 			int angle = sar.SAR_Profile_2D();
 			printf("Alpha:%d\n", angle);
-			sar.initInput = true;
 			//init marker
 			initMarker();
 			setMarkerOrientation(angle, 90);
