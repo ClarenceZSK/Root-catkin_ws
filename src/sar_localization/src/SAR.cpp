@@ -3,11 +3,13 @@
 using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), input_count(0), current_time(-1), input(DATA_SIZE)
+SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1)
 {
 	baseDirection << 0, 1, 0;
-	firstNearStart = true;
-	initInput = false;
+	for(int i = 0; i < AP_NUM; ++i)
+	{
+		input_count[i] = 0;
+	}
 	ROS_INFO("SAR init finished");
 }
 
@@ -64,74 +66,52 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 	{
 		return;
 	}
-	if(initInput)
+	/////////////////////
+	int idx = 0;
+	Vector3d base = baseDirection;
+	g_mutex_lock(&mutex);
+	assert(frame_count == shared_ptr->size() );
+	cout << "Add " << frame_count << " Data. Start index: " << input_count[ap.apID]%DATA_SIZE << endl;
+	Vector3d direction (0, 0, 0);
+	//cout << "start base direction:\n" << baseDirection << endl;
+	while(idx != frame_count)
 	{
-		if(firstNearStart)
+		Matrix3d rotation = Matrix3d::Identity();
+		for(int i = idx; i >= 0; --i)
 		{
-			cout << "Reach start point, init input!" << endl;
-			firstNearStart = false;
+			rotation *= shared_ptr->at(idx).first;
 		}
-		input[input_count%DATA_SIZE] = make_pair(baseDirection, csi);
-		++input_count;
-		initInput = false;
+		direction = rotation * base;
+		input[ap.apID][input_count[ap.apID]%DATA_SIZE] = make_pair(direction, shared_ptr->at(idx).second);
+		cout << "Direction:\n" << direction << endl;
+		++input_count[ap.apID];
+		++idx;
 	}
-	else
-	{
-		firstNearStart = true;
-		/////////////////////
-		int idx = 0;
-		Vector3d base = baseDirection;
-		g_mutex_lock(&mutex);
-		assert(frame_count == shared_ptr->size() );
-		//cout << "Shared data size:" << shared_ptr->size() << endl;
-		Vector3d direction (0, 0, 0);
-		//cout << "shared_ptr size:" << shared_ptr->size() << "-" << frame_count << endl;
-		//cout << "start base direction:\n" << baseDirection << endl;
-		while(idx != frame_count)
-		{
-			Matrix3d rotation = Matrix3d::Identity();
-			for(int i = idx; i >= 0; --i)
-			{
-				rotation *= shared_ptr->at(idx).first;
-			}
-			direction = rotation * base;
-			input[input_count%DATA_SIZE] = make_pair(direction, shared_ptr->at(idx).second);
-			++input_count;
-			++idx;
-		}
-		baseDirection = direction;
-		//cout << "end base direction:\n" << baseDirection << endl;
-		shared_ptr->clear();
-		frame_count = 0;
-		g_mutex_unlock(&mutex);
-		//////////////////////
-	}
+	baseDirection = direction;
+	//cout << "end base direction:\n" << baseDirection << endl;
+	shared_ptr->clear();
+	frame_count = 0;
+	g_mutex_unlock(&mutex);
+	//////////////////////
 }
 
 bool SAR::checkData()
 {
-	if(input_count < DATA_SIZE)
+	if(input_count[ap.apID] < DATA_SIZE)
 	{
 		return false;
 	}
-	//check if semi-circulate arc
-	int size = (int) input.size();
-	//double cosArc = input[--size].first.dot(baseDirection);
-	//assert(cosArc <= 1 && cosArc >= -1);
-	//if(cosArc > cos(degreeToRadian(ARC) ) )
-	//{
-	//	return false;
-	//}
+	int size = DATA_SIZE;
 
 	//check max interval
 	double maxInterval = 0;
-	Vector3d pre = input[0].first;
+	Vector3d pre = input[ap.apID][0].first;
 	Vector3d intervalPre;
 	Vector3d intervalNext;
 	int nextid = 0;
 	for(int i = 1; i < size; ++i)
 	{
-		Vector3d next = input[i].first;
+		Vector3d next = input[ap.apID][i].first;
 		double cosTmp = pre.dot(next);
 		if(maxInterval < cosTmp)
 		{
@@ -151,10 +131,10 @@ bool SAR::checkData()
 	else
 	{
 		//check data consistancy
-		int checkSubcarrierNum = (int) input[0].second.pairVector.size();
+		int checkSubcarrierNum = (int) input[ap.apID][0].second.pairVector.size();
 		for (int i = 1; i < size; ++i)
 		{
-			int subcarrierNum = (int) input[i].second.pairVector.size();
+			int subcarrierNum = (int) input[ap.apID][i].second.pairVector.size();
 			if(subcarrierNum != checkSubcarrierNum)
 			{
 				cout << "!Data inconsistant!" << checkSubcarrierNum << "--" << subcarrierNum << endl;
@@ -169,24 +149,28 @@ bool SAR::checkData()
 double SAR::powerCalculation(Vector3d dr_std)
 {
 	double ret = 0;
-	int div = (int) input[0].second.pairVector.size();
+	int div = (int) input[ap.apID][0].second.pairVector.size();
 	//int div = 30;
 	for(int i = 0; i < div; ++i)
 	{
 		complex<double> avgCsiHat(0, 0);
-		for(int j = 0; j < (int) input.size(); ++j)
+		for(int j = 0; j < DATA_SIZE; ++j)
 		{
-			Vector3d directionV = input[j].first;
-			complex<double> input_csi1 = input[j].second.pairVector[i].first;
-			complex<double> input_csi2 = input[j].second.pairVector[i].second;
+			Vector3d directionV = input[ap.apID][j].first;
+			complex<double> input_csi1 = input[ap.apID][j].second.pairVector[i].first;
+			complex<double> input_csi2 = input[ap.apID][j].second.pairVector[i].second;
 			double theta = (2*PI/Landa) * R * directionV.dot(dr_std);
 			assert(directionV.norm() == 1);
 			double real_tmp = cos(theta);
 			double image_tmp = sin(theta);
 			complex<double> tmp (real_tmp, image_tmp);
 			avgCsiHat += input_csi1 * conj(input_csi2) * tmp;
+			//if(i == 0 && dr_std.x() == 1)
+			//	cout << avgCsiHat << ", ";
 		}
-		avgCsiHat /= input.size();
+		//if(i == 0 && dr_std.x() == 1)
+		//	cout << endl;
+		avgCsiHat /= DATA_SIZE;
 		ret += avgCsiHat.real() * avgCsiHat.real() + avgCsiHat.imag() * avgCsiHat.imag();
 	}
 	ret /= div;
@@ -211,7 +195,7 @@ int SAR::SAR_Profile_2D()
 		}
 		myfile << powtmp << endl;
 	}
-	printf("round:%d,maxPow:%0.3f,sample size:%d, ", round_count, maxPower, (int) input.size() );
+	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
 	return ret_yaw;
 }
 
@@ -238,7 +222,7 @@ vector<int> SAR::SAR_Profile_3D()
           	myfile << powtmp << endl;
 		}
 	}
-	printf("round:%d,maxPow:%0.3f,sample size:%d, ", round_count, maxPower, (int) input.size() );
+	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
 	ret.push_back(ret_yaw);
     ret.push_back(ret_pitch);
 	return ret;
@@ -275,7 +259,7 @@ vector<int> SAR::SAR_Profile_3D_fast()
 		}
 		myfile << powtmp << endl;
 	}
-	printf("round:%d,maxPow:%0.3f,sample size:%d, ", round_count, maxPower, (int) input.size() );
+	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
 	ret.push_back(ret_yaw);
     ret.push_back(ret_pitch);
     return ret;
@@ -286,28 +270,36 @@ void SAR::switchAP()
     switch(ap.apID)
     {
     case 0:
-    //Switch to from AP1 to AP2
+    //Switch to from AP1 to AP3
         ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");   //kill the child process first
-        system("iwconfig wlan0 essid TP5G1");
+        system("iwconfig wlan1 essid TP5G1");
         printf("Switch to TP5G1 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.2");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.2");
         Landa = 0.05222;		//channel 149, frequency 5745MHz
         break;
 	case 1:
 	    ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");      //kill the child process fir  st
-        system("iwconfig wlan0 essid TP5G2");
+        system("iwconfig wlan1 essid TP5G2");
         printf("Switch to TP5G2 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.3");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.3");
 		Landa = 0.05186;		//channel 157, frequency 5785MHz
         break;
+	case 2:
+	    ap.apID = (ap.apID+1)%ap.apNum;
+        system("pkill -n ping");      //kill the child process fir  st
+        system("iwconfig wlan1 essid TP5G3");
+        printf("Switch to TP5G3 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.4");
+		Landa = 0.05186;		//channel 157, frequency 5785MHz
+   		break;
     }
 }
 
 
 //AP
-AP::AP():autoSwitch(0), apID(0), apNum(2)
+AP::AP():autoSwitch(0), apID(0), apNum(AP_NUM)
 {
 	ROS_INFO("AP init finished!");
 }

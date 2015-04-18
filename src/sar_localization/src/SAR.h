@@ -20,10 +20,11 @@
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	90
+#define DATA_SIZE 	120
 #define PI 			3.1415926
 #define R			0.08
 #define STEP_SIZE	1
+#define AP_NUM		3
 
 using namespace std;
 using namespace Eigen;
@@ -59,6 +60,7 @@ public:
 };
 
 typedef vector<pair<Matrix3d, CSI> > SharedVector;
+typedef pair<Vector3d, CSI> InputPair;
 class SAR
 {
 public:
@@ -82,17 +84,15 @@ public:
 	double Landa;
 	int frame_count;
 	int round_count;
-	int input_count;
+	int input_count[AP_NUM];
 	double current_time;
-	bool firstNearStart;
-	bool initInput;
 	ofstream myfile;
 	CSI csi;
 	MOTOR motor;
 	AP ap;
 	Vector3d baseDirection;
 	Matrix3d imuAngular[WINDOW_SIZE];
-	vector<pair<Vector3d, CSI> > input;	//direct vector, CSI vectors
+	InputPair input[AP_NUM][DATA_SIZE];	//direct vector, CSI vectors
 
 	GMutex mutex;
 	SharedVector inputQueue;

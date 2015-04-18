@@ -168,7 +168,7 @@ void setMarkerOrientation(int alpha, int beta)
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "listener");
+	ros::init(argc, argv, "listener_singleThread");
 	ros::NodeHandle n;
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
