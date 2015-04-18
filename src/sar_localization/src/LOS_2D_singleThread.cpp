@@ -195,6 +195,11 @@ int main(int argc, char **argv)
 		}
 		if (start)
 		{
+			//print input
+            //for(int i = 0; i < (int) sar.input.size(); ++i)
+            //{
+            //    cout << i << ":\n" << sar.input[i].first << endl;
+            //}
 			int angle = sar.SAR_Profile_2D();
 			printf("Alpha:%d\n", angle);
 			sar.initInput = true;

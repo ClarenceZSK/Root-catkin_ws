@@ -42,26 +42,7 @@ double DegreeToRadian(double degree)
 }
 
 
-void processIMU(double t, Vector3d angular_velocity)
-{
-    if (sar.current_time < 0)
-        sar.current_time = t;
-    double dt = t - sar.current_time;
-    sar.current_time = t;
-    if (sar.frame_count != sar.WINDOW_SIZE)
-    {
-        Quaterniond q(sar.imuAngular[sar.frame_count]);
-        Quaterniond dq(1,
-                       angular_velocity(0) * dt / 2,
-                       angular_velocity(1) * dt / 2,
-                       angular_velocity(2) * dt / 2);
-        dq.w() = 1 - dq.vec().transpose() * dq.vec();
-        sar.imuAngular[sar.frame_count] = (q * dq).normalized();
-        //cout << "Frame:" << frame_count << " IMU:\n" << imuAngular[frame_count] << endl;
-    }
-}
-
-void sendIMU(const sensor_msgs::Imu &imu_msg)
+double sendIMU(const sensor_msgs::Imu &imu_msg)
 {
 	double t = imu_msg.header.stamp.toSec();
 	//double dx = imu_msg.linear_acceleration.x;
@@ -70,7 +51,8 @@ void sendIMU(const sensor_msgs::Imu &imu_msg)
 	double rx = imu_msg.angular_velocity.x;
 	double ry = imu_msg.angular_velocity.y;
 	double rz = imu_msg.angular_velocity.z;
-	processIMU(t, Vector3d(rx, ry, rz) );
+	sar.processIMU(t, Vector3d(rx, ry, rz) );
+	return t;
 }
 
 // %Tag(CALLBACK)%
@@ -79,6 +61,7 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 {
 	sar.motor.t_stamp = msg->header.stamp.toSec();
 	sar.motor.stdYaw = msg->std_yaw;
+	//cout << "motor stdYaw:" << sar.motor.stdYaw << endl;
 	/*
 	if(sar.motor.nearStartPoint() )
 	{
@@ -126,16 +109,19 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 		complex<double> csi2tmp(real2[i], image2[i]);
 		sar.csi.pairVector.push_back(make_pair(csi1tmp, csi2tmp) );
 	}
-
+	double t = 0;
 	while(!imu_buf.empty() && sar.csi.t_stamp >= imu_buf.front().header.stamp.toSec() )
 	{
-		sendIMU(imu_buf.front());
+		t = sendIMU(imu_buf.front());
 		imu_buf.pop();
 	}
+	//if(t != 0)
+	//	cout << "Time diff:" << sar.csi.t_stamp - t << endl;
 	//maintain a queue
 	//Gmutex
 	g_mutex_lock(&sar.mutex);
 	sar.inputQueue.push_back(make_pair(sar.imuAngular[sar.frame_count], sar.csi) );
+	//cout << "imuAngular[" << sar.frame_count << "]:\n" << sar.imuAngular[sar.frame_count] << endl;
 	++sar.frame_count;	//for each csi, we set a frame
 	g_mutex_unlock(&sar.mutex);
 }
@@ -193,15 +179,33 @@ void SAR_processing(void* data_ptr)
         sar.ap.init();
     }
 	sar.myfile.open("power.txt");
-	sar.init();
 	int countWiFimsg = 0;
 	while(n2.ok())
 	{
+		if(sar.motor.nearStartPoint() && !sar.initStart)
+      	{
+          	cout << "\nStart!" << sar.motor.stdYaw << endl;
+          	sar.init();
+          	sar.initStart = true;
+      	}
+		if(!sar.initStart)
+		{
+			//cout << "Waiting" << endl;
+			g_mutex_lock(&sar.mutex);
+			shared_ptr->clear();
+			g_mutex_unlock(&sar.mutex);
+			continue;
+		}
 		sar.inputData(shared_ptr);
 		bool start = false;
 		start = sar.checkData();
 		if (start)
 		{
+			//print input
+			//for(int i = 0; i < DATA_SIZE; ++i)
+			//{
+			//	cout << i << ":\n" << sar.input[sar.ap.apID][i].first << endl;
+			//}
 			int angle = sar.SAR_Profile_2D();
 			printf("Alpha:%d\n", angle);
 			//init marker

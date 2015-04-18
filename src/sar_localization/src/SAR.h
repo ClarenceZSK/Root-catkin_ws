@@ -20,7 +20,7 @@
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	120
+#define DATA_SIZE 	90
 #define PI 			3.1415926
 #define R			0.08
 #define STEP_SIZE	1
@@ -41,7 +41,7 @@ public:
 class MOTOR
 {
 public:
-	MOTOR() {}
+	MOTOR() {stdYaw = -1;}
 	bool nearStartPoint();
 	double t_stamp;
 	double stdYaw;
@@ -86,6 +86,7 @@ public:
 	int round_count;
 	int input_count[AP_NUM];
 	double current_time;
+	bool initStart;
 	ofstream myfile;
 	CSI csi;
 	MOTOR motor;

@@ -5,6 +5,7 @@ using namespace Eigen;
 //SAR
 SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1)
 {
+	initStart = false;
 	baseDirection << 0, 1, 0;
 	for(int i = 0; i < AP_NUM; ++i)
 	{
@@ -34,20 +35,14 @@ void SAR::processIMU(double t, Vector3d angular_velocity)
 
 void SAR::init()
 {
-	frame_count = 0;
-    if(motor.stdYaw < 1e-5)
-    {
-        baseDirection << 0, 1, 0;
-    }
-    else
-    {
-        baseDirection << 0, -1, 0;
-    }
+	g_mutex_lock(&mutex);
 	for(int i = 0; i < WINDOW_SIZE; ++i)
 	{
 		imuAngular[i].setIdentity();
 	}
+	frame_count = 0;
 	inputQueue.clear();
+	g_mutex_unlock(&mutex);
 }
 
 double SAR::degreeToRadian(double degree)
@@ -66,33 +61,39 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 	{
 		return;
 	}
-	/////////////////////
+	SharedVector Swap;
+	int currentFrameCount = 0;
+	///////////////////////////
+	g_mutex_lock(&mutex);
+	Swap.swap(*shared_ptr);
+	currentFrameCount = frame_count;
+	g_mutex_unlock(&mutex);
+	init();
+	///////////////////////////
 	int idx = 0;
 	Vector3d base = baseDirection;
-	g_mutex_lock(&mutex);
-	assert(frame_count == shared_ptr->size() );
-	cout << "Add " << frame_count << " Data. Start index: " << input_count[ap.apID]%DATA_SIZE << endl;
+	assert(currentFrameCount == Swap.size() );
+	cout << "Add " << currentFrameCount << " Data. Start index: " << input_count[ap.apID]%DATA_SIZE << endl;
 	Vector3d direction (0, 0, 0);
 	//cout << "start base direction:\n" << baseDirection << endl;
-	while(idx != frame_count)
+	while(idx != currentFrameCount)
 	{
 		Matrix3d rotation = Matrix3d::Identity();
-		for(int i = idx; i >= 0; --i)
+		for(int i = idx; i < currentFrameCount; ++i)
 		{
-			rotation *= shared_ptr->at(idx).first;
+			rotation *= Swap[idx].first;
+			//cout << "Swap[" << idx << "].first:\n" << Swap[idx].first << endl;
 		}
+		//cout << "Rotation:\n" << rotation << endl;
 		direction = rotation * base;
-		input[ap.apID][input_count[ap.apID]%DATA_SIZE] = make_pair(direction, shared_ptr->at(idx).second);
-		cout << "Direction:\n" << direction << endl;
+		//cout << "Direction:\n" << direction << endl;
+		input[ap.apID][input_count[ap.apID]%DATA_SIZE] = make_pair(direction, Swap[idx].second);
+		//cout << "Direction:\n" << direction << endl;
 		++input_count[ap.apID];
 		++idx;
 	}
 	baseDirection = direction;
 	//cout << "end base direction:\n" << baseDirection << endl;
-	shared_ptr->clear();
-	frame_count = 0;
-	g_mutex_unlock(&mutex);
-	//////////////////////
 }
 
 bool SAR::checkData()
@@ -343,7 +344,7 @@ void AP::init()
 //MOTOR
 bool MOTOR::nearStartPoint()
 {
-	if(stdYaw - 0 <= 1e-5 || 180 - stdYaw <= 0.1)
+	if(stdYaw == 0)
 	{
 		return true;
 	}

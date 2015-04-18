@@ -85,6 +85,7 @@ void SAR::inputData()
 		for(int i = frame_count; i >= 0; --i)
 		{
 			rotation *= imuAngular[i];
+			//cout << "imuAngular[" << i << "]:\n" << imuAngular[i] << endl;
 		}
 		Vector3d direction = rotation * baseDirection;
 		input.push_back(make_pair(direction, csi) );
