@@ -561,6 +561,7 @@ sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/eigen/Eigen/src/plugi
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/eigen/Eigen/src/plugins/MatrixCwiseUnaryOps.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/XmlRpcDecl.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/XmlRpcValue.h
+sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/geometry_msgs/Point32.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/advertise_options.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/advertise_service_options.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/assert.h
@@ -579,6 +580,7 @@ sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ro
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/message.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/message_event.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/message_forward.h
+sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/message_operations.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/message_traits.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/names.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/node_handle.h
@@ -614,6 +616,9 @@ sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ro
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/wall_timer.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/ros/wall_timer_options.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/rosconsole/macros_generated.h
+sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/sensor_msgs/ChannelFloat32.h
+sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/sensor_msgs/PointCloud.h
+sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /opt/ros/indigo/include/std_msgs/Header.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /root/catkin_ws/src/sar_localization/src/SAR.cpp
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /root/catkin_ws/src/sar_localization/src/SAR.h
 sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o: /usr/include/glib-2.0/glib.h

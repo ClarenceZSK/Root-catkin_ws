@@ -2,6 +2,7 @@
 #define SAR_H
 
 #include "ros/ros.h"
+#include <sensor_msgs/PointCloud.h>
 #include "/opt/eigen/Eigen/Dense"
 #include <vector>
 #include <complex>
@@ -24,7 +25,7 @@
 #define PI 			3.1415926
 #define R			0.08
 #define STEP_SIZE	1
-#define AP_NUM		3
+#define AP_NUM		4
 
 using namespace std;
 using namespace Eigen;
@@ -94,6 +95,9 @@ public:
 	Vector3d baseDirection;
 	Matrix3d imuAngular[WINDOW_SIZE];
 	InputPair input[AP_NUM][DATA_SIZE];	//direct vector, CSI vectors
+	sensor_msgs::ChannelFloat32 channel_msg;
+	sensor_msgs::PointCloud wifi_msg;
+	geometry_msgs::Point32 point_msg;
 
 	GMutex mutex;
 	SharedVector inputQueue;

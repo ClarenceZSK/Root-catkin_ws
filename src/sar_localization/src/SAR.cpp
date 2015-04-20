@@ -276,31 +276,40 @@ void SAR::switchAP()
         system("pkill -n ping");   //kill the child process first
         system("iwconfig wlan1 essid TP5G1");
         printf("Switch to TP5G1 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.01 192.168.0.2");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.2");
         Landa = 0.05222;		//channel 149, frequency 5745MHz
         break;
 	case 1:
 	    ap.apID = (ap.apID+1)%ap.apNum;
-        system("pkill -n ping");      //kill the child process fir  st
+        system("pkill -n ping");
         system("iwconfig wlan1 essid TP5G2");
         printf("Switch to TP5G2 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.01 192.168.0.3");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.3");
 		Landa = 0.05186;		//channel 157, frequency 5785MHz
         break;
 	case 2:
 	    ap.apID = (ap.apID+1)%ap.apNum;
-        system("pkill -n ping");      //kill the child process fir  st
+        system("pkill -n ping");
         system("iwconfig wlan1 essid TP5G3");
         printf("Switch to TP5G3 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.01 192.168.0.4");
-		Landa = 0.05186;		//channel 157, frequency 5785MHz
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.4");
+		Landa = 0.05725;		//channel 48, frequency 5240MHz
    		break;
+	case 3:
+	    ap.apID = (ap.apID+1)%ap.apNum;
+        system("pkill -n ping");
+        system("iwconfig wlan1 essid TP5G4");
+        printf("Switch to TP5G4 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.5");
+		Landa = 0.05769;		//channel 40, frequency 5200MHz
+   		break;
+
     }
 }
 
 
 //AP
-AP::AP():autoSwitch(0), apID(0), apNum(AP_NUM)
+AP::AP():autoSwitch(1), apID(0), apNum(AP_NUM)
 {
 	ROS_INFO("AP init finished!");
 }

@@ -199,6 +199,7 @@ int main(int argc, char** argv)
 						if(j == 0)
 						{
 							csi1_entry(k, i) = tmpCpmlex;
+							//cout << "CSI1: " << csi1_entry << endl;
 						}
 						else if(j == 1)
 						{
@@ -364,7 +365,7 @@ int main(int argc, char** argv)
 					msg.csi2_real.data.push_back(csi3(i, j).real() );
 					msg.csi2_image.data.push_back(csi3(i, j).imag() );
 					if(test)
-						cout << csi2(i,j) << csi3(i, j);
+						cout << "csi1:" << csi1(i,j) << " csi3:" << csi3(i, j);
 				}
 			}
 			if(test)
