@@ -335,19 +335,27 @@ void AP::mysystem(const char *cmdstr)
 
 void AP::init()
 {
-    system("iwconfig wlan0 essid TP5G1");
+    system("iwconfig wlan1 essid TP5G1");
     printf("iwconfig to TP5G1\n");
-
-    system("dhclient wlan0");
+    system("dhclient wlan1");
     printf("dhclient from TP5G1 completed\n");
 
-    system("iwconfig wlan0 essid TP5G2");
+    system("iwconfig wlan1 essid TP5G2");
     printf("iwconfig to TP5G2\n");
-
-    system("dhclient wlan0");
+    system("dhclient wlan1");
     printf("dhclient from TP5G2 completed\n");
 
-    mysystem("ping -q -n -i 0.02 192.168.0.3");
+    system("iwconfig wlan1 essid TP5G3");
+    printf("iwconfig to TP5G3\n");
+    system("dhclient wlan1");
+    printf("dhclient from TP5G3 completed\n");
+
+    system("iwconfig wlan1 essid TP5G4");
+    printf("iwconfig to TP5G4\n");
+    system("dhclient wlan1");
+    printf("dhclient from TP5G4 completed\n");
+
+    mysystem("ping -q -n -i 0.02 192.168.0.2");
 }
 
 //MOTOR
