@@ -10,13 +10,7 @@
 #include <sar_localization/Csi.h>
 #include <sar_localization/Motor.h>
 #include <sensor_msgs/Imu.h>
-#include <sensor_msgs/PointCloud.h>
 #include <visualization_msgs/Marker.h>
-
-//for multiple processes processing
-#include <signal.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 using namespace std;
 
@@ -63,7 +57,7 @@ void imuCallback(const sensor_msgs::ImuConstPtr &imu_msg)
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
 	int nt = msg->Ntx;
-	if(nt == 2)
+	if(nt > 1)
 		return;
 	sar.csi.pairVector.clear();
 	sar.csi.t_stamp = msg->header.stamp.toSec();
@@ -147,22 +141,57 @@ void initMarker()
 
 void setMarkerOrientation(int alpha, int beta)
 {
-	//while (marker_pub.getNumSubscribers() < 1)
-	//{
-	//	if (!ros::ok() )
-	//	{
-	//		return;
-	//	}
-	//	ROS_WARN_ONCE("Please create a Subscriber to the marker");
-	//}
 	//specify orientation
-	//marker.pose.position.x = cos(DegreeToRadian(alpha));
-	//marker.pose.position.y = sin(DegreeToRadian(alpha));
-	//printf("%lf %lf\n", marker.pose.position.x, marker.pose.position.y);
 	marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
 	marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
 	marker.pose.orientation.z = cos(DegreeToRadian(beta));
 	cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
+}
+
+void WiFiMsgPublish(void* data_ptr)
+{
+	cout << "Enter wifi pub thread." << endl;
+	sensor_msgs::PointCloud *shared_ptr = (sensor_msgs::PointCloud*)data_ptr;
+	ros::NodeHandle n2;
+	ros::Publisher wifi_pub = n2.advertise<sensor_msgs::PointCloud>("wifi_estimator/wifi", 1);
+	ros::Rate r(10);
+	sensor_msgs::PointCloud wifiMsg;
+	int alpha_p[sar.ap.apNum];
+	bool start = false;
+	while(n2.ok())
+	{
+		///////////////////////////
+		g_mutex_lock(&sar.mutex);
+		if((int)shared_ptr->points.size() == sar.ap.apNum)
+		{
+			wifiMsg = *shared_ptr;
+			start = true;
+			shared_ptr->channels.clear();
+			shared_ptr->points.clear();
+			for(int i  = 0; i < sar.ap.apNum; ++i)
+			{
+				alpha_p[i] = sar.alpha[i];
+			}
+		}
+		g_mutex_unlock(&sar.mutex);
+		///////////////////////////
+		if(start)
+		{
+			wifi_pub.publish(wifiMsg);
+			///////////////////////////
+			g_mutex_lock(&sar.mutex);
+			cout << "(";
+			for(int i = 0; i < sar.ap.apNum-1; ++i)
+			{
+				//cout << "(" << wifiMsg.points[i].x << ", " << wifiMsg.points[i].y << ", " << wifiMsg.points[i].z << "), ";
+				cout << alpha_p[i] << ", ";
+			}
+			cout << alpha_p[sar.ap.apNum-1] << ")" << endl;
+			g_mutex_unlock(&sar.mutex);
+			////////////////////////////
+		}
+		r.sleep();
+	}
 }
 
 
@@ -173,12 +202,22 @@ int main(int argc, char **argv)
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
-	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-	ros::Publisher wifi_pub = n.advertise<sensor_msgs::PointCloud>("wifi_estimator", 1);
 	if(sar.ap.autoSwitch)
 	{
 		sar.ap.init();
 	}
+	/////////////////////////////////////
+	//Create a thread to publish WiFi msgs
+	g_mutex_init(&sar.mutex);
+	GThread* wifiPub_thread;
+	GError* err = NULL;
+	sensor_msgs::PointCloud *data_ptr = &sar.wifi_msg;
+	if ((wifiPub_thread = g_thread_new( "sar", (GThreadFunc) WiFiMsgPublish, (void *)data_ptr)) == NULL)
+	{
+		printf("Failed to create serial handling thread: %s!!\n", err->message);
+		g_error_free(err);
+	}
+	//////////////////////////////////////
 	sar.myfile.open("power.txt");
 	sar.init();
 	ros::spinOnce();		//empty the queue
@@ -195,18 +234,24 @@ int main(int argc, char **argv)
 		}
 		if (start)
 		{
-			//print input
-            //for(int i = 0; i < (int) sar.input.size(); ++i)
-            //{
-            //    cout << i << ":\n" << sar.input[i].first << endl;
-            //}
 			int angle = sar.SAR_Profile_2D();
-			printf("Alpha:%d\n", angle);
+			sar.alpha[sar.ap.apID] = angle;
+			sar.point_msg.x = cos(DegreeToRadian(angle) );
+			sar.point_msg.y = sin(DegreeToRadian(angle) );
+			sar.point_msg.z = 0;
+			sar.channel_msg.values.push_back(sar.ap.apID);
+			sar.wifi_msg.header.stamp = ros::Time::now();
+			sar.wifi_msg.points.push_back(sar.point_msg);
+			if((int) sar.channel_msg.values.size() == sar.ap.apNum)
+			{
+				sar.wifi_msg.channels.push_back(sar.channel_msg);
+			}
+			printf("AP: %d, Alpha:%d\n", sar.ap.apID, angle);
 			sar.initInput = true;
 			//init marker
-			initMarker();
-			setMarkerOrientation(angle, 90);
-			marker_pub.publish(marker);
+			//initMarker();
+			//setMarkerOrientation(angle, 90);
+			//marker_pub.publish(marker);
 			//Switch to another AP
 			if(sar.ap.autoSwitch)
 			{

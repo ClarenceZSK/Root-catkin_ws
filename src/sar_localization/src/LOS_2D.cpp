@@ -12,7 +12,7 @@
 #include <sensor_msgs/Imu.h>
 #include <visualization_msgs/Marker.h>
 
-//for multiple processes processing
+//for multithread processing
 #include <signal.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -28,6 +28,7 @@ double RadianToDegree(double radian)
 {
 	return radian/PI*180;
 }
+
 double DegreeToRadian(double degree)
 {
 	return degree/180.0*PI;
@@ -162,7 +163,7 @@ void SAR_processing(void* data_ptr)
 	SharedVector *shared_ptr = (SharedVector*)data_ptr;
 	ros::NodeHandle n2;
 	ros::Publisher marker_pub = n2.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-	ros::Publisher wifi_pub = n2.advertise<sensor_msgs::PointCloud>("wifi_estimator", 1);
+	ros::Publisher wifi_pub = n2.advertise<sensor_msgs::PointCloud>("wifi_estimator/wifi", 1);
 	queue<sensor_msgs::Imu> imu_buf;
 	visualization_msgs::Marker marker;
 	if(sar.ap.autoSwitch)
@@ -193,7 +194,7 @@ void SAR_processing(void* data_ptr)
 		if (start)
 		{
 			int angle = sar.SAR_Profile_2D();
-			printf("Alpha:%d\n", angle);
+			printf("Alpha:--------%d\n", angle);
 			//init marker
 			/*
 			initMarker();
@@ -206,7 +207,10 @@ void SAR_processing(void* data_ptr)
 			sar.point_msg.z = 0;
 			sar.channel_msg.values.push_back(sar.ap.apID);
 			sar.wifi_msg.header.stamp = ros::Time::now();
-			sar.wifi_msg.channels.push_back(sar.channel_msg);
+			if((int) sar.channel_msg.values.size() == sar.ap.apNum)
+			{
+				sar.wifi_msg.channels.push_back(sar.channel_msg);
+			}
 			sar.wifi_msg.points.push_back(sar.point_msg);
 			countWiFimsg++;
 			if(countWiFimsg != 0 && countWiFimsg%sar.ap.apNum == 0)

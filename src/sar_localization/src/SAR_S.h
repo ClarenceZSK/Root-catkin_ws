@@ -2,6 +2,7 @@
 #define SAR_S_H
 
 #include "ros/ros.h"
+#include <sensor_msgs/PointCloud.h>
 #include "/opt/eigen/Eigen/Dense"
 #include <vector>
 #include <complex>
@@ -15,9 +16,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <signal.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <glib.h>
+
 #define PI 			3.1415926
 #define R			0.08
 #define STEP_SIZE	1
+#define AP_NUM		3
 
 using namespace std;
 using namespace Eigen;
@@ -34,7 +41,7 @@ public:
 class MOTOR
 {
 public:
-	MOTOR() {}
+	MOTOR() {stdYaw = -1;}
 	bool nearStartPoint();
 	double t_stamp;
 	double stdYaw;
@@ -71,14 +78,13 @@ public:
 
 	static const int WINDOW_SIZE	= 5000;
 	static const int INTERVAL		= 13;
-	static const int ARC			= 173;
+	static const int ARC			= 170;
 	double Landa;
 	int frame_count;
 	int round_count;
 	double current_time;
 	double maxTimeDiff;
 	bool dataReady;
-	bool firstNearStart;
 	bool initInput;
 	ofstream myfile;
 	CSI csi;
@@ -87,6 +93,13 @@ public:
 	Vector3d baseDirection;
 	Matrix3d imuAngular[WINDOW_SIZE];
 	vector<pair<Vector3d, CSI> > input;	//direct vector, CSI vectors
+
+	sensor_msgs::ChannelFloat32 channel_msg;
+	sensor_msgs::PointCloud wifi_msg;
+	geometry_msgs::Point32 point_msg;
+	int alpha[AP_NUM];
+
+	GMutex mutex;
 };
 
 #endif

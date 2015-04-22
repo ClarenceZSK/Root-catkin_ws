@@ -4,8 +4,8 @@ WiFiEstimator::WiFiEstimator():
     frame_count(0), current_time(-1)
 {
     odometry[0](0) = 0.0;
-    odometry[0](1) = 10.0;
-    odometry[0](2) = 10.0;
+    odometry[0](1) = 0.0;
+    odometry[0](2) = 0.0;
     odometry[0](3) = 0;
     odometry[0](4) = 0;
     odometry[0](5) = 0;

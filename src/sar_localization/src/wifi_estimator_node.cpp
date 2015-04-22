@@ -46,6 +46,7 @@ void send_imu(const sensor_msgs::Imu &imu_msg)
 void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
 {
     double t = wifi_msg->header.stamp.toSec();
+    ROS_INFO("processing WIFI data with stamp %lf", t);
     if (imu_buf.empty() || t < imu_buf.front().header.stamp.toSec())
     {
         ROS_ERROR("wait for imu data");
@@ -115,7 +116,7 @@ int main(int argc, char **argv)
     path.header.frame_id = "world";
 
     ros::Subscriber sub_imu = n.subscribe("/imu_3dm_gx4/imu", 1000, imu_callback);
-    ros::Subscriber sub_wifi = n.subscribe("/sensors/wifi", 1000, wifi_callback);
+    ros::Subscriber sub_wifi = n.subscribe("wifi", 1000, wifi_callback);
 
     ros::spin();
     return 0;

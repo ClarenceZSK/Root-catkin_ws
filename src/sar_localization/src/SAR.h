@@ -21,11 +21,11 @@
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	90
+#define DATA_SIZE 	120
 #define PI 			3.1415926
 #define R			0.08
 #define STEP_SIZE	1
-#define AP_NUM		4
+#define AP_NUM		2
 
 using namespace std;
 using namespace Eigen;

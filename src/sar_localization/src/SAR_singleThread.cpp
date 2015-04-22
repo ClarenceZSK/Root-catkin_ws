@@ -7,8 +7,11 @@ SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), max
 {
 	baseDirection << 0, 1, 0;
 	dataReady = false;
-	firstNearStart = true;
 	initInput = false;
+	for(int i = 0; i < AP_NUM; ++i)
+	{
+		alpha[i] = -1;
+	}
 	ROS_INFO("SAR init finished");
 }
 
@@ -64,23 +67,23 @@ void SAR::inputData()
 {
 	if(!dataReady)
 	{
+		if(initInput)
+		{
+			init();
+			input.push_back(make_pair(baseDirection, csi) );
+			initInput = false;
+		}
 		return;
 	}
 	dataReady = false;
 	if(initInput)
 	{
 		init();
-		if(firstNearStart)
-		{
-			cout << "Reach start point, init input!" << endl;
-			firstNearStart = false;
-		}
 		input.push_back(make_pair(baseDirection, csi) );
 		initInput = false;
 	}
 	else
 	{
-		firstNearStart = true;
 		Matrix3d rotation = Matrix3d::Identity();
 		for(int i = frame_count; i >= 0; --i)
 		{
@@ -89,6 +92,7 @@ void SAR::inputData()
 		}
 		Vector3d direction = rotation * baseDirection;
 		input.push_back(make_pair(direction, csi) );
+		//cout << "Direction:\n" << direction << endl;
 		++frame_count;
 	}
 }
@@ -268,33 +272,47 @@ void SAR::switchAP()
     switch(ap.apID)
     {
     case 0:
-    //Switch to from AP1 to AP2
+    //Switch to from AP3 to AP5
         ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");   //kill the child process first
-        system("iwconfig wlan0 essid TP5G1");
-        printf("Switch to TP5G1 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.2");
+        system("iwconfig wlan1 essid TP5G4");
+        printf("Switch to TP5G4 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.5");
         ros::spinOnce();
 	    dataReady = false;
-        Landa = 0.05222;		//channel 149, frequency 5745MHz
+		Landa = 0.05186;		//channel 157, frequency 5785MHz
         break;
 	case 1:
 	    ap.apID = (ap.apID+1)%ap.apNum;
-        system("pkill -n ping");      //kill the child process fir  st
-        system("iwconfig wlan0 essid TP5G2");
-        printf("Switch to TP5G2 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.3");
+        system("pkill -n ping");
+        system("iwconfig wlan1 essid TP5G5");
+        printf("Switch to TP5G5 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.6");
         ros::spinOnce();
         dataReady = false;
-		Landa = 0.05186;		//channel 157, frequency 5785MHz
+		Landa = 0.0515;		//channel 165, frequency 5825MHz
+        break;
+	case 2:
+	    ap.apID = (ap.apID+1)%ap.apNum;
+        system("pkill -n ping");
+        system("iwconfig wlan1 essid TP5G3");
+        printf("Switch to TP5G3 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.4");
+        ros::spinOnce();
+        dataReady = false;
+		Landa = 0.05222;		//channel 149, frequency 5745MHz
         break;
     }
 }
 
 
 //AP
-AP::AP():autoSwitch(0), apID(0), apNum(2)
+AP::AP():autoSwitch(1), apID(0), apNum(AP_NUM)
 {
+	if(!autoSwitch)
+	{
+		apNum = 1;
+	}
 	ROS_INFO("AP init finished!");
 }
 
@@ -319,25 +337,28 @@ void AP::mysystem(const char *cmdstr)
 
 void AP::init()
 {
-    system("iwconfig wlan0 essid TP5G1");
-    printf("iwconfig to TP5G1\n");
+    system("iwconfig wlan1 essid TP5G5");
+    printf("iwconfig to TP5G5\n");
+    system("dhclient wlan1");
+    printf("dhclient from TP5G5 completed\n");
 
-    system("dhclient wlan0");
-    printf("dhclient from TP5G1 completed\n");
+    system("iwconfig wlan1 essid TP5G4");
+    printf("iwconfig to TP5G4\n");
+    system("dhclient wlan1");
+    printf("dhclient from TP5G4 completed\n");
 
-    system("iwconfig wlan0 essid TP5G2");
-    printf("iwconfig to TP5G2\n");
+	system("iwconfig wlan1 essid TP5G3");
+    printf("iwconfig to TP5G3\n");
+    system("dhclient wlan1");
+    printf("dhclient from TP5G3 completed\n");
 
-    system("dhclient wlan0");
-    printf("dhclient from TP5G2 completed\n");
-
-    mysystem("ping -q -n -i 0.02 192.168.0.3");
+    mysystem("ping -q -n -i 0.01 192.168.0.4");
 }
 
 //MOTOR
 bool MOTOR::nearStartPoint()
 {
-	if(stdYaw - 0 <= 1e-5 || 180 - stdYaw <= 0.1)
+	if(stdYaw <= 1e-5 || 180 - stdYaw <= 0.1)
 	{
 		return true;
 	}

@@ -88,7 +88,7 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 		direction = rotation * base;
 		//cout << "Direction:\n" << direction << endl;
 		input[ap.apID][input_count[ap.apID]%DATA_SIZE] = make_pair(direction, Swap[idx].second);
-		//cout << "Direction:\n" << direction << endl;
+		cout << "Direction:\n" << direction << endl;
 		++input_count[ap.apID];
 		++idx;
 	}
@@ -197,6 +197,9 @@ int SAR::SAR_Profile_2D()
 		myfile << powtmp << endl;
 	}
 	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
+	//debug
+	if(ret_yaw >= 180)
+		ret_yaw -= 180;
 	return ret_yaw;
 }
 
@@ -271,45 +274,36 @@ void SAR::switchAP()
     switch(ap.apID)
     {
     case 0:
-    //Switch to from AP1 to AP3
+    	//Switch to from AP1 to AP3
         ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");   //kill the child process first
-        system("iwconfig wlan1 essid TP5G1");
-        printf("Switch to TP5G1 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.2");
+        system("iwconfig wlan1 essid TP5G3");
+        printf("Switch to TP5G3 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.4");
         Landa = 0.05222;		//channel 149, frequency 5745MHz
         break;
 	case 1:
 	    ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");
-        system("iwconfig wlan1 essid TP5G2");
-        printf("Switch to TP5G2 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.3");
+        system("iwconfig wlan1 essid TP5G4");
+        printf("Switch to TP5G4 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.5");
 		Landa = 0.05186;		//channel 157, frequency 5785MHz
         break;
 	case 2:
 	    ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");
-        system("iwconfig wlan1 essid TP5G3");
-        printf("Switch to TP5G3 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.4");
-		Landa = 0.05725;		//channel 48, frequency 5240MHz
+        system("iwconfig wlan1 essid TP5G5");
+        printf("Switch to TP5G5 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.02 192.168.0.6");
+		Landa = 0.0515;		//channel 165, frequency 5825MHz
    		break;
-	case 3:
-	    ap.apID = (ap.apID+1)%ap.apNum;
-        system("pkill -n ping");
-        system("iwconfig wlan1 essid TP5G4");
-        printf("Switch to TP5G4 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.5");
-		Landa = 0.05769;		//channel 40, frequency 5200MHz
-   		break;
-
     }
 }
 
 
 //AP
-AP::AP():autoSwitch(1), apID(0), apNum(AP_NUM)
+AP::AP():autoSwitch(0), apID(0), apNum(AP_NUM)
 {
 	ROS_INFO("AP init finished!");
 }
@@ -335,27 +329,22 @@ void AP::mysystem(const char *cmdstr)
 
 void AP::init()
 {
-    system("iwconfig wlan1 essid TP5G1");
-    printf("iwconfig to TP5G1\n");
+    system("iwconfig wlan1 essid TP5G5");
+    printf("iwconfig to TP5G5\n");
     system("dhclient wlan1");
-    printf("dhclient from TP5G1 completed\n");
-
-    system("iwconfig wlan1 essid TP5G2");
-    printf("iwconfig to TP5G2\n");
-    system("dhclient wlan1");
-    printf("dhclient from TP5G2 completed\n");
-
-    system("iwconfig wlan1 essid TP5G3");
-    printf("iwconfig to TP5G3\n");
-    system("dhclient wlan1");
-    printf("dhclient from TP5G3 completed\n");
+    printf("dhclient from TP5G5 completed\n");
 
     system("iwconfig wlan1 essid TP5G4");
     printf("iwconfig to TP5G4\n");
     system("dhclient wlan1");
     printf("dhclient from TP5G4 completed\n");
 
-    mysystem("ping -q -n -i 0.02 192.168.0.2");
+    system("iwconfig wlan1 essid TP5G3");
+    printf("iwconfig to TP5G3\n");
+    system("dhclient wlan1");
+    printf("dhclient from TP5G3 completed\n");
+
+    mysystem("ping -q -n -i 0.02 192.168.0.4");
 }
 
 //MOTOR
