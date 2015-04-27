@@ -12,6 +12,7 @@ SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), max
 	{
 		alpha[i] = -1;
 	}
+	maxPow = 0;
 	ROS_INFO("SAR init finished");
 }
 
@@ -73,6 +74,7 @@ void SAR::inputData()
 			input.push_back(make_pair(baseDirection, csi) );
 			initInput = false;
 		}
+		//cout << "Data not ready." << endl;
 		return;
 	}
 	dataReady = false;
@@ -101,8 +103,10 @@ bool SAR::checkData()
 {
 	if(frame_count < 20)
 	{
+		//cout << frame_count << ", ";
 		return false;
 	}
+	cout << endl;
 	//check if semi-circulate arc
 	int size = (int) input.size();
 	//double cosArc = input[--size].first.dot(baseDirection);
@@ -197,7 +201,11 @@ int SAR::SAR_Profile_2D()
 		}
 		myfile << powtmp << endl;
 	}
+	maxPow = maxPower;
 	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
+	//for eliminate the 180 mirror result
+	if(ret_yaw >= 180)
+		ret_yaw -= 180;
 	return ret_yaw;
 }
 

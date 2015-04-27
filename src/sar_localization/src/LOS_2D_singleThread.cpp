@@ -51,12 +51,14 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 
 void imuCallback(const sensor_msgs::ImuConstPtr &imu_msg)
 {
+	//cout << "imu push" << endl;
 	imu_buf.push(*imu_msg);
 }
 
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 {
 	int nt = msg->Ntx;
+	//cout << "nt=" << nt << endl;
 	if(nt > 1)
 		return;
 	sar.csi.pairVector.clear();
@@ -97,6 +99,7 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 		imu_t = imu_buf.front().header.stamp.toSec();
 		imu_buf.pop();
 		sar.dataReady = true;
+		//cout << "data ready" << endl;
 	}
 	if(imu_t != 0)
 	{
@@ -221,6 +224,8 @@ int main(int argc, char **argv)
 	sar.myfile.open("power.txt");
 	sar.init();
 	ros::spinOnce();		//empty the queue
+	ofstream retFile;
+	retFile.open("results.txt");
 	//std_flag = false;
 	while(n.ok() )
 	{
@@ -235,6 +240,7 @@ int main(int argc, char **argv)
 		if (start)
 		{
 			int angle = sar.SAR_Profile_2D();
+			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.input.size() << "; alpha:" << angle << endl;
 			sar.alpha[sar.ap.apID] = angle;
 			sar.point_msg.x = cos(DegreeToRadian(angle) );
 			sar.point_msg.y = sin(DegreeToRadian(angle) );
@@ -259,7 +265,7 @@ int main(int argc, char **argv)
 			}
 		}
 	}
-
+	retFile.close();
 	sar.myfile.close();
 	if(sar.ap.autoSwitch)
 	{

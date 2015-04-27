@@ -88,7 +88,7 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 		direction = rotation * base;
 		//cout << "Direction:\n" << direction << endl;
 		input[ap.apID][input_count[ap.apID]%DATA_SIZE] = make_pair(direction, Swap[idx].second);
-		cout << "Direction:\n" << direction << endl;
+		//cout << "Direction:\n" << direction << endl;
 		++input_count[ap.apID];
 		++idx;
 	}

@@ -77,7 +77,7 @@ public:
 	void switchAP();
 
 	static const int WINDOW_SIZE	= 5000;
-	static const int INTERVAL		= 13;
+	static const int INTERVAL		= 40;
 	static const int ARC			= 170;
 	double Landa;
 	int frame_count;
@@ -93,13 +93,15 @@ public:
 	Vector3d baseDirection;
 	Matrix3d imuAngular[WINDOW_SIZE];
 	vector<pair<Vector3d, CSI> > input;	//direct vector, CSI vectors
-
+	//wifi msg publish
 	sensor_msgs::ChannelFloat32 channel_msg;
 	sensor_msgs::PointCloud wifi_msg;
 	geometry_msgs::Point32 point_msg;
 	int alpha[AP_NUM];
-
+	//multithread
 	GMutex mutex;
+	//output results for debug
+	double maxPow;
 };
 
 #endif
