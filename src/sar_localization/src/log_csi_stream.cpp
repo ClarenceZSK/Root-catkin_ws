@@ -126,10 +126,10 @@ int main(int argc, char** argv)
 		//ret = fwrite(cmsg->data, 1, l, out);
 		char *pt = (char*) cmsg->data;
 		unsigned char data_code = (unsigned char) *pt;
-		//++pt;
-		//printf("Data code is: %d\n", (unsigned short) data_code);
+		///////////////////////////////////
 		sar_localization::Csi msg;
 		msg.header.stamp = ros::Time::now();
+		///////////////////////////////////
 		if(data_code == 187)	//Get beamforming
 		{
 			//printf("Enter data decode\n");
@@ -360,12 +360,12 @@ int main(int argc, char** argv)
 			{
 				for (int j = 0; j < 30; ++j)
 				{
-					msg.csi1_real.data.push_back(csi2(i, j).real() );
-					msg.csi1_image.data.push_back(csi2(i, j).imag() );
-					msg.csi2_real.data.push_back(csi3(i, j).real() );
-					msg.csi2_image.data.push_back(csi3(i, j).imag() );
+					msg.csi1_real.data.push_back(csi1(i, j).real() );
+					msg.csi1_image.data.push_back(csi1(i, j).imag() );
+					msg.csi2_real.data.push_back(csi2(i, j).real() );
+					msg.csi2_image.data.push_back(csi2(i, j).imag() );
 					if(test)
-						cout << "csi1:" << csi1(i,j) << " csi3:" << csi3(i, j);
+						cout << "csi1:" << csi1(i,j) << " csi2:" << csi2(i, j);
 				}
 			}
 			if(test)
