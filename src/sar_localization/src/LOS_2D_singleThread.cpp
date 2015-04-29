@@ -180,6 +180,7 @@ void WiFiMsgPublish(void* data_ptr)
 		///////////////////////////
 		if(start)
 		{
+			wifiMsg.header.stamp = ros::Time::now();
 			wifi_pub.publish(wifiMsg);
 			///////////////////////////
 			g_mutex_lock(&sar.mutex);
@@ -240,6 +241,23 @@ int main(int argc, char **argv)
 		if (start)
 		{
 			int angle = sar.SAR_Profile_2D();
+			if(sar.preAlpha[sar.ap.apID] >= 0)
+			{
+				int angleDif = abs(angle - sar.preAlpha[sar.ap.apID]);
+				if(abs(angleDif - 180) < 10)
+				{
+					angle = sar.mirror(angle);
+					sar.preAlpha[sar.ap.apID] = angle;
+				}
+				else
+				{
+					sar.preAlpha[sar.ap.apID] = angle;
+				}
+			}
+			else
+			{
+				sar.preAlpha[sar.ap.apID] = angle;
+			}
 			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.input.size() << "; alpha:" << angle << endl;
 			sar.alpha[sar.ap.apID] = angle;
 			sar.point_msg.x = cos(DegreeToRadian(angle) );
@@ -251,6 +269,7 @@ int main(int argc, char **argv)
 			if((int) sar.channel_msg.values.size() == sar.ap.apNum)
 			{
 				sar.wifi_msg.channels.push_back(sar.channel_msg);
+				sar.channel_msg.values.clear();
 			}
 			printf("AP: %d, Alpha:%d\n", sar.ap.apID, angle);
 			sar.initInput = true;
@@ -265,7 +284,7 @@ int main(int argc, char **argv)
 			}
 		}
 	}
-	retFile.close();
+
 	sar.myfile.close();
 	if(sar.ap.autoSwitch)
 	{

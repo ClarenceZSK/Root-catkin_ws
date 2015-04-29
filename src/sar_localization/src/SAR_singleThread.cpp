@@ -11,6 +11,7 @@ SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1), max
 	for(int i = 0; i < AP_NUM; ++i)
 	{
 		alpha[i] = -1;
+		preAlpha[i] = -1;
 	}
 	maxPow = 0;
 	ROS_INFO("SAR init finished");
@@ -101,7 +102,7 @@ void SAR::inputData()
 
 bool SAR::checkData()
 {
-	if(frame_count < 20)
+	if(frame_count < 20 || initInput)
 	{
 		//cout << frame_count << ", ";
 		return false;
@@ -204,9 +205,19 @@ int SAR::SAR_Profile_2D()
 	maxPow = maxPower;
 	printf("round:%d,maxTD: %.2f,maxPow: %0.3f,sample size:%d, ", round_count, maxTimeDiff, maxPower, (int) input.size() );
 	//for eliminate the 180 mirror result
-	if(ret_yaw >= 180)
-		ret_yaw -= 180;
+	//if(ret_yaw < 180)
+	//	ret_yaw += 180;
 	return ret_yaw;
+}
+
+int SAR::mirror(int alpha)
+{
+	int ret = alpha - 180;
+	if(ret < 0)
+	{
+		ret += 360;
+	}
+	return ret;
 }
 
 vector<int> SAR::SAR_Profile_3D()
@@ -366,7 +377,7 @@ void AP::init()
 //MOTOR
 bool MOTOR::nearStartPoint()
 {
-	if(stdYaw <= 1e-5 || 180 - stdYaw <= 0.1)
+	if(stdYaw <= 0.15 || 180 - stdYaw <= 0.25)
 	{
 		return true;
 	}

@@ -59,15 +59,18 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
         imu_buf.pop();
     }
     vector<pair<int, Vector3d>> wifi;
+	printf("prepare1\n");
     for (int i = 0; i < int(wifi_msg->points.size()); i++)
     {
         int id = wifi_msg->channels[0].values[i] + 0.5;
+		//int id = i;
         double x = wifi_msg->points[i].x;
         double y = wifi_msg->points[i].y;
         double z = wifi_msg->points[i].z;
         //printf("%lf %lf %lf\n", x,y,z);
         wifi.push_back(make_pair(id, Vector3d(x, y, z)));
     }
+	printf("prepare2\n");
     SolutionContainer solution = estimator.processWiFi(wifi);
 
     ROS_INFO_STREAM("vo position: " << solution.p.transpose());

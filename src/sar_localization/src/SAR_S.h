@@ -72,6 +72,7 @@ public:
 	void inputData();
 	bool checkData();
 	int SAR_Profile_2D();
+	int mirror(int alpha);
 	vector<int> SAR_Profile_3D();		//search alpha and beta
 	vector<int> SAR_Profile_3D_fast();	//search alpha with the 2D solution first, then fix alpha and search beta
 	void switchAP();
@@ -98,6 +99,7 @@ public:
 	sensor_msgs::PointCloud wifi_msg;
 	geometry_msgs::Point32 point_msg;
 	int alpha[AP_NUM];
+	int preAlpha[AP_NUM];
 	//multithread
 	GMutex mutex;
 	//output results for debug

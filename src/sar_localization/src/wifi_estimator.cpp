@@ -31,6 +31,7 @@ void WiFiEstimator::processIMU(double t, const Vector3d &linear_acceleration, co
     current_time = t;
     if (frame_count != 0)
     {
+		ROS_DEBUG("1");
         Quaterniond q(IMU_angular[frame_count]);
         Quaterniond dq(1,
                        angular_velocity(0) * dt / 2,
@@ -38,6 +39,7 @@ void WiFiEstimator::processIMU(double t, const Vector3d &linear_acceleration, co
                        angular_velocity(2) * dt / 2);
         dq.w() = 1 - dq.vec().transpose() * dq.vec();
         IMU_angular[frame_count] = (q * dq).normalized();
+		ROS_DEBUG("2");
 
         Rs[frame_count] = Rs[frame_count - 1] * IMU_angular[frame_count];
 
@@ -45,6 +47,7 @@ void WiFiEstimator::processIMU(double t, const Vector3d &linear_acceleration, co
         IMU_linear[frame_count].segment<3>(3) += IMU_angular[frame_count] * linear_acceleration * dt;
         IMU_linear[frame_count](6) += dt;
 
+		ROS_DEBUG("3");
         {
             Matrix<double, 6, 6> F = Matrix<double, 6, 6>::Identity();
             F.block<3, 3>(0, 3) = dt * Matrix3d::Identity();
@@ -55,6 +58,7 @@ void WiFiEstimator::processIMU(double t, const Vector3d &linear_acceleration, co
 
             IMU_cov[frame_count] = F * IMU_cov[frame_count] * F.transpose() + G * acc_cov * G.transpose();
         }
+		ROS_DEBUG("4");
     }
 }
 
