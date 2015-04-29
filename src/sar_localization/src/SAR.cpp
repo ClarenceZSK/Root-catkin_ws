@@ -5,8 +5,9 @@ using namespace Eigen;
 //SAR
 SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1)
 {
-	initStart = false;
+	//initStart = false;
 	baseDirection << 0, 1, 0;
+	newestIdx = -1;
 	for(int i = 0; i < AP_NUM; ++i)
 	{
 		input_count[i] = 0;
@@ -92,8 +93,42 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 		++input_count[ap.apID];
 		++idx;
 	}
+	newestIdx = input_count[ap.apID]%DATA_SIZE - 1;
 	baseDirection = direction;
 	//cout << "end base direction:\n" << baseDirection << endl;
+}
+
+void SAR::selectData()			//select a semi-circular data to calculate
+{
+	if(!selectedInput.empty() )
+		selectedInput.clear();
+	assert(newestIdx >= 0);
+	Vector3d firstV = input[ap.apID][newestIdx].first;
+	selectedInput.push_back(input[ap.apID][newestIdx]);
+	int searchIdx = newestIdx - 1;
+	while(searchIdx != newestIdx)
+	{
+		Vector3d v = input[ap.apID][searchIdx].first;
+		if(fabs(v.dot(firstV) - cos(PI) ) <= 0.01)
+		{
+			selectedInput.push_back(input[ap.apID][searchIdx]);
+			break;
+		}
+		else
+		{
+			selectedInput.push_back(input[ap.apID][searchIdx]);
+		}
+		searchIdx--;
+		if(searchIdx < 0)
+		{
+			searchIdx += DATA_SIZE;
+		}
+	}
+	if(searchIdx == newestIdx)
+	{
+		cout << "\n!!!Did not find a semi-circular vector!!!\n" << endl;
+		selectedInput.clear();
+	}
 }
 
 bool SAR::checkData()
@@ -139,7 +174,6 @@ bool SAR::checkData()
 			if(subcarrierNum != checkSubcarrierNum)
 			{
 				cout << "!Data inconsistant!" << checkSubcarrierNum << "--" << subcarrierNum << endl;
-				//init();
 				return false;
 			}
 		}
@@ -150,16 +184,17 @@ bool SAR::checkData()
 double SAR::powerCalculation(Vector3d dr_std)
 {
 	double ret = 0;
-	int div = (int) input[ap.apID][0].second.pairVector.size();
+	//int div = (int) input[ap.apID][0].second.pairVector.size();
+	int div = (int) selectedInput[0].second.pairVector.size();
 	//int div = 30;
 	for(int i = 0; i < div; ++i)
 	{
 		complex<double> avgCsiHat(0, 0);
-		for(int j = 0; j < DATA_SIZE; ++j)
+		for(int j = 0; j < (int) selectedInput.size(); ++j)
 		{
-			Vector3d directionV = input[ap.apID][j].first;
-			complex<double> input_csi1 = input[ap.apID][j].second.pairVector[i].first;
-			complex<double> input_csi2 = input[ap.apID][j].second.pairVector[i].second;
+			Vector3d directionV = selectedInput[j].first;
+			complex<double> input_csi1 = selectedInput[j].second.pairVector[i].first;
+			complex<double> input_csi2 = selectedInput[j].second.pairVector[i].second;
 			double theta = (2*PI/Landa) * R * directionV.dot(dr_std);
 			assert(directionV.norm() == 1);
 			double real_tmp = cos(theta);
@@ -171,7 +206,7 @@ double SAR::powerCalculation(Vector3d dr_std)
 		}
 		//if(i == 0 && dr_std.x() == 1)
 		//	cout << endl;
-		avgCsiHat /= DATA_SIZE;
+		avgCsiHat /= selectedInput.size();
 		ret += avgCsiHat.real() * avgCsiHat.real() + avgCsiHat.imag() * avgCsiHat.imag();
 	}
 	ret /= div;
@@ -277,26 +312,26 @@ void SAR::switchAP()
     	//Switch to from AP1 to AP3
         ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");   //kill the child process first
-        system("iwconfig wlan1 essid TP5G3");
-        printf("Switch to TP5G3 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.4");
-        Landa = 0.05222;		//channel 149, frequency 5745MHz
+        system("iwconfig wlan1 essid TP5G4");
+        printf("Switch to TP5G4 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.5");
+		Landa = 0.05186;		//channel 157, 5785MHz
         break;
 	case 1:
 	    ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");
-        system("iwconfig wlan1 essid TP5G4");
-        printf("Switch to TP5G4 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.5");
-		Landa = 0.05186;		//channel 157, frequency 5785MHz
+        system("iwconfig wlan1 essid TP5G5");
+        printf("Switch to TP5G5 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.6");
+		Landa = 0.0515;		//channel 165, frequency 5825MHz
         break;
 	case 2:
 	    ap.apID = (ap.apID+1)%ap.apNum;
         system("pkill -n ping");
-        system("iwconfig wlan1 essid TP5G5");
-        printf("Switch to TP5G5 and start ping\n");
-        ap.mysystem("ping -q -n -i 0.02 192.168.0.6");
-		Landa = 0.0515;		//channel 165, frequency 5825MHz
+        system("iwconfig wlan1 essid TP5G3");
+        printf("Switch to TP5G3 and start ping\n");
+        ap.mysystem("ping -q -n -i 0.01 192.168.0.4");
+		Landa = 0.05222;		//channel 149, frequency 5745MHz
    		break;
     }
 }
@@ -348,6 +383,7 @@ void AP::init()
 }
 
 //MOTOR
+/*
 bool MOTOR::nearStartPoint()
 {
 	if(stdYaw == 0)
@@ -359,3 +395,4 @@ bool MOTOR::nearStartPoint()
 		return false;
 	}
 }
+*/

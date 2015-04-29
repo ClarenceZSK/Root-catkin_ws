@@ -74,6 +74,7 @@ public:
 	double powerCalculation(Vector3d alpha);
 	void inputData(SharedVector* shared_ptr);
 	bool checkData();
+	void selectData();
 	int SAR_Profile_2D();
 	vector<int> SAR_Profile_3D();		//search alpha and beta
 	vector<int> SAR_Profile_3D_fast();	//search alpha with the 2D solution first, then fix alpha and search beta
@@ -86,19 +87,22 @@ public:
 	int frame_count;
 	int round_count;
 	int input_count[AP_NUM];
+	int newestIdx;
 	double current_time;
-	bool initStart;
+	//bool initStart;
 	ofstream myfile;
 	CSI csi;
-	MOTOR motor;
+	//MOTOR motor;
 	AP ap;
 	Vector3d baseDirection;
 	Matrix3d imuAngular[WINDOW_SIZE];
 	InputPair input[AP_NUM][DATA_SIZE];	//direct vector, CSI vectors
+	vector<InputPair> selectedInput;	//selected a half-circle data from input to calculate
+	////////////////////////////////////////
 	sensor_msgs::ChannelFloat32 channel_msg;
 	sensor_msgs::PointCloud wifi_msg;
 	geometry_msgs::Point32 point_msg;
-
+	///////////////////////////////////////
 	GMutex mutex;
 	SharedVector inputQueue;
 };

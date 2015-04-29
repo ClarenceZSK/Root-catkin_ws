@@ -112,45 +112,6 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 }
 // %EndTag(CALLBACK)%
 
-//init marker
-void initMarker()
-{
-	marker.header.frame_id = "/my_frame";
-	marker.header.stamp = ros::Time::now();
-	marker.ns = "listener";
-	marker.id = 0;
-	uint32_t shape = visualization_msgs::Marker::ARROW;
-	marker.type = shape;
-	marker.action = visualization_msgs::Marker::ADD;
-
-	marker.pose.position.x = 0;
-	marker.pose.position.y = 0;
-	marker.pose.position.z = 0;
-	marker.pose.orientation.x = 0.0;
-	marker.pose.orientation.y = 0.0;
-	marker.pose.orientation.z = 0.0;
-	marker.pose.orientation.w = 1.0;
-
-	marker.scale.x = 1.0;
-	marker.scale.y = 1.0;
-	marker.scale.z = 1.0;
-
-	marker.color.r = 0.0f;
-	marker.color.g = 1.0f;
-	marker.color.b = 0.0f;
-	marker.color.a = 1.0;
-	marker.lifetime = ros::Duration();
-}
-
-void setMarkerOrientation(int alpha, int beta)
-{
-	//specify orientation
-	marker.pose.orientation.x = cos(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
-	marker.pose.orientation.y = sin(DegreeToRadian(alpha))*sin(DegreeToRadian(beta));
-	marker.pose.orientation.z = cos(DegreeToRadian(beta));
-	cout << "Mark orientation:" << marker.pose.orientation.x << ", " << marker.pose.orientation.y << ", " << marker.pose.orientation.z << endl;
-}
-
 void WiFiMsgPublish(void* data_ptr)
 {
 	cout << "Enter wifi pub thread." << endl;
@@ -165,16 +126,14 @@ void WiFiMsgPublish(void* data_ptr)
 	{
 		///////////////////////////
 		g_mutex_lock(&sar.mutex);
-		if((int)shared_ptr->points.size() == sar.ap.apNum)
+		//if((int)shared_ptr->points.size() == sar.ap.apNum)
+		wifiMsg = *shared_ptr;
+		start = true;
+		shared_ptr->channels.clear();
+		shared_ptr->points.clear();
+		for(int i  = 0; i < sar.ap.apNum; ++i)
 		{
-			wifiMsg = *shared_ptr;
-			start = true;
-			shared_ptr->channels.clear();
-			shared_ptr->points.clear();
-			for(int i  = 0; i < sar.ap.apNum; ++i)
-			{
-				alpha_p[i] = sar.alpha[i];
-			}
+			alpha_p[i] = sar.alpha[i];
 		}
 		g_mutex_unlock(&sar.mutex);
 		///////////////////////////
@@ -258,7 +217,7 @@ int main(int argc, char **argv)
 			{
 				sar.preAlpha[sar.ap.apID] = angle;
 			}
-			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.input.size() << "; alpha:" << angle << endl;
+			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.input.size() << "; AP->Alpha:" << sar.ap.apID << "->" << angle << endl;
 			sar.alpha[sar.ap.apID] = angle;
 			sar.point_msg.x = cos(DegreeToRadian(angle) );
 			sar.point_msg.y = sin(DegreeToRadian(angle) );
@@ -266,11 +225,8 @@ int main(int argc, char **argv)
 			sar.channel_msg.values.push_back(sar.ap.apID);
 			sar.wifi_msg.header.stamp = ros::Time::now();
 			sar.wifi_msg.points.push_back(sar.point_msg);
-			if((int) sar.channel_msg.values.size() == sar.ap.apNum)
-			{
-				sar.wifi_msg.channels.push_back(sar.channel_msg);
-				sar.channel_msg.values.clear();
-			}
+			sar.wifi_msg.channels.push_back(sar.channel_msg);
+			sar.channel_msg.values.clear();
 			printf("AP: %d, Alpha:%d\n", sar.ap.apID, angle);
 			sar.initInput = true;
 			//init marker
