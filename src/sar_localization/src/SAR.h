@@ -23,7 +23,7 @@
 
 #define DATA_SIZE 	90
 #define PI 			3.1415926
-#define R			0.08
+#define R			0.16
 #define STEP_SIZE	1
 #define AP_NUM		3
 
