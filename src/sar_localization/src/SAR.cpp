@@ -74,7 +74,7 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 	int idx = 0;
 	Vector3d base = baseDirection;
 	assert(currentFrameCount == Swap.size() );
-	cout << "Add " << currentFrameCount << " Data. Start index: " << input_count[ap.apID]%DATA_SIZE << endl;
+	//cout << "Add " << currentFrameCount << " Data. Start index: " << input_count[ap.apID]%DATA_SIZE << endl;
 	Vector3d direction (0, 0, 0);
 	//cout << "start base direction:\n" << baseDirection << endl;
 	while(idx != currentFrameCount)
@@ -93,30 +93,30 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 		++input_count[ap.apID];
 		++idx;
 	}
-	newestIdx = input_count[ap.apID]%DATA_SIZE - 1;
+	newestIdx = (input_count[ap.apID] - 1)%DATA_SIZE;
 	baseDirection = direction;
 	//cout << "end base direction:\n" << baseDirection << endl;
 }
 
-void SAR::selectData()			//select a semi-circular data to calculate
+bool SAR::selectData()			//select a semi-circular data to calculate
 {
 	if(!selectedInput.empty() )
 		selectedInput.clear();
 	assert(newestIdx >= 0);
+	//cout << newestIdx << endl;
 	Vector3d firstV = input[ap.apID][newestIdx].first;
 	selectedInput.push_back(input[ap.apID][newestIdx]);
 	int searchIdx = newestIdx - 1;
+	if(searchIdx < 0)
+		searchIdx += DATA_SIZE;
 	while(searchIdx != newestIdx)
 	{
 		Vector3d v = input[ap.apID][searchIdx].first;
-		if(fabs(v.dot(firstV) - cos(PI) ) <= 0.01)
+		selectedInput.push_back(input[ap.apID][searchIdx]);
+		if(fabs(v.dot(firstV) - cos(PI) ) <= 0.05)
 		{
-			selectedInput.push_back(input[ap.apID][searchIdx]);
+			cout << "v:\n" << v << "\nfirstV:\n" << firstV << endl;
 			break;
-		}
-		else
-		{
-			selectedInput.push_back(input[ap.apID][searchIdx]);
 		}
 		searchIdx--;
 		if(searchIdx < 0)
@@ -126,8 +126,13 @@ void SAR::selectData()			//select a semi-circular data to calculate
 	}
 	if(searchIdx == newestIdx)
 	{
-		cout << "\n!!!Did not find a semi-circular vector!!!\n" << endl;
+		//cout << "\n!!!Did not find a semi-circular vector!!!\n" << endl;
 		selectedInput.clear();
+		return false;
+	}
+	else
+	{
+		return true;
 	}
 }
 
@@ -379,7 +384,7 @@ void AP::init()
     system("dhclient wlan1");
     printf("dhclient from TP5G3 completed\n");
 
-    mysystem("ping -q -n -i 0.02 192.168.0.4");
+    mysystem("ping -q -n -i 0.01 192.168.0.4");
 }
 
 //MOTOR

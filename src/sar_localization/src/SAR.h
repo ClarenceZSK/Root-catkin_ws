@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	90
+#define DATA_SIZE 	120
 #define PI 			3.1415926
 #define R			0.16
 #define STEP_SIZE	1
@@ -74,7 +74,7 @@ public:
 	double powerCalculation(Vector3d alpha);
 	void inputData(SharedVector* shared_ptr);
 	bool checkData();
-	void selectData();
+	bool selectData();
 	int SAR_Profile_2D();
 	vector<int> SAR_Profile_3D();		//search alpha and beta
 	vector<int> SAR_Profile_3D_fast();	//search alpha with the 2D solution first, then fix alpha and search beta

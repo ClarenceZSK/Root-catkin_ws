@@ -129,6 +129,7 @@ void SAR_processing(void* data_ptr)
     }
 	sar.myfile.open("power.txt");
 	int countWiFimsg = 0;
+	sar.init();
 	while(n2.ok())
 	{
 		/*
@@ -151,9 +152,11 @@ void SAR_processing(void* data_ptr)
 		start = sar.checkData();
 		if (start)
 		{
-			sar.selectData();
+			bool goodData = sar.selectData();
+			if(!goodData)
+				continue;
 			int angle = sar.SAR_Profile_2D();
-			printf("Alpha:--------%d\n", angle);
+			printf("Newest IDX: %d, Sample size: %d, Alpha:--------%d\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
 			//publish wifi msgs
 			sar.point_msg.x = cos(DegreeToRadian(angle) );
 			sar.point_msg.y = sin(DegreeToRadian(angle) );
@@ -164,7 +167,7 @@ void SAR_processing(void* data_ptr)
 			sar.wifi_msg.points.push_back(sar.point_msg);
 			countWiFimsg++;
 			wifi_pub.publish(sar.wifi_msg);
-			cout << "Publish " << countWiFimsg/sar.ap.apNum << " WiFi msg!" << endl;
+			cout << "Publish " << countWiFimsg << " WiFi msg!" << endl;
 			sar.channel_msg.values.clear();
 			sar.wifi_msg.channels.clear();
 			sar.wifi_msg.points.clear();
@@ -187,6 +190,7 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "listener");
 	ros::NodeHandle n;
+	sleep(30);
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	//ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);
@@ -201,7 +205,7 @@ int main(int argc, char **argv)
 		printf("Failed to create serial handling thread: %s!!\n", err->message);
 		g_error_free(err);
 	}
-	sleep(30);
+	cout << "start spin" <<endl;
 	ros::spin();
 	return 0;
 }
