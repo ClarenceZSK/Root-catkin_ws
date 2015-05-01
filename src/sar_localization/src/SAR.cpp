@@ -21,6 +21,7 @@ void SAR::processIMU(double t, Vector3d angular_velocity)
         current_time = t;
     double dt = t - current_time;
     current_time = t;
+	g_mutex_lock(&mutex);
     if (frame_count != WINDOW_SIZE)
     {
         Quaterniond q(imuAngular[frame_count]);
@@ -32,6 +33,7 @@ void SAR::processIMU(double t, Vector3d angular_velocity)
         imuAngular[frame_count] = (q * dq).normalized();
 		//cout << "Frame:" << frame_count << " IMU:\n" << imuAngular[frame_count] << endl;
 	}
+	g_mutex_unlock(&mutex);
 }
 
 void SAR::init()
@@ -80,9 +82,9 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 	while(idx != currentFrameCount)
 	{
 		Matrix3d rotation = Matrix3d::Identity();
-		for(int i = idx; i < currentFrameCount; ++i)
+		for(int i = 0; i <= idx; ++i)
 		{
-			rotation *= Swap[idx].first;
+			rotation *= Swap[i].first;
 			//cout << "Swap[" << idx << "].first:\n" << Swap[idx].first << endl;
 		}
 		//cout << "Rotation:\n" << rotation << endl;
@@ -100,6 +102,7 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 
 bool SAR::selectData()			//select a semi-circular data to calculate
 {
+	//cout << "Select data" << endl;
 	if(!selectedInput.empty() )
 		selectedInput.clear();
 	assert(newestIdx >= 0);
@@ -113,9 +116,9 @@ bool SAR::selectData()			//select a semi-circular data to calculate
 	{
 		Vector3d v = input[ap.apID][searchIdx].first;
 		selectedInput.push_back(input[ap.apID][searchIdx]);
-		if(fabs(v.dot(firstV) - cos(PI) ) <= 0.05)
+		if(fabs(v.dot(firstV) - cos(PI) ) <= 0.02)
 		{
-			cout << "v:\n" << v << "\nfirstV:\n" << firstV << endl;
+			//cout << "v:\n" << v << "\nfirstV:\n" << firstV << endl;
 			break;
 		}
 		searchIdx--;
@@ -132,6 +135,15 @@ bool SAR::selectData()			//select a semi-circular data to calculate
 	}
 	else
 	{
+		//cout << "Newest index: " << newestIdx << endl;
+		int i = newestIdx;
+		do
+		{
+			//cout << "input[" << i << "]:\n" << input[ap.apID][i].first << endl;
+			--i;
+			if(i < 0)
+				i += DATA_SIZE;
+		}while(i != newestIdx);
 		return true;
 	}
 }
@@ -142,6 +154,7 @@ bool SAR::checkData()
 	{
 		return false;
 	}
+	//cout << "Check data" << endl;
 	int size = DATA_SIZE;
 
 	//check max interval
@@ -220,6 +233,7 @@ double SAR::powerCalculation(Vector3d dr_std)
 
 int SAR::SAR_Profile_2D()
 {
+	cout << "SAR_Profile_2D" << endl;
 	int ret_yaw = 0;
 	int resolution = STEP_SIZE;      //search resolution
 	double maxPower = 0;
@@ -238,8 +252,8 @@ int SAR::SAR_Profile_2D()
 	}
 	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
 	//debug
-	if(ret_yaw >= 180)
-		ret_yaw -= 180;
+	//if(ret_yaw >= 180)
+	//	ret_yaw -= 180;
 	return ret_yaw;
 }
 

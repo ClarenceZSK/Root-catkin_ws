@@ -20,6 +20,7 @@
 
 using namespace std;
 
+bool globalStart = false;
 SAR sar;
 queue<sensor_msgs::Imu> imu_buf;
 
@@ -108,12 +109,22 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 		t = sendIMU(imu_buf.front());
 		imu_buf.pop();
 	}
-	//maintain a queue
-	//Gmutex
-	g_mutex_lock(&sar.mutex);
-	sar.inputQueue.push_back(make_pair(sar.imuAngular[sar.frame_count], sar.csi) );
-	++sar.frame_count;	//for each csi, we set a frame
-	g_mutex_unlock(&sar.mutex);
+	if(!globalStart)
+	{
+		globalStart = true;
+		sar.input[sar.ap.apID][sar.input_count[sar.ap.apID]%DATA_SIZE] = make_pair(sar.baseDirection, sar.csi);
+		++sar.input_count[sar.ap.apID];
+		sar.init();
+	}
+	else
+	{
+		//maintain a queue
+		//Gmutex
+		g_mutex_lock(&sar.mutex);
+		sar.inputQueue.push_back(make_pair(sar.imuAngular[sar.frame_count], sar.csi) );
+		++sar.frame_count;	//for each csi, we set a frame
+		g_mutex_unlock(&sar.mutex);
+	}
 }
 // %EndTag(CALLBACK)%
 
@@ -140,13 +151,13 @@ void SAR_processing(void* data_ptr)
           	sar.initStart = true;
       	}
 		*/
-		//if(!sar.initStart)
-		//{
-		//	g_mutex_lock(&sar.mutex);
-		//	shared_ptr->clear();
-		//	g_mutex_unlock(&sar.mutex);
-			//continue;
-		//}
+		if(!globalStart)
+		{
+			g_mutex_lock(&sar.mutex);
+			shared_ptr->clear();
+			g_mutex_unlock(&sar.mutex);
+			continue;
+		}
 		sar.inputData(shared_ptr);
 		bool start = false;
 		start = sar.checkData();
