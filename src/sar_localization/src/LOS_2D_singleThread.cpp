@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 			}
 		}
 	}
-
+	retFile.close();
 	sar.myfile.close();
 	if(sar.ap.autoSwitch)
 	{

@@ -128,6 +128,11 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 }
 // %EndTag(CALLBACK)%
 
+void myPrint()
+{
+
+}
+
 void SAR_processing(void* data_ptr)
 {
 	SharedVector *shared_ptr = (SharedVector*)data_ptr;
@@ -141,6 +146,9 @@ void SAR_processing(void* data_ptr)
 	sar.myfile.open("power.txt");
 	int countWiFimsg = 0;
 	sar.init();
+	ofstream retFile;
+	retFile.open("results.txt");
+	//int countRep = 0;
 	while(n2.ok())
 	{
 		/*
@@ -167,6 +175,18 @@ void SAR_processing(void* data_ptr)
 			if(!goodData)
 				continue;
 			int angle = sar.SAR_Profile_2D();
+			myPrint();
+			if(sar.preAngle < 0)
+			{
+				sar.preAngle = angle;
+			}
+			else if(abs(angle-sar.preAngle) > 20)
+			{
+				sar.preAngle = angle;
+				myPrint();
+			}
+			sar.preAngle = angle;
+			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.selectedInput.size() << "; Alpha:" << angle << endl;
 			printf("Newest IDX: %d, Sample size: %d, Alpha:--------%d\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
 			//publish wifi msgs
 			sar.point_msg.x = cos(DegreeToRadian(angle) );
@@ -201,7 +221,8 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "listener");
 	ros::NodeHandle n;
-	sleep(30);
+	if(!sar.ap.autoSwitch)
+		sleep(30);
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	//ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);

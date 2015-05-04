@@ -23,7 +23,7 @@
 
 #define DATA_SIZE 	120
 #define PI 			3.1415926
-#define R			0.16
+#define R			0.24
 #define STEP_SIZE	1
 #define AP_NUM		3
 
@@ -89,6 +89,9 @@ public:
 	int input_count[AP_NUM];
 	int newestIdx;
 	double current_time;
+	//debug
+	int preAngle;
+	double maxPow;
 	//bool initStart;
 	ofstream myfile;
 	CSI csi;

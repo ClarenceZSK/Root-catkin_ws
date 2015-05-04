@@ -3,15 +3,17 @@
 using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1)
+SAR::SAR():Landa(0.0515), frame_count(0), round_count(0), current_time(-1)
 {
 	//initStart = false;
 	baseDirection << 0, 1, 0;
 	newestIdx = -1;
+	maxPow = 0;
 	for(int i = 0; i < AP_NUM; ++i)
 	{
 		input_count[i] = 0;
 	}
+	preAngle = -1;
 	ROS_INFO("SAR init finished");
 }
 
@@ -100,7 +102,7 @@ void SAR::inputData(SharedVector* shared_ptr)	//input accumulated data
 	//cout << "end base direction:\n" << baseDirection << endl;
 }
 
-bool SAR::selectData()			//select a semi-circular data to calculate
+bool SAR::selectData()			//select a circular data to calculate
 {
 	//cout << "Select data" << endl;
 	if(!selectedInput.empty() )
@@ -110,13 +112,15 @@ bool SAR::selectData()			//select a semi-circular data to calculate
 	Vector3d firstV = input[ap.apID][newestIdx].first;
 	selectedInput.push_back(input[ap.apID][newestIdx]);
 	int searchIdx = newestIdx - 1;
+	int count = 0;
 	if(searchIdx < 0)
 		searchIdx += DATA_SIZE;
 	while(searchIdx != newestIdx)
 	{
+		count++;
 		Vector3d v = input[ap.apID][searchIdx].first;
 		selectedInput.push_back(input[ap.apID][searchIdx]);
-		if(fabs(v.dot(firstV) - cos(PI) ) <= 0.02)
+		if(fabs(v.dot(firstV) - cos(0) ) <= 0.01 && count > DATA_SIZE/2)
 		{
 			//cout << "v:\n" << v << "\nfirstV:\n" << firstV << endl;
 			break;
