@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.0515), frame_count(0), round_count(0), current_time(-1)
+SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1)
 {
 	//initStart = false;
 	baseDirection << 0, 1, 0;
@@ -255,6 +255,7 @@ int SAR::SAR_Profile_2D()
 		myfile << powtmp << endl;
 	}
 	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
+	maxPow = maxPower;
 	//debug
 	//if(ret_yaw >= 180)
 	//	ret_yaw -= 180;

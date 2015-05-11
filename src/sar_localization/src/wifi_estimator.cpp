@@ -164,12 +164,13 @@ void WiFiEstimator::solveOdometryLinear()
             tmp_A.setZero();
 
             MatrixXd reduce(2, 3);
-            reduce <<
-                   wifi_measurement[i][j](2), 0, -wifi_measurement[i][j](0),
-                                    0, wifi_measurement[i][j](2), -wifi_measurement[i][j](1);
+            //reduce << wifi_measurement[i][j](2), 0, -wifi_measurement[i][j](0), 0, wifi_measurement[i][j](2), -wifi_measurement[i][j](1);
+            reduce << 1, 0, -wifi_measurement[i][j](0), 0, 1, -wifi_measurement[i][j](1);
 
-            tmp_A.block<2, 3>(0, 0) = reduce * Rs[i].inverse() * -Matrix3d::Identity();
-            tmp_A.block<2, 3>(0, 3) = reduce * Rs[i].inverse() * Matrix3d::Identity();
+            //tmp_A.block<2, 3>(0, 0) = reduce * Rs[i].inverse() * -Matrix3d::Identity();
+            tmp_A.block<2, 3>(0, 0) = reduce * -Matrix3d::Identity();
+            //tmp_A.block<2, 3>(0, 3) = reduce * Rs[i].inverse() * Matrix3d::Identity();
+            tmp_A.block<2, 3>(0, 3) = reduce * Matrix3d::Identity();
             MatrixXd r_A = tmp_A.transpose() * tmp_A;
             int ii = i * 9, jj = (frame_count + 1) * 9 + j * 3;
             A.block<3, 3>(ii, ii) += r_A.block<3, 3>(0, 0);

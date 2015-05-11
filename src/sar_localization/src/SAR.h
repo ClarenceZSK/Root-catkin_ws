@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	120
+#define DATA_SIZE 	300
 #define PI 			3.1415926
 #define R			0.24
 #define STEP_SIZE	1

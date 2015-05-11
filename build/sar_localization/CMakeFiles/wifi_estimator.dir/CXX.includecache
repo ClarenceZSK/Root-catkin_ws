@@ -928,6 +928,10 @@ ros/message_operations.h
 
 /root/catkin_ws/src/sar_localization/src/parameter.h
 
+/root/catkin_ws/src/sar_localization/src/wifi_estimator.cpp
+wifi_estimator.h
+/root/catkin_ws/src/sar_localization/src/wifi_estimator.h
+
 /root/catkin_ws/src/sar_localization/src/wifi_estimator.h
 eigen3/Eigen/Dense
 -

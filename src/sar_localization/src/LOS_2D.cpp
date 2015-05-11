@@ -23,6 +23,7 @@ using namespace std;
 bool globalStart = false;
 SAR sar;
 queue<sensor_msgs::Imu> imu_buf;
+ros::Publisher imu_pub;
 
 double RadianToDegree(double radian)
 {
@@ -65,6 +66,7 @@ void motorCallback(const sar_localization::Motor::ConstPtr& msg)
 void imuCallback(const sensor_msgs::ImuConstPtr &imu_msg)
 {
 	imu_buf.push(*imu_msg);
+	imu_pub.publish(*imu_msg);
 }
 
 void csiCallback(const sar_localization::Csi::ConstPtr& msg)
@@ -128,11 +130,6 @@ void csiCallback(const sar_localization::Csi::ConstPtr& msg)
 }
 // %EndTag(CALLBACK)%
 
-void myPrint()
-{
-
-}
-
 void SAR_processing(void* data_ptr)
 {
 	SharedVector *shared_ptr = (SharedVector*)data_ptr;
@@ -175,7 +172,6 @@ void SAR_processing(void* data_ptr)
 			if(!goodData)
 				continue;
 			int angle = sar.SAR_Profile_2D();
-			myPrint();
 			if(sar.preAngle < 0)
 			{
 				sar.preAngle = angle;
@@ -183,7 +179,6 @@ void SAR_processing(void* data_ptr)
 			else if(abs(angle-sar.preAngle) > 20)
 			{
 				sar.preAngle = angle;
-				myPrint();
 			}
 			sar.preAngle = angle;
 			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.selectedInput.size() << "; Alpha:" << angle << endl;
@@ -221,8 +216,10 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "listener");
 	ros::NodeHandle n;
+	//forward IMU
+	imu_pub = n.advertise<sensor_msgs::Imu>("wifi_imu", 1000);
 	if(!sar.ap.autoSwitch)
-		sleep(30);
+		sleep(15);
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	//ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);

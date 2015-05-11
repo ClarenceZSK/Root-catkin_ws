@@ -166,7 +166,7 @@ int main(int argc, char **argv) {
   nh.param<std::string>("device", device, "/dev/ttyACM0");
   nh.param<int>("baudrate", baudrate, 115200);
   nh.param<std::string>("frameId", frameId, std::string("imu"));
-  nh.param<int>("imu_decimation", imu_decimation, 4);
+  nh.param<int>("imu_decimation", imu_decimation, 2);
   nh.param<int>("filter_decimation", filter_decimation, 5);
   nh.param<bool>("enable_filter", enable_filter, false);
   nh.param<bool>("enable_mag_update", enable_mag_update, false);
