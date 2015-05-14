@@ -171,32 +171,37 @@ void SAR_processing(void* data_ptr)
 			bool goodData = sar.selectData();
 			if(!goodData)
 				continue;
-			int angle = sar.SAR_Profile_2D();
-			if(sar.preAngle < 0)
-			{
-				sar.preAngle = angle;
-			}
-			else if(abs(angle-sar.preAngle) > 20)
-			{
-				sar.preAngle = angle;
-			}
-			sar.preAngle = angle;
+			double angle = sar.SAR_Profile_2D();
+			//if(sar.preAngle < 0)
+			//{
+			//	sar.preAngle = angle;
+			//}
+			//else if(abs(angle-sar.preAngle) > 20)
+			//{
+			//	sar.preAngle = angle;
+			//}
 			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.selectedInput.size() << "; Alpha:" << angle << endl;
-			printf("Newest IDX: %d, Sample size: %d, Alpha:--------%d\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
+			printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
 			//publish wifi msgs
-			sar.point_msg.x = cos(DegreeToRadian(angle) );
-			sar.point_msg.y = sin(DegreeToRadian(angle) );
-			sar.point_msg.z = 0;
-			sar.channel_msg.values.push_back(sar.ap.apID);
-			sar.wifi_msg.header.stamp = ros::Time::now();
-			sar.wifi_msg.channels.push_back(sar.channel_msg);
-			sar.wifi_msg.points.push_back(sar.point_msg);
-			countWiFimsg++;
-			wifi_pub.publish(sar.wifi_msg);
-			cout << "Publish " << countWiFimsg << " WiFi msg!" << endl;
-			sar.channel_msg.values.clear();
-			sar.wifi_msg.channels.clear();
-			sar.wifi_msg.points.clear();
+			if(fabs(sar.preAngle - angle) > 0 || 1)
+			{
+				printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
+				sar.point_msg.x = cos(DegreeToRadian(angle) );
+				sar.point_msg.y = sin(DegreeToRadian(angle) );
+				sar.point_msg.z = 1;
+				sar.channel_msg.values.push_back(sar.ap.apID);
+				sar.wifi_msg.header.stamp = ros::Time::now();
+				sar.wifi_msg.channels.push_back(sar.channel_msg);
+				sar.wifi_msg.points.push_back(sar.point_msg);
+				countWiFimsg++;
+				wifi_pub.publish(sar.wifi_msg);
+				cout << "Publish " << countWiFimsg << " WiFi msg!" << endl;
+				sar.channel_msg.values.clear();
+				sar.wifi_msg.channels.clear();
+				sar.wifi_msg.points.clear();
+			}
+			/////////////////////////////////////
+			sar.preAngle = angle;
 			//Switch to another AP
 			if(sar.ap.autoSwitch)
 			{
@@ -217,7 +222,7 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "listener");
 	ros::NodeHandle n;
 	//forward IMU
-	imu_pub = n.advertise<sensor_msgs::Imu>("wifi_imu", 1000);
+	imu_pub = n.advertise<sensor_msgs::Imu>("wifi_estimator/wifi_imu", 1000);
 	if(!sar.ap.autoSwitch)
 		sleep(15);
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);

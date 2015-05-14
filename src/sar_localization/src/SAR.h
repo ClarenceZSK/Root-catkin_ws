@@ -15,17 +15,19 @@
 #include <queue>
 #include <stdlib.h>
 #include <stdio.h>
+#include <algorithm>
 
 #include <signal.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	300
+#define DATA_SIZE 	1000
 #define PI 			3.1415926
 #define R			0.24
 #define STEP_SIZE	1
-#define AP_NUM		3
+#define RSL			1
+#define AP_NUM		1
 
 using namespace std;
 using namespace Eigen;
@@ -62,6 +64,9 @@ public:
 
 typedef vector<pair<Matrix3d, CSI> > SharedVector;
 typedef pair<Vector3d, CSI> InputPair;
+typedef Matrix<std::complex<double>, 360, DATA_SIZE> Matrix360CD;
+typedef Matrix<std::complex<double>, 360, 1> Vector360CD;
+
 class SAR
 {
 public:
@@ -75,12 +80,13 @@ public:
 	void inputData(SharedVector* shared_ptr);
 	bool checkData();
 	bool selectData();
-	int SAR_Profile_2D();
+	double SAR_Profile_2D();
+	double finerResolution(int c_yaw);
 	vector<int> SAR_Profile_3D();		//search alpha and beta
 	vector<int> SAR_Profile_3D_fast();	//search alpha with the 2D solution first, then fix alpha and search beta
 	void switchAP();
 
-	static const int WINDOW_SIZE	= 500;
+	static const int WINDOW_SIZE	= 1000;
 	static const int INTERVAL		= 13;
 	static const int ARC			= 173;
 	double Landa;
@@ -90,7 +96,7 @@ public:
 	int newestIdx;
 	double current_time;
 	//debug
-	int preAngle;
+	double preAngle;
 	double maxPow;
 	//bool initStart;
 	ofstream myfile;
@@ -101,6 +107,11 @@ public:
 	Matrix3d imuAngular[WINDOW_SIZE];
 	InputPair input[AP_NUM][DATA_SIZE];	//direct vector, CSI vectors
 	vector<InputPair> selectedInput;	//selected a half-circle data from input to calculate
+
+	//optimize my code
+	//Matrix360CD tempCal;
+	//Vector360CD sumV;
+	////////////////////////////////////////
 	////////////////////////////////////////
 	sensor_msgs::ChannelFloat32 channel_msg;
 	sensor_msgs::PointCloud wifi_msg;

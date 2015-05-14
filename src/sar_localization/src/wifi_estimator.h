@@ -26,13 +26,13 @@ public:
 
     void processIMU(double t, const Vector3d &linear_acceleration, const Vector3d &angular_velocity);
     SolutionContainer processWiFi(const vector<pair<int, Vector3d>> &wifi);
+    int frame_count;
 
 private:
     const Matrix3d acc_cov = 1e-2 * Matrix3d::Identity();
     const Matrix3d gra_cov = 1e-6 * Matrix3d::Identity();
     const Matrix3d gyr_cov = 1e-4 * Matrix3d::Identity();
 
-    int frame_count;
     double current_time;
 
     VectorXd x;

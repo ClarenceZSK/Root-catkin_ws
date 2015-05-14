@@ -29,7 +29,7 @@ void send_imu(const sensor_msgs::Imu &imu_msg)
 {
     double t = imu_msg.header.stamp.toSec();
 
-    ROS_INFO("processing IMU data with stamp %lf", t);
+    //ROS_INFO("processing IMU data with stamp %lf", t);
 
     double dx = imu_msg.linear_acceleration.x;
     double dy = imu_msg.linear_acceleration.y;
@@ -46,7 +46,7 @@ void send_imu(const sensor_msgs::Imu &imu_msg)
 void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
 {
     double t = wifi_msg->header.stamp.toSec();
-    ROS_INFO("processing WIFI data with stamp %lf", t);
+    //ROS_INFO("processing WIFI data with stamp %lf", t);
     if (imu_buf.empty() || t < imu_buf.front().header.stamp.toSec())
     {
         ROS_ERROR("wait for imu data");
@@ -59,7 +59,7 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
         imu_buf.pop();
     }
     vector<pair<int, Vector3d>> wifi;
-	printf("prepare1\n");
+	//printf("prepare1\n");
     for (int i = 0; i < int(wifi_msg->points.size()); i++)
     {
         int id = wifi_msg->channels[0].values[i] + 0.5;
@@ -70,7 +70,7 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
         //printf("%lf %lf %lf\n", x,y,z);
         wifi.push_back(make_pair(id, Vector3d(x, y, z)));
     }
-	printf("prepare2\n");
+	//printf("prepare2\n");
     SolutionContainer solution = estimator.processWiFi(wifi);
 
     ROS_INFO_STREAM("vo position: " << solution.p.transpose());
@@ -96,14 +96,17 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
     pose_stamped.header.stamp = ros::Time::now();
     pose_stamped.header.frame_id = "world";
     pose_stamped.pose = odometry.pose.pose;
-    path.poses.push_back(pose_stamped);
-    printf("%lu %lf %lf %lf\n",
+	if(estimator.frame_count > MIN_FRAME_CNT)
+	{
+    	path.poses.push_back(pose_stamped);
+    	printf("path.pose.size()=%lu, position:  %lf %lf %lf\n",
            path.poses.size(),
            path.poses.back().pose.position.x,
            path.poses.back().pose.position.y,
            path.poses.back().pose.position.z);
-    pub_path.publish(path);
-    pub_pose.publish(pose_stamped);
+    	pub_path.publish(path);
+    	pub_pose.publish(pose_stamped);
+	}
 }
 
 int main(int argc, char **argv)

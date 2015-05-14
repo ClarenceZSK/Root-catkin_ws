@@ -235,9 +235,26 @@ double SAR::powerCalculation(Vector3d dr_std)
 	return ret;
 }
 
-int SAR::SAR_Profile_2D()
+double SAR::finerResolution(int c_yaw)
 {
-	cout << "SAR_Profile_2D" << endl;
+	double ret = 0;
+	double maxPower = 0;
+	double resolution = min(0.1, 1.0/RSL);
+	for(double alpha = c_yaw-1; alpha < c_yaw+1; alpha += resolution)
+	{
+		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 0);
+		double powtmp = powerCalculation(dr);
+		if(maxPower < powtmp)
+		{
+			maxPower= powtmp;
+			ret = alpha;
+		}
+	}
+	return ret;
+}
+
+double SAR::SAR_Profile_2D()
+{
 	int ret_yaw = 0;
 	int resolution = STEP_SIZE;      //search resolution
 	double maxPower = 0;
@@ -245,7 +262,7 @@ int SAR::SAR_Profile_2D()
 	myfile << "#" << round_count << endl;
 	for(int alpha = 0; alpha < 360; alpha += resolution)
 	{
-		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 0);
+		Vector3d dr (cos(degreeToRadian((double)alpha) ), sin(degreeToRadian((double)alpha) ), 0);
 		double powtmp = powerCalculation(dr);
 		if(maxPower < powtmp)
 		{
@@ -259,7 +276,9 @@ int SAR::SAR_Profile_2D()
 	//debug
 	//if(ret_yaw >= 180)
 	//	ret_yaw -= 180;
-	return ret_yaw;
+	//finer resolution searching
+	double finer_yaw = finerResolution(ret_yaw);
+	return finer_yaw;
 }
 
 vector<int> SAR::SAR_Profile_3D()
