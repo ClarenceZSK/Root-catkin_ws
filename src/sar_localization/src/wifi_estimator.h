@@ -51,6 +51,10 @@ private:
 
     SolutionContainer solveOdometry();
     void solveOdometryLinear();
+
+	/////////////////////////////////
+	Vector3d imu_std;
+	Matrix3d R_std;
 };
 
 

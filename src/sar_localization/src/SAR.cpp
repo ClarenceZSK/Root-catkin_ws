@@ -120,7 +120,7 @@ bool SAR::selectData()			//select a circular data to calculate
 		count++;
 		Vector3d v = input[ap.apID][searchIdx].first;
 		selectedInput.push_back(input[ap.apID][searchIdx]);
-		if(fabs(v.dot(firstV) - cos(0) ) <= 0.01 && count > DATA_SIZE/2)
+		if(fabs(v.dot(firstV) - cos(0) ) <= 0.01 && count > min(50, DATA_SIZE/4))
 		{
 			//cout << "v:\n" << v << "\nfirstV:\n" << firstV << endl;
 			break;
