@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "wifi_estimator")
+set(wifi_estimator_MAINTAINER "root <root@todo.todo>")
+set(wifi_estimator_DEPRECATED "")
+set(wifi_estimator_VERSION "0.0.0")
+set(wifi_estimator_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
+set(wifi_estimator_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
+set(wifi_estimator_BUILDTOOL_DEPENDS "catkin")

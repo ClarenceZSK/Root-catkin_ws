@@ -161,6 +161,8 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "sar_localization/catkin_generated/sar_localization-msg-extras.cmake.develspace.in"
   "sar_localization/catkin_generated/sar_localization-msg-extras.cmake.installspace.in"
   "sar_localization/cmake/sar_localization-genmsg.cmake"
+  "wifi_estimator/catkin_generated/ordered_paths.cmake"
+  "wifi_estimator/catkin_generated/package.cmake"
   "/root/catkin_ws/devel/share/imu_3dm_gx4/cmake/imu_3dm_gx4-msg-paths.cmake"
   "/root/catkin_ws/devel/share/sar_localization/cmake/sar_localization-msg-paths.cmake"
   "/root/catkin_ws/src/CMakeLists.txt"
@@ -170,6 +172,8 @@ SET(CMAKE_MAKEFILE_DEPENDS
   "/root/catkin_ws/src/sar_localization/cmake/FindGLIB2.cmake"
   "/root/catkin_ws/src/sar_localization/cmake/FindGTHREAD2.cmake"
   "/root/catkin_ws/src/sar_localization/package.xml"
+  "/root/catkin_ws/src/wifi_estimator/CMakeLists.txt"
+  "/root/catkin_ws/src/wifi_estimator/package.xml"
   "/usr/share/OpenCV/OpenCVConfig-version.cmake"
   "/usr/share/OpenCV/OpenCVConfig.cmake"
   "/usr/share/OpenCV/OpenCVModules-release.cmake"
@@ -226,6 +230,7 @@ SET(CMAKE_MAKEFILE_PRODUCTS
   "gtest/CMakeFiles/CMakeDirectoryInformation.cmake"
   "imu_3dm_gx4/CMakeFiles/CMakeDirectoryInformation.cmake"
   "sar_localization/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "wifi_estimator/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:

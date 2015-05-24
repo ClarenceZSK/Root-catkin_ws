@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1)
+SAR::SAR():Landa(0.0515), frame_count(0), round_count(0), current_time(-1)
 {
 	//initStart = false;
 	baseDirection << 0, 1, 0;
@@ -14,6 +14,12 @@ SAR::SAR():Landa(0.05222), frame_count(0), round_count(0), current_time(-1)
 		input_count[i] = 0;
 	}
 	preAngle = -1;
+	//Failure detection
+	staticCount = 0;
+	sumStable = 0;
+	stablePeakPower = -1;
+	failThre = 0.6;
+	failureDetectionAvailable = false;
 	ROS_INFO("SAR init finished");
 }
 
@@ -120,7 +126,7 @@ bool SAR::selectData()			//select a circular data to calculate
 		count++;
 		Vector3d v = input[ap.apID][searchIdx].first;
 		selectedInput.push_back(input[ap.apID][searchIdx]);
-		if(fabs(v.dot(firstV) - cos(0) ) <= 0.01 && count > min(50, DATA_SIZE/4))
+		if(fabs(v.dot(firstV) - cos(0) ) <= 0.01 && count > 100)// DATA_SIZE/2)
 		{
 			//cout << "v:\n" << v << "\nfirstV:\n" << firstV << endl;
 			break;
@@ -206,7 +212,6 @@ bool SAR::checkData()
 double SAR::powerCalculation(Vector3d dr_std)
 {
 	double ret = 0;
-	//int div = (int) input[ap.apID][0].second.pairVector.size();
 	int div = (int) selectedInput[0].second.pairVector.size();
 	//int div = 30;
 	for(int i = 0; i < div; ++i)
@@ -259,11 +264,13 @@ double SAR::SAR_Profile_2D()
 	int resolution = STEP_SIZE;      //search resolution
 	double maxPower = 0;
 	++round_count;
+	double sumPow = 0;
 	myfile << "#" << round_count << endl;
 	for(int alpha = 0; alpha < 360; alpha += resolution)
 	{
 		Vector3d dr (cos(degreeToRadian((double)alpha) ), sin(degreeToRadian((double)alpha) ), 0);
 		double powtmp = powerCalculation(dr);
+		sumPow += powtmp;
 		if(maxPower < powtmp)
 		{
 			maxPower= powtmp;
@@ -273,11 +280,23 @@ double SAR::SAR_Profile_2D()
 	}
 	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
 	maxPow = maxPower;
+	currentHighPeak = maxPow/sumPow;
+	if(!failureDetectionAvailable)
+	{
+		sumStable += maxPow/sumPow;
+		++staticCount;
+		stablePeakPower = sumStable/staticCount;
+		if(staticCount >= 100)
+		{
+			failureDetectionAvailable = true;
+		}
+	}
 	//debug
 	//if(ret_yaw >= 180)
 	//	ret_yaw -= 180;
 	//finer resolution searching
 	double finer_yaw = finerResolution(ret_yaw);
+	//double finer_yaw = ret_yaw;
 	return finer_yaw;
 }
 

@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include <glib.h>
 
-#define DATA_SIZE 	1000
+#define DATA_SIZE 	500
 #define PI 			3.1415926
 #define R			0.24
 #define STEP_SIZE	1
@@ -108,10 +108,18 @@ public:
 	InputPair input[AP_NUM][DATA_SIZE];	//direct vector, CSI vectors
 	vector<InputPair> selectedInput;	//selected a half-circle data from input to calculate
 
-	//optimize my code
+	//Optimize My Code
 	//Matrix360CD tempCal;
 	//Vector360CD sumV;
 	////////////////////////////////////////
+	//Failure detection
+	//1. Learn a peak value for static detection
+	double stablePeakPower;
+	double sumStable;
+	double currentHighPeak;
+	double failThre;
+	int staticCount;
+	bool failureDetectionAvailable;
 	////////////////////////////////////////
 	sensor_msgs::ChannelFloat32 channel_msg;
 	sensor_msgs::PointCloud wifi_msg;

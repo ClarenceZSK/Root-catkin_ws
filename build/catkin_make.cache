@@ -1,2 +1,2 @@
-imu_3dm_gx4:sar_localization
+imu_3dm_gx4:sar_localization:wifi_estimator
 -DCATKIN_DEVEL_PREFIX=/root/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/root/catkin_ws/install -G Unix Makefiles

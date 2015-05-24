@@ -181,11 +181,11 @@ void SAR_processing(void* data_ptr)
 			//	sar.preAngle = angle;
 			//}
 			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.selectedInput.size() << "; Alpha:" << angle << endl;
-			printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
+			//printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
 			//publish wifi msgs
-			if(fabs(sar.preAngle - angle) > 0 || 1)
+			if(sar.failureDetectionAvailable && sar.currentHighPeak > sar.failThre * sar.stablePeakPower)
 			{
-				printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
+				printf("Norm peak: %.1f, Stable peak: %.1f, Sample size: %d, Alpha:%.1f\n", sar.currentHighPeak, sar.stablePeakPower, (int) sar.selectedInput.size(), angle);
 				sar.point_msg.x = cos(DegreeToRadian(angle) );
 				sar.point_msg.y = sin(DegreeToRadian(angle) );
 				sar.point_msg.z = 1;
@@ -199,6 +199,10 @@ void SAR_processing(void* data_ptr)
 				sar.channel_msg.values.clear();
 				sar.wifi_msg.channels.clear();
 				sar.wifi_msg.points.clear();
+			}
+			else
+			{
+				cout << "Learning! Do NOT Move!!!" << sar.staticCount << "/100" << "Current stable power peak value:" << sar.stablePeakPower << endl;
 			}
 			/////////////////////////////////////
 			sar.preAngle = angle;
@@ -224,7 +228,7 @@ int main(int argc, char **argv)
 	//forward IMU
 	imu_pub = n.advertise<sensor_msgs::Imu>("wifi_estimator/wifi_imu", 1000);
 	if(!sar.ap.autoSwitch)
-		sleep(15);
+		sleep(12);
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	//ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);

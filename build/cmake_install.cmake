@@ -127,6 +127,7 @@ IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
   INCLUDE("/root/catkin_ws/build/gtest/cmake_install.cmake")
   INCLUDE("/root/catkin_ws/build/imu_3dm_gx4/cmake_install.cmake")
   INCLUDE("/root/catkin_ws/build/sar_localization/cmake_install.cmake")
+  INCLUDE("/root/catkin_ws/build/wifi_estimator/cmake_install.cmake")
 
 ENDIF(NOT CMAKE_INSTALL_LOCAL_ONLY)
 
