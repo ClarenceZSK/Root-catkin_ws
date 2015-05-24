@@ -128,5 +128,4 @@ public:
 	GMutex mutex;
 	SharedVector inputQueue;
 };
-
 #endif

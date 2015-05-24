@@ -18,7 +18,7 @@ SAR::SAR():Landa(0.0515), frame_count(0), round_count(0), current_time(-1)
 	staticCount = 0;
 	sumStable = 0;
 	stablePeakPower = -1;
-	failThre = 0.6;
+	failThre = 0.8;
 	failureDetectionAvailable = false;
 	ROS_INFO("SAR init finished");
 }
@@ -278,7 +278,7 @@ double SAR::SAR_Profile_2D()
 		}
 		myfile << powtmp << endl;
 	}
-	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
+	//printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
 	maxPow = maxPower;
 	currentHighPeak = maxPow/sumPow;
 	if(!failureDetectionAvailable)

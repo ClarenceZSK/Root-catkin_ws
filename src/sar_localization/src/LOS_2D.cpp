@@ -185,7 +185,7 @@ void SAR_processing(void* data_ptr)
 			//publish wifi msgs
 			if(sar.failureDetectionAvailable && sar.currentHighPeak > sar.failThre * sar.stablePeakPower)
 			{
-				printf("Norm peak: %.1f, Stable peak: %.1f, Sample size: %d, Alpha:%.1f\n", sar.currentHighPeak, sar.stablePeakPower, (int) sar.selectedInput.size(), angle);
+				printf("Round:%d, Max power:%.1f, Norm peak: %f, Stable peak: %f, Sample size: %d, Alpha:%.1f\n", sar.round_count, sar.maxPow, sar.currentHighPeak, sar.stablePeakPower, (int) sar.selectedInput.size(), angle);
 				sar.point_msg.x = cos(DegreeToRadian(angle) );
 				sar.point_msg.y = sin(DegreeToRadian(angle) );
 				sar.point_msg.z = 1;
@@ -200,9 +200,13 @@ void SAR_processing(void* data_ptr)
 				sar.wifi_msg.channels.clear();
 				sar.wifi_msg.points.clear();
 			}
-			else
+			else if(!sar.failureDetectionAvailable)
 			{
 				cout << "Learning! Do NOT Move!!!" << sar.staticCount << "/100" << "Current stable power peak value:" << sar.stablePeakPower << endl;
+			}
+			else
+			{
+				cout << "Unstable waiting! Current power:" << sar.currentHighPeak << "Stable peak:" << sar.stablePeakPower << endl;
 			}
 			/////////////////////////////////////
 			sar.preAngle = angle;
