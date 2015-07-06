@@ -4,11 +4,20 @@ project(wifi_estimator)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+set(CMAKE_CXX_FLAGS "-DNDEBUG -std=c++11 -march=native -Ofast -Wall -fopenmp")
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  message_generation
+  geometry_msgs
+  nav_msgs
+  cv_bridge
+  tf
 )
+
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -82,7 +91,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES wifi_estimator
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -161,3 +170,9 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+add_executable(wifi_estimator
+    src/wifi_estimator_node.cpp
+    src/wifi_estimator.cpp
+)
+target_link_libraries(wifi_estimator ${catkin_LIBRARIES} ${OpenCV_LIBS})
+

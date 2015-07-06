@@ -121,10 +121,11 @@ int main(int argc, char **argv)
 
     path.header.frame_id = "world";
 
-    ros::Subscriber sub_imu = n.subscribe("wifi_imu", 1000, imu_callback);
-	//ros::Subscriber sub_imu = n.subscribe("imu_3dm_gx4/imu", 1000, imu_callback);
+    //ros::Subscriber sub_imu = n.subscribe("wifi_imu", 1000, imu_callback);
+	ros::Subscriber sub_imu = n.subscribe("/imu_3dm_gx4/imu", 1000, imu_callback);
 	//ros::Subscriber sub_remote_imu = n.subscribe("imu_3dm_gx4_remote/imu", 1000, imu_remote_callback);
-    ros::Subscriber sub_wifi = n.subscribe("wifi", 1000, wifi_callback);
+    //ros::Subscriber sub_wifi = n.subscribe("wifi", 1000, wifi_callback);
+    ros::Subscriber sub_wifi = n.subscribe("/sensors/wifi", 1000, wifi_callback);
 
     ros::spin();
     return 0;

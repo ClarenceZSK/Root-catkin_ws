@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "data_generator")
+set(data_generator_MAINTAINER "root <root@todo.todo>")
+set(data_generator_DEPRECATED "")
+set(data_generator_VERSION "0.0.0")
+set(data_generator_BUILD_DEPENDS "roscpp" "rospy" "std_msgs")
+set(data_generator_RUN_DEPENDS "roscpp" "rospy" "std_msgs")
+set(data_generator_BUILDTOOL_DEPENDS "catkin")

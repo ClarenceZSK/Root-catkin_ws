@@ -313,6 +313,12 @@ cpp_common_DIR:PATH=/opt/ros/indigo/share/cpp_common/cmake
 //The directory containing a CMake configuration file for cv_bridge.
 cv_bridge_DIR:PATH=/opt/ros/indigo/share/cv_bridge/cmake
 
+//Value Computed by CMake
+data_generator_BINARY_DIR:STATIC=/root/catkin_ws/build/data_generator
+
+//Value Computed by CMake
+data_generator_SOURCE_DIR:STATIC=/root/catkin_ws/src/data_generator
+
 //The directory containing a CMake configuration file for diagnostic_msgs.
 diagnostic_msgs_DIR:PATH=/opt/ros/indigo/share/diagnostic_msgs/cmake
 
@@ -366,7 +372,7 @@ imu_3dm_gx4_BINARY_DIR:STATIC=/root/catkin_ws/build/imu_3dm_gx4
 imu_3dm_gx4_SOURCE_DIR:STATIC=/root/catkin_ws/src/imu_3dm_gx4
 
 //Path to a library.
-lib:FILEPATH=/opt/ros/indigo/lib/libxmlrpcpp.so
+lib:FILEPATH=/opt/ros/indigo/lib/libtf2.so
 
 //The directory containing a CMake configuration file for message_filters.
 message_filters_DIR:PATH=/opt/ros/indigo/share/message_filters/cmake
@@ -546,7 +552,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=5
+CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=6
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

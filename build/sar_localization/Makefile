@@ -262,48 +262,6 @@ actionlib_generate_messages_py/fast:
 .PHONY : actionlib_generate_messages_py/fast
 
 # Convenience name for target.
-sar_localization/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/rule
-.PHONY : sar_localization/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-actionlib_msgs_generate_messages_cpp: sar_localization/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/rule
-.PHONY : actionlib_msgs_generate_messages_cpp
-
-# fast build rule for target.
-actionlib_msgs_generate_messages_cpp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/build.make sar_localization/CMakeFiles/actionlib_msgs_generate_messages_cpp.dir/build
-.PHONY : actionlib_msgs_generate_messages_cpp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/rule
-.PHONY : sar_localization/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-actionlib_msgs_generate_messages_lisp: sar_localization/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/rule
-.PHONY : actionlib_msgs_generate_messages_lisp
-
-# fast build rule for target.
-actionlib_msgs_generate_messages_lisp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/build.make sar_localization/CMakeFiles/actionlib_msgs_generate_messages_lisp.dir/build
-.PHONY : actionlib_msgs_generate_messages_lisp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/actionlib_msgs_generate_messages_py.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/actionlib_msgs_generate_messages_py.dir/rule
-.PHONY : sar_localization/CMakeFiles/actionlib_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-actionlib_msgs_generate_messages_py: sar_localization/CMakeFiles/actionlib_msgs_generate_messages_py.dir/rule
-.PHONY : actionlib_msgs_generate_messages_py
-
-# fast build rule for target.
-actionlib_msgs_generate_messages_py/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/actionlib_msgs_generate_messages_py.dir/build.make sar_localization/CMakeFiles/actionlib_msgs_generate_messages_py.dir/build
-.PHONY : actionlib_msgs_generate_messages_py/fast
-
-# Convenience name for target.
 sar_localization/CMakeFiles/log_csi_stream.dir/rule:
 	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/log_csi_stream.dir/rule
 .PHONY : sar_localization/CMakeFiles/log_csi_stream.dir/rule
@@ -330,48 +288,6 @@ motor_message: sar_localization/CMakeFiles/motor_message.dir/rule
 motor_message/fast:
 	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/build
 .PHONY : motor_message/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/nav_msgs_generate_messages_cpp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/nav_msgs_generate_messages_cpp.dir/rule
-.PHONY : sar_localization/CMakeFiles/nav_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-nav_msgs_generate_messages_cpp: sar_localization/CMakeFiles/nav_msgs_generate_messages_cpp.dir/rule
-.PHONY : nav_msgs_generate_messages_cpp
-
-# fast build rule for target.
-nav_msgs_generate_messages_cpp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/nav_msgs_generate_messages_cpp.dir/build.make sar_localization/CMakeFiles/nav_msgs_generate_messages_cpp.dir/build
-.PHONY : nav_msgs_generate_messages_cpp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/nav_msgs_generate_messages_lisp.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/nav_msgs_generate_messages_lisp.dir/rule
-.PHONY : sar_localization/CMakeFiles/nav_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-nav_msgs_generate_messages_lisp: sar_localization/CMakeFiles/nav_msgs_generate_messages_lisp.dir/rule
-.PHONY : nav_msgs_generate_messages_lisp
-
-# fast build rule for target.
-nav_msgs_generate_messages_lisp/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/nav_msgs_generate_messages_lisp.dir/build.make sar_localization/CMakeFiles/nav_msgs_generate_messages_lisp.dir/build
-.PHONY : nav_msgs_generate_messages_lisp/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/nav_msgs_generate_messages_py.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/nav_msgs_generate_messages_py.dir/rule
-.PHONY : sar_localization/CMakeFiles/nav_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-nav_msgs_generate_messages_py: sar_localization/CMakeFiles/nav_msgs_generate_messages_py.dir/rule
-.PHONY : nav_msgs_generate_messages_py
-
-# fast build rule for target.
-nav_msgs_generate_messages_py/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/nav_msgs_generate_messages_py.dir/build.make sar_localization/CMakeFiles/nav_msgs_generate_messages_py.dir/build
-.PHONY : nav_msgs_generate_messages_py/fast
 
 # Convenience name for target.
 sar_localization/CMakeFiles/sar_localization_gencpp.dir/rule:
@@ -555,20 +471,6 @@ tf_generate_messages_py/fast:
 	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/tf_generate_messages_py.dir/build.make sar_localization/CMakeFiles/tf_generate_messages_py.dir/build
 .PHONY : tf_generate_messages_py/fast
 
-# Convenience name for target.
-sar_localization/CMakeFiles/wifi_estimator.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/wifi_estimator.dir/rule
-.PHONY : sar_localization/CMakeFiles/wifi_estimator.dir/rule
-
-# Convenience name for target.
-wifi_estimator: sar_localization/CMakeFiles/wifi_estimator.dir/rule
-.PHONY : wifi_estimator
-
-# fast build rule for target.
-wifi_estimator/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/wifi_estimator.dir/build.make sar_localization/CMakeFiles/wifi_estimator.dir/build
-.PHONY : wifi_estimator/fast
-
 src/LOS_2D.o: src/LOS_2D.cpp.o
 .PHONY : src/LOS_2D.o
 
@@ -740,54 +642,6 @@ src/motor_message.cpp.s:
 	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/src/motor_message.cpp.s
 .PHONY : src/motor_message.cpp.s
 
-src/wifi_estimator.o: src/wifi_estimator.cpp.o
-.PHONY : src/wifi_estimator.o
-
-# target to build an object file
-src/wifi_estimator.cpp.o:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/wifi_estimator.dir/build.make sar_localization/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o
-.PHONY : src/wifi_estimator.cpp.o
-
-src/wifi_estimator.i: src/wifi_estimator.cpp.i
-.PHONY : src/wifi_estimator.i
-
-# target to preprocess a source file
-src/wifi_estimator.cpp.i:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/wifi_estimator.dir/build.make sar_localization/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.i
-.PHONY : src/wifi_estimator.cpp.i
-
-src/wifi_estimator.s: src/wifi_estimator.cpp.s
-.PHONY : src/wifi_estimator.s
-
-# target to generate assembly for a file
-src/wifi_estimator.cpp.s:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/wifi_estimator.dir/build.make sar_localization/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.s
-.PHONY : src/wifi_estimator.cpp.s
-
-src/wifi_estimator_node.o: src/wifi_estimator_node.cpp.o
-.PHONY : src/wifi_estimator_node.o
-
-# target to build an object file
-src/wifi_estimator_node.cpp.o:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/wifi_estimator.dir/build.make sar_localization/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o
-.PHONY : src/wifi_estimator_node.cpp.o
-
-src/wifi_estimator_node.i: src/wifi_estimator_node.cpp.i
-.PHONY : src/wifi_estimator_node.i
-
-# target to preprocess a source file
-src/wifi_estimator_node.cpp.i:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/wifi_estimator.dir/build.make sar_localization/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.i
-.PHONY : src/wifi_estimator_node.cpp.i
-
-src/wifi_estimator_node.s: src/wifi_estimator_node.cpp.s
-.PHONY : src/wifi_estimator_node.s
-
-# target to generate assembly for a file
-src/wifi_estimator_node.cpp.s:
-	cd /root/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/wifi_estimator.dir/build.make sar_localization/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.s
-.PHONY : src/wifi_estimator_node.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -802,9 +656,6 @@ help:
 	@echo "... actionlib_generate_messages_cpp"
 	@echo "... actionlib_generate_messages_lisp"
 	@echo "... actionlib_generate_messages_py"
-	@echo "... actionlib_msgs_generate_messages_cpp"
-	@echo "... actionlib_msgs_generate_messages_lisp"
-	@echo "... actionlib_msgs_generate_messages_py"
 	@echo "... edit_cache"
 	@echo "... install"
 	@echo "... install/local"
@@ -812,9 +663,6 @@ help:
 	@echo "... list_install_components"
 	@echo "... log_csi_stream"
 	@echo "... motor_message"
-	@echo "... nav_msgs_generate_messages_cpp"
-	@echo "... nav_msgs_generate_messages_lisp"
-	@echo "... nav_msgs_generate_messages_py"
 	@echo "... rebuild_cache"
 	@echo "... sar_localization_gencpp"
 	@echo "... sar_localization_generate_messages"
@@ -830,7 +678,6 @@ help:
 	@echo "... tf_generate_messages_cpp"
 	@echo "... tf_generate_messages_lisp"
 	@echo "... tf_generate_messages_py"
-	@echo "... wifi_estimator"
 	@echo "... src/LOS_2D.o"
 	@echo "... src/LOS_2D.i"
 	@echo "... src/LOS_2D.s"
@@ -852,12 +699,6 @@ help:
 	@echo "... src/motor_message.o"
 	@echo "... src/motor_message.i"
 	@echo "... src/motor_message.s"
-	@echo "... src/wifi_estimator.o"
-	@echo "... src/wifi_estimator.i"
-	@echo "... src/wifi_estimator.s"
-	@echo "... src/wifi_estimator_node.o"
-	@echo "... src/wifi_estimator_node.i"
-	@echo "... src/wifi_estimator_node.s"
 .PHONY : help
 
 

@@ -5,4 +5,4 @@ Description: Description of wifi_estimator
 Version: 0.0.0
 Cflags: 
 Libs: -L/root/catkin_ws/install/lib 
-Requires: 
+Requires: roscpp rospy std_msgs
