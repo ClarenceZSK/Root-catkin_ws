@@ -161,10 +161,12 @@ void WiFiEstimator::solveOdometryLinear()
 
             MatrixXd tmp_A(3, 6);
             tmp_A.setZero();
-
+			double weight = 1;
             Matrix3d reduce = skewSymmetric(wifi_measurement[i][j]);
-            tmp_A.block<3, 3>(0, 0) = 10000 * reduce * -Matrix3d::Identity();
-            tmp_A.block<3, 3>(0, 3) = 10000 * reduce * Matrix3d::Identity();
+            //tmp_A.block<3, 3>(0, 0) = 10000 * reduce * -Matrix3d::Identity();
+            tmp_A.block<3, 3>(0, 0) = weight * reduce * -Matrix3d::Identity();
+            //tmp_A.block<3, 3>(0, 3) = 10000 * reduce * Matrix3d::Identity();
+            tmp_A.block<3, 3>(0, 3) = weight * reduce * Matrix3d::Identity();
             MatrixXd r_A = tmp_A.transpose() * tmp_A;
             int ii = i * 9, jj = (frame_count + 1) * 9 + j * 3;
             A.block<3, 3>(ii, ii) += r_A.block<3, 3>(0, 0);

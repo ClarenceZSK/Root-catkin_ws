@@ -94,6 +94,9 @@ int main(int argc, char** argv)
 
     nav_msgs::Path path;
     path.header.frame_id = "world";
+	default_random_engine random_generator;
+    //std::normal_distribution<double> distribution (0.0, 1.0);
+    std::uniform_real_distribution<double> distribution (-0.4, 0.4);
 
     while (ros::ok())
     {
@@ -168,10 +171,17 @@ int main(int argc, char** argv)
             for (int i = 0; i < DataGenerator::NUMBER_OF_AP; i++)
             {
                 Vector3d sar;
+				Vector3d disturb = Vector3d(distribution(random_generator),
+                                distribution(random_generator),
+                                0);
                 sar(0) = line_ap[i].points[0].x - line_ap[i].points[1].x;
                 sar(1) = line_ap[i].points[0].y - line_ap[i].points[1].y;
                 sar(2) = line_ap[i].points[0].z - line_ap[i].points[1].z;
+				cout << "Sar before disturbing:\n" << sar << endl;
+				sar = sar + disturb;
+				cout << "Disturb:\n" << disturb << endl;
                 sar.normalize();
+				cout << "Sar:\n" << sar << endl;
                 geometry_msgs::Point32 p;
                 p.x = sar(0);
                 p.y = sar(1);
@@ -233,7 +243,7 @@ int main(int argc, char** argv)
             }
             cv::waitKey(1);
 		*/
-            if (generator.getTime() > 3 * DataGenerator::MAX_TIME)
+            if (generator.getTime() > 8 * DataGenerator::MAX_TIME)
                 break;
 
         }

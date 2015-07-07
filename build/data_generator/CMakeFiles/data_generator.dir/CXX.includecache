@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/root/catkin_ws/src/data_generator/src/data_generator.cpp
+data_generator.h
+/root/catkin_ws/src/data_generator/src/data_generator.h
+
 /root/catkin_ws/src/data_generator/src/data_generator.h
 cstdlib
 -
