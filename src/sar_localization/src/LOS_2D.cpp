@@ -188,7 +188,7 @@ void SAR_processing(void* data_ptr)
 				printf("Round:%d, Max power:%.1f, Norm peak: %f, Stable peak: %f, Sample size: %d, Alpha:%.1f\n", sar.round_count, sar.maxPow, sar.currentHighPeak, sar.stablePeakPower, (int) sar.selectedInput.size(), angle);
 				sar.point_msg.x = cos(DegreeToRadian(angle) );
 				sar.point_msg.y = sin(DegreeToRadian(angle) );
-				sar.point_msg.z = 1;
+				sar.point_msg.z = 0;
 				sar.channel_msg.values.push_back(sar.ap.apID);
 				sar.wifi_msg.header.stamp = ros::Time::now();
 				sar.wifi_msg.channels.push_back(sar.channel_msg);

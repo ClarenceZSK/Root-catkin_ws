@@ -96,12 +96,12 @@ int main(int argc, char** argv)
     path.header.frame_id = "world";
 	default_random_engine random_generator;
     //std::normal_distribution<double> distribution (0.0, 1.0);
-    std::uniform_real_distribution<double> distribution (-0.4, 0.4);
+    std::uniform_real_distribution<double> distribution (-5, 5);
 
     while (ros::ok())
     {
         double current_time = generator.getTime();
-        ROS_INFO("time: %lf", current_time);
+        //ROS_INFO("time: %lf", current_time);
 
         Vector3d position     = generator.getPosition();
         Vector3d velocity     = generator.getVelocity();
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
         imu.orientation.w = q.w();
 
         pub_imu.publish(imu);
-        ROS_INFO("publish imu data with stamp %lf", imu.header.stamp.toSec());
+        //ROS_INFO("publish imu data with stamp %lf", imu.header.stamp.toSec());
 
         //publish image data
         if (publish_count % generator.IMU_PER_IMG == 0)
@@ -171,16 +171,33 @@ int main(int argc, char** argv)
             for (int i = 0; i < DataGenerator::NUMBER_OF_AP; i++)
             {
                 Vector3d sar;
-				Vector3d disturb = Vector3d(distribution(random_generator),
-                                distribution(random_generator),
-                                0);
+				//Vector3d disturb = Vector3d(distribution(random_generator), distribution(random_generator),0);
+				double disturb = distribution(random_generator);
                 sar(0) = line_ap[i].points[0].x - line_ap[i].points[1].x;
                 sar(1) = line_ap[i].points[0].y - line_ap[i].points[1].y;
                 sar(2) = line_ap[i].points[0].z - line_ap[i].points[1].z;
-				cout << "Sar before disturbing:\n" << sar << endl;
-				sar = sar + disturb;
+				//cout << "Sar before disturbing:\n" << sar << endl;
+				//sar = sar + disturb;
 				cout << "Disturb:\n" << disturb << endl;
                 sar.normalize();
+				cout << "Sar normalize:\n" << sar << endl;
+				bool downScope = 0;
+				if(sar(1) < 0)
+				{
+					downScope = 1;
+				}
+				double angle = acos(sar(0))*180.0/M_PI;
+				if(downScope)
+				{
+					angle = 360 - angle;
+				}
+				cout << "Angle: " << angle << endl;
+				angle += disturb;
+				angle = angle * M_PI/180.0;
+
+				sar(0) = cos(angle);
+				sar(1) = sin(angle);
+				sar(2) = 0;
 				cout << "Sar:\n" << sar << endl;
                 geometry_msgs::Point32 p;
                 p.x = sar(0);
