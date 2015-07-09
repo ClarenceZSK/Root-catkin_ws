@@ -79,6 +79,7 @@ Vector3d DataGenerator::getAP(int i)
 Vector3d DataGenerator::getPosition()
 {
     double x, y, z;
+	/*
 	if(t < MAX_TIME)
 	{
 		x = DIST * cos(t / MAX_TIME * M_PI);
@@ -98,7 +99,8 @@ Vector3d DataGenerator::getPosition()
         y = DIST * sin(tt / MAX_TIME * M_PI);
         z = 1;
 	}
-	/*
+	*/
+
     if (t < MAX_TIME)
     {
         x = MAX_BOX / 2.0 + MAX_BOX / 2.0 * cos(t / MAX_TIME * M_PI);
@@ -121,15 +123,14 @@ Vector3d DataGenerator::getPosition()
         //z = MAX_BOX / 2.0 + MAX_BOX / 2.0 * cos(tt / MAX_TIME * M_PI * 2);
 		z = 1;
     }
-	*/
 
     return Vector3d(x, y, z);
 }
 
 Matrix3d DataGenerator::getRotation()
 {
-    //return (AngleAxisd(30.0 / 180 * M_PI * sin(t / MAX_TIME * M_PI * 2), Vector3d::UnitX()) * AngleAxisd(40.0 / 180 * M_PI * sin(t / MAX_TIME * M_PI * 2), Vector3d::UnitY()) * AngleAxisd(0, Vector3d::UnitZ())).toRotationMatrix();
-    return (AngleAxisd(0, Vector3d::UnitX()) * AngleAxisd(0, Vector3d::UnitY()) * AngleAxisd(t / MAX_TIME * M_PI, Vector3d::UnitZ())).toRotationMatrix();
+    return (AngleAxisd(30.0 / 180 * M_PI * sin(t / MAX_TIME * M_PI * 2), Vector3d::UnitX()) * AngleAxisd(40.0 / 180 * M_PI * sin(t / MAX_TIME * M_PI * 2), Vector3d::UnitY()) * AngleAxisd(0, Vector3d::UnitZ())).toRotationMatrix();
+    //return (AngleAxisd(0, Vector3d::UnitX()) * AngleAxisd(0, Vector3d::UnitY()) * AngleAxisd(t / MAX_TIME * M_PI, Vector3d::UnitZ())).toRotationMatrix();
 }
 
 Vector3d DataGenerator::getAngularVelocity()
@@ -157,13 +158,15 @@ Vector3d DataGenerator::getVelocity()
 
     if (t < MAX_TIME)
     {
-		/*
+
         dx = MAX_BOX / 2.0 * -sin(t / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
         dy = MAX_BOX / 2.0 * -sin(t / MAX_TIME * M_PI * 2 * 2) * (1.0 / MAX_TIME * M_PI * 2 * 2);
         //dz = MAX_BOX / 2.0 * -sin(t / MAX_TIME * M_PI * 2) * (1.0 / MAX_TIME * M_PI * 2);
-		*/
+
+		/*
 		dx = DIST * -sin(t / MAX_TIME *M_PI) * (1.0 / MAX_TIME * M_PI);
 		dy = DIST * cos(t / MAX_TIME *M_PI) * (1.0 / MAX_TIME * M_PI);
+		*/
 		dz = 0;
     }
     else if (t >= MAX_TIME && t < 2 * MAX_TIME)
@@ -174,15 +177,17 @@ Vector3d DataGenerator::getVelocity()
     }
     else
     {
-        //double tt = t - 2 * MAX_TIME;
-		double tt = t - 0.5 * MAX_TIME;
-		/*
+        double tt = t - 2 * MAX_TIME;
+		//double tt = t - 0.5 * MAX_TIME;
+
         dx = MAX_BOX / 2.0 * -sin(tt / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
         dy = MAX_BOX / 2.0 * -sin(tt / MAX_TIME * M_PI * 2 * 2) * (1.0 / MAX_TIME * M_PI * 2 * 2);
         //dz = MAX_BOX / 2.0 * -sin(tt / MAX_TIME * M_PI * 2) * (1.0 / MAX_TIME * M_PI * 2);
-		*/
+
+		/*
 		dx = DIST * -sin(tt / MAX_TIME *M_PI) * (1.0 / MAX_TIME *   M_PI);
         dy = DIST * cos(tt / MAX_TIME *M_PI) * (1.0 / MAX_TIME *   M_PI);
+		*/
 		dz = 0;
     }
 
@@ -194,13 +199,15 @@ Vector3d DataGenerator::getLinearAcceleration()
     double ddx, ddy, ddz;
     if (t < MAX_TIME)
     {
-		/*
+
         ddx = MAX_BOX / 2.0 * -cos(t / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
         ddy = MAX_BOX / 2.0 * -cos(t / MAX_TIME * M_PI * 2 * 2) * (1.0 / MAX_TIME * M_PI * 2 * 2) * (1.0 / MAX_TIME * M_PI * 2 * 2);
         //ddz = MAX_BOX / 2.0 * -cos(t / MAX_TIME * M_PI * 2) * (1.0 / MAX_TIME * M_PI * 2) * (1.0 / MAX_TIME * M_PI * 2);
-		*/
+
+		/*
         ddx = DIST * -cos(t / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
         ddy = DIST * -sin(t / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
+		*/
 		ddz = 0;
     }
     else if (t >= MAX_TIME && t < 2 * MAX_TIME)
@@ -211,14 +218,17 @@ Vector3d DataGenerator::getLinearAcceleration()
     }
     else
     {
-        double tt = t - 0.5 * MAX_TIME;
-		/*
+        //double tt = t - 0.5 * MAX_TIME;
+        double tt = t - 2 * MAX_TIME;
+
         ddx = MAX_BOX / 2.0 * -cos(tt / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
         ddy = MAX_BOX / 2.0 * -cos(tt / MAX_TIME * M_PI * 2 * 2) * (1.0 / MAX_TIME * M_PI * 2 * 2) * (1.0 / MAX_TIME * M_PI * 2 * 2);
         //ddz = MAX_BOX / 2.0 * -cos(tt / MAX_TIME * M_PI * 2) * (1.0 / MAX_TIME * M_PI * 2) * (1.0 / MAX_TIME * M_PI * 2);
-		*/
+
+		/*
 		ddx = DIST * -cos(tt / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
         ddy = DIST * -sin(tt / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI) * (1.0 / MAX_TIME * M_PI);
+		*/
 		ddz = 0;
     }
 #if WITH_NOISE

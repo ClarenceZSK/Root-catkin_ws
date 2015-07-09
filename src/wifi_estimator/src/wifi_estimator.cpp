@@ -15,8 +15,8 @@ WiFiEstimator::WiFiEstimator():
     frame_count(0), current_time(-1),
     A(NUMBER_OF_STATE, NUMBER_OF_STATE), b(NUMBER_OF_STATE)
 {
-    odometry[0](0) = 4.5;
-    odometry[0](1) = 0.0;
+    odometry[0](0) = 10;
+    odometry[0](1) = 10;
     odometry[0](2) = 1.0;
     //odometry[0](3) = 0;
     //odometry[0](4) = 0;
@@ -38,7 +38,9 @@ WiFiEstimator::WiFiEstimator():
     A.setZero();
     b.setZero();
     A.topLeftCorner<3, 3>() = Matrix3d::Identity() * 10000;
+    //A.topLeftCorner<3, 3>() = Matrix3d::Identity() * 1;
     b.head<3>() = odometry[0].head<3>() * 10000;
+    //b.head<3>() = odometry[0].head<3>() * 1;
 }
 
 void WiFiEstimator::processIMU(double t, const Vector3d &linear_acceleration, const Vector3d &angular_velocity)

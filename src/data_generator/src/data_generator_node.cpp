@@ -96,7 +96,7 @@ int main(int argc, char** argv)
     path.header.frame_id = "world";
 	default_random_engine random_generator;
     //std::normal_distribution<double> distribution (0.0, 1.0);
-    std::uniform_real_distribution<double> distribution (-5, 5);
+    std::uniform_real_distribution<double> distribution (-10, 10);
 
     while (ros::ok())
     {
@@ -181,6 +181,7 @@ int main(int argc, char** argv)
 				cout << "Disturb:\n" << disturb << endl;
                 sar.normalize();
 				cout << "Sar normalize:\n" << sar << endl;
+
 				bool downScope = 0;
 				if(sar(1) < 0)
 				{
@@ -199,6 +200,7 @@ int main(int argc, char** argv)
 				sar(1) = sin(angle);
 				sar(2) = 0;
 				cout << "Sar:\n" << sar << endl;
+
                 geometry_msgs::Point32 p;
                 p.x = sar(0);
                 p.y = sar(1);
@@ -260,7 +262,7 @@ int main(int argc, char** argv)
             }
             cv::waitKey(1);
 		*/
-            if (generator.getTime() > 8 * DataGenerator::MAX_TIME)
+            if (generator.getTime() > 6 * DataGenerator::MAX_TIME)
                 break;
 
         }
