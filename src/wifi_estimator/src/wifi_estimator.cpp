@@ -17,6 +17,8 @@ WiFiEstimator::WiFiEstimator():
 {
     odometry[0](0) = 10;
     odometry[0](1) = 10;
+    //odometry[0](0) = 1;
+    //odometry[0](1) = 1;
     odometry[0](2) = 1.0;
     //odometry[0](3) = 0;
     //odometry[0](4) = 0;
@@ -37,10 +39,10 @@ WiFiEstimator::WiFiEstimator():
     Rs[0].setIdentity();
     A.setZero();
     b.setZero();
-    A.topLeftCorner<3, 3>() = Matrix3d::Identity() * 10000;
-    //A.topLeftCorner<3, 3>() = Matrix3d::Identity() * 1;
-    b.head<3>() = odometry[0].head<3>() * 10000;
-    //b.head<3>() = odometry[0].head<3>() * 1;
+    //A.topLeftCorner<3, 3>() = Matrix3d::Identity() * 10000;
+    A.topLeftCorner<3, 3>() = Matrix3d::Identity() * 1;
+    //b.head<3>() = odometry[0].head<3>() * 10000;
+    b.head<3>() = odometry[0].head<3>() * 1;
 }
 
 void WiFiEstimator::processIMU(double t, const Vector3d &linear_acceleration, const Vector3d &angular_velocity)
@@ -88,7 +90,9 @@ SolutionContainer WiFiEstimator::processWiFi(const vector<pair<int, Vector3d>> &
 
     for (int i = 0; i < int(wifi.size()); i++)
     {
+		//This is for data generator and real experiments
         wifi_measurement[frame_count][wifi[i].first] = wifi[i].second;
+		//This is for imu reading simulation.
         //wifi_measurement[frame_count][wifi[i].first] = -Rs[frame_count].col(0);
         //wifi_measurement[frame_count][wifi[i].first].z() = 0;
     }
