@@ -183,7 +183,7 @@ void SAR_processing(void* data_ptr)
 			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.selectedInput.size() << "; Alpha:" << angle << endl;
 			//printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
 			//publish wifi msgs
-			if(sar.failureDetectionAvailable && sar.currentHighPeak > sar.failThre * sar.stablePeakPower)
+			if(sar.failureDetectionAvailable && sar.currentHighPeak > min(sar.failThre * sar.stablePeakPower, 0.019) )
 			{
 				printf("Round:%d, Max power:%.1f, Norm peak: %f, Stable peak: %f, Sample size: %d, Alpha:%.1f\n", sar.round_count, sar.maxPow, sar.currentHighPeak, sar.stablePeakPower, (int) sar.selectedInput.size(), angle);
 				sar.point_msg.x = cos(DegreeToRadian(angle) );
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
 	//forward IMU
 	imu_pub = n.advertise<sensor_msgs::Imu>("wifi_estimator/wifi_imu", 1000);
 	if(!sar.ap.autoSwitch)
-		sleep(12);
+		sleep(10);
 	ros::Subscriber sub1 = n.subscribe("/imu_3dm_gx4/imu", 10000, imuCallback);
 	ros::Subscriber sub2 = n.subscribe("csi", 10000, csiCallback);
 	//ros::Subscriber sub3 = n.subscribe("motor", 10000, motorCallback);

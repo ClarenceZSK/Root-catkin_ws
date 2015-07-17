@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -DNDEBUG -std=c++11 -march=native -Ofast -Wall -fopenmp   -shared -Wl,-soname,libgtest.so -o libgtest.so CMakeFiles/gtest.dir/src/gtest-all.cc.o  -L/root/catkin_ws/src/wifi_estimator/gtest/src -lpthread -Wl,-rpath,/root/catkin_ws/src/wifi_estimator/gtest/src 

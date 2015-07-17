@@ -15,11 +15,11 @@ WiFiEstimator::WiFiEstimator():
     frame_count(0), current_time(-1),
     A(NUMBER_OF_STATE, NUMBER_OF_STATE), b(NUMBER_OF_STATE)
 {
-    odometry[0](0) = 10;
-    odometry[0](1) = 10;
+    odometry[0](0) = 0;
+    odometry[0](1) = 0;
     //odometry[0](0) = 1;
     //odometry[0](1) = 1;
-    odometry[0](2) = 1.0;
+    odometry[0](2) = 0.0;
     //odometry[0](3) = 0;
     //odometry[0](4) = 0;
     //odometry[0](5) = 0;
@@ -62,7 +62,7 @@ void WiFiEstimator::processIMU(double t, const Vector3d &linear_acceleration, co
         IMU_angular[frame_count] = (q * dq).normalized();
 
         Rs[frame_count] = Rs[frame_count - 1] * IMU_angular[frame_count];
-
+        //This is the integration for position, velocity and time for each frame
         IMU_linear[frame_count].segment<3>(0) += IMU_linear[frame_count].segment<3>(3) * dt + IMU_angular[frame_count] * linear_acceleration * dt * dt / 2;
         IMU_linear[frame_count].segment<3>(3) += IMU_angular[frame_count] * linear_acceleration * dt;
         IMU_linear[frame_count](6) += dt;
@@ -84,7 +84,7 @@ SolutionContainer WiFiEstimator::processWiFi(const vector<pair<int, Vector3d>> &
 {
     ROS_INFO("Adding AP measurements %lu", wifi.size());
     ROS_INFO("Solving %d", frame_count);
-
+    ROS_INFO_STREAM("IMU_linear[" << frame_count << "]: " << IMU_linear[frame_count]);
     //ROS_ERROR("imu  degree: %f", 180.0 / M_PI * std::atan2(-Rs[frame_count].col(0).y(), -Rs[frame_count].col(0).x()));
     //ROS_ERROR("wifi degree: %f", 180.0 / M_PI * std::atan2(wifi[0].second.y(), wifi[0].second.x()));
 

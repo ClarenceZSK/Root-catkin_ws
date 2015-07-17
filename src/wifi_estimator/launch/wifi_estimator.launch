@@ -1,0 +1,8 @@
+<launch>
+    <!-- Name of the node -->
+    <arg name="estimator_node" default="wifi_estimator"/>
+
+
+	<node pkg="wifi_estimator" name="$(arg estimator_node)" type="wifi_estimator" output="screen" launch-prefix="xterm -e gdb --args">
+    </node>
+</launch>

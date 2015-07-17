@@ -29,15 +29,17 @@ void send_imu(const sensor_msgs::Imu &imu_msg)
 {
     double t = imu_msg.header.stamp.toSec();
 
-    ROS_INFO("processing IMU data with stamp %lf", t);
+    //ROS_INFO("processing IMU data with stamp %lf", t);
 
     double dx = imu_msg.linear_acceleration.x;
     double dy = imu_msg.linear_acceleration.y;
     double dz = imu_msg.linear_acceleration.z;
+    //printf("dz=%lf\n", dz);
 
     double rx = imu_msg.angular_velocity.x;
     double ry = imu_msg.angular_velocity.y;
     double rz = imu_msg.angular_velocity.z;
+    //printf("rz=%lf\n", rz);
 
     estimator.processIMU(t, Vector3d(dx, dy, dz), Vector3d(rx, ry, rz));
 }
@@ -51,7 +53,7 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
         ROS_ERROR("wait for imu data");
         return;
     }
-
+    printf("imu buf size:%d\n", imu_buf.size());
     while (!imu_buf.empty() && t >= imu_buf.front().header.stamp.toSec())
     {
         send_imu(imu_buf.front());
@@ -68,8 +70,8 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
     }
     SolutionContainer solution = estimator.processWiFi(wifi);
 
-    ROS_INFO_STREAM("vo position: " << solution.p.transpose());
-    ROS_INFO_STREAM("vo velocity: " << solution.v.transpose());
+    ROS_INFO_STREAM("position: " << solution.p.transpose());
+    ROS_INFO_STREAM("velocity: " << solution.v.transpose());
     ROS_INFO_STREAM("ap: " << solution.p_ap[0].transpose());
     ROS_INFO_STREAM("gravity: " << solution.g.transpose() << " norm: " << solution.g.norm());
 
@@ -114,11 +116,11 @@ int main(int argc, char **argv)
 
     path.header.frame_id = "world";
 
-    //ros::Subscriber sub_imu = n.subscribe("/wifi_estimator/wifi_imu", 1000, imu_callback);
-    //ros::Subscriber sub_wifi = n.subscribe("/wifi_estimator/wifi", 1000, wifi_callback);
-    ros::Subscriber sub_imu = n.subscribe("/data_generator/imu", 1000, imu_callback);
+    ros::Subscriber sub_imu = n.subscribe("/wifi_estimator/wifi_imu", 1000, imu_callback);
+    ros::Subscriber sub_wifi = n.subscribe("/wifi_estimator/wifi", 1000, wifi_callback);
+    //ros::Subscriber sub_imu = n.subscribe("/data_generator/imu", 1000, imu_callback);
     //ros::Subscriber sub_imu = n.subscribe("/imu_3dm_gx4/imu", 1000, imu_callback);
-    ros::Subscriber sub_wifi = n.subscribe("/data_generator/wifi", 1000, wifi_callback);
+    //ros::Subscriber sub_wifi = n.subscribe("/data_generator/wifi", 1000, wifi_callback);
 
     ros::spin();
     return 0;
