@@ -1,7 +1,7 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/motor_message.dir/src/motor_message.cpp.o"
-  "/root/catkin_ws/devel/lib/sar_localization/motor_message.pdb"
-  "/root/catkin_ws/devel/lib/sar_localization/motor_message"
+  "/home/uav/catkin_ws/devel/lib/sar_localization/motor_message.pdb"
+  "/home/uav/catkin_ws/devel/lib/sar_localization/motor_message"
 )
 
 # Per-language clean rules from dependency scanning.

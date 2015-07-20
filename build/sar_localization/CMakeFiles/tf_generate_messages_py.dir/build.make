@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /root/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/catkin_ws/build
+CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
 
 # Utility rule file for tf_generate_messages_py.
 
@@ -56,10 +56,10 @@ sar_localization/CMakeFiles/tf_generate_messages_py.dir/build: tf_generate_messa
 .PHONY : sar_localization/CMakeFiles/tf_generate_messages_py.dir/build
 
 sar_localization/CMakeFiles/tf_generate_messages_py.dir/clean:
-	cd /root/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -P CMakeFiles/tf_generate_messages_py.dir/cmake_clean.cmake
+	cd /home/uav/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -P CMakeFiles/tf_generate_messages_py.dir/cmake_clean.cmake
 .PHONY : sar_localization/CMakeFiles/tf_generate_messages_py.dir/clean
 
 sar_localization/CMakeFiles/tf_generate_messages_py.dir/depend:
-	cd /root/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /root/catkin_ws/src /root/catkin_ws/src/sar_localization /root/catkin_ws/build /root/catkin_ws/build/sar_localization /root/catkin_ws/build/sar_localization/CMakeFiles/tf_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uav/catkin_ws/src /home/uav/catkin_ws/src/sar_localization /home/uav/catkin_ws/build /home/uav/catkin_ws/build/sar_localization /home/uav/catkin_ws/build/sar_localization/CMakeFiles/tf_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : sar_localization/CMakeFiles/tf_generate_messages_py.dir/depend
 

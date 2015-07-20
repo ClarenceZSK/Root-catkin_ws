@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /root/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/catkin_ws/build
+CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
 
 # Utility rule file for sar_localization_generate_messages.
 
@@ -56,10 +56,10 @@ sar_localization/CMakeFiles/sar_localization_generate_messages.dir/build: sar_lo
 .PHONY : sar_localization/CMakeFiles/sar_localization_generate_messages.dir/build
 
 sar_localization/CMakeFiles/sar_localization_generate_messages.dir/clean:
-	cd /root/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -P CMakeFiles/sar_localization_generate_messages.dir/cmake_clean.cmake
+	cd /home/uav/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -P CMakeFiles/sar_localization_generate_messages.dir/cmake_clean.cmake
 .PHONY : sar_localization/CMakeFiles/sar_localization_generate_messages.dir/clean
 
 sar_localization/CMakeFiles/sar_localization_generate_messages.dir/depend:
-	cd /root/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /root/catkin_ws/src /root/catkin_ws/src/sar_localization /root/catkin_ws/build /root/catkin_ws/build/sar_localization /root/catkin_ws/build/sar_localization/CMakeFiles/sar_localization_generate_messages.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uav/catkin_ws/src /home/uav/catkin_ws/src/sar_localization /home/uav/catkin_ws/build /home/uav/catkin_ws/build/sar_localization /home/uav/catkin_ws/build/sar_localization/CMakeFiles/sar_localization_generate_messages.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : sar_localization/CMakeFiles/sar_localization_generate_messages.dir/depend
 

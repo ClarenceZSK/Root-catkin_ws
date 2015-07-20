@@ -16,7 +16,7 @@ SET(CMAKE_TARGET_LINKED_INFO_FILES
 
 # The include file search paths:
 SET(CMAKE_C_TARGET_INCLUDE_PATH
-  "/root/catkin_ws/devel/include"
+  "/home/uav/catkin_ws/devel/include"
   "/usr/include/opencv"
   "/opt/ros/indigo/include"
   "/usr/include/glib-2.0"

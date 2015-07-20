@@ -1,7 +1,7 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/imu_3dm_gx4_generate_messages_py"
-  "/root/catkin_ws/devel/lib/python2.7/dist-packages/imu_3dm_gx4/msg/_FilterOutput.py"
-  "/root/catkin_ws/devel/lib/python2.7/dist-packages/imu_3dm_gx4/msg/__init__.py"
+  "/home/uav/catkin_ws/devel/lib/python2.7/dist-packages/imu_3dm_gx4/msg/_FilterOutput.py"
+  "/home/uav/catkin_ws/devel/lib/python2.7/dist-packages/imu_3dm_gx4/msg/__init__.py"
 )
 
 # Per-language clean rules from dependency scanning.

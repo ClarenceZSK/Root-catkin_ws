@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/root/catkin_ws/devel/include/imu_3dm_gx4/FilterOutput.h
+/home/uav/catkin_ws/devel/include/imu_3dm_gx4/FilterOutput.h
 string
 -
 vector
@@ -28,7 +28,45 @@ geometry_msgs/Quaternion.h
 geometry_msgs/Vector3.h
 -
 
-/root/catkin_ws/src/imu_3dm_gx4/src/imu.hpp
+/home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.cpp
+imu.hpp
+/home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.hpp
+chrono
+-
+locale
+-
+tuple
+-
+algorithm
+-
+iostream
+-
+string
+-
+sstream
+-
+fcntl.h
+-
+getopt.h
+-
+poll.h
+-
+time.h
+-
+errno.h
+-
+termios.h
+-
+sys/ioctl.h
+-
+assert.h
+-
+unistd.h
+-
+string.h
+-
+
+/home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.hpp
 memory
 -
 string
@@ -44,7 +82,7 @@ bitset
 map
 -
 
-/root/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp
+/home/uav/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp
 ros/ros.h
 -
 ros/node_handle.h
@@ -66,5 +104,5 @@ geometry_msgs/QuaternionStamped.h
 imu_3dm_gx4/FilterOutput.h
 -
 imu.hpp
-/root/catkin_ws/src/imu_3dm_gx4/src/imu.hpp
+/home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.hpp
 

@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/root/catkin_ws/src/sar_localization/src/log_csi_stream.cpp" "/root/catkin_ws/build/sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o"
+  "/home/uav/catkin_ws/src/sar_localization/src/log_csi_stream.cpp" "/home/uav/catkin_ws/build/sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -21,7 +21,7 @@ SET(CMAKE_TARGET_LINKED_INFO_FILES
 
 # The include file search paths:
 SET(CMAKE_C_TARGET_INCLUDE_PATH
-  "/root/catkin_ws/devel/include"
+  "/home/uav/catkin_ws/devel/include"
   "/usr/include/opencv"
   "/opt/ros/indigo/include"
   "/usr/include/glib-2.0"

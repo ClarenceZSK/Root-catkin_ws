@@ -1,8 +1,8 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/data_generator.dir/src/data_generator_node.cpp.o"
   "CMakeFiles/data_generator.dir/src/data_generator.cpp.o"
-  "/root/catkin_ws/devel/lib/data_generator/data_generator.pdb"
-  "/root/catkin_ws/devel/lib/data_generator/data_generator"
+  "/home/uav/catkin_ws/devel/lib/data_generator/data_generator.pdb"
+  "/home/uav/catkin_ws/devel/lib/data_generator/data_generator"
 )
 
 # Per-language clean rules from dependency scanning.

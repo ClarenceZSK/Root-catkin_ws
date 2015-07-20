@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /root/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/catkin_ws/build
+CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -120,14 +120,14 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	cd /root/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_progress_start /root/catkin_ws/build/CMakeFiles /root/catkin_ws/build/wifi_estimator/CMakeFiles/progress.marks
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/catkin_ws/build/CMakeFiles 0
+	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/uav/catkin_ws/build/CMakeFiles /home/uav/catkin_ws/build/wifi_estimator/CMakeFiles/progress.marks
+	cd /home/uav/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/uav/catkin_ws/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/clean
+	cd /home/uav/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/clean
 .PHONY : clean
 
 # The main clean target
@@ -136,22 +136,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/preinstall
+	cd /home/uav/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/preinstall
+	cd /home/uav/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /root/catkin_ws/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 wifi_estimator/CMakeFiles/wifi_estimator.dir/rule:
-	cd /root/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/CMakeFiles/wifi_estimator.dir/rule
+	cd /home/uav/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 wifi_estimator/CMakeFiles/wifi_estimator.dir/rule
 .PHONY : wifi_estimator/CMakeFiles/wifi_estimator.dir/rule
 
 # Convenience name for target.
@@ -160,7 +160,7 @@ wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/rule
 
 # fast build rule for target.
 wifi_estimator/fast:
-	cd /root/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/build
+	cd /home/uav/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/build
 .PHONY : wifi_estimator/fast
 
 src/wifi_estimator.o: src/wifi_estimator.cpp.o
@@ -168,7 +168,7 @@ src/wifi_estimator.o: src/wifi_estimator.cpp.o
 
 # target to build an object file
 src/wifi_estimator.cpp.o:
-	cd /root/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o
+	cd /home/uav/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o
 .PHONY : src/wifi_estimator.cpp.o
 
 src/wifi_estimator.i: src/wifi_estimator.cpp.i
@@ -176,7 +176,7 @@ src/wifi_estimator.i: src/wifi_estimator.cpp.i
 
 # target to preprocess a source file
 src/wifi_estimator.cpp.i:
-	cd /root/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.i
+	cd /home/uav/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.i
 .PHONY : src/wifi_estimator.cpp.i
 
 src/wifi_estimator.s: src/wifi_estimator.cpp.s
@@ -184,7 +184,7 @@ src/wifi_estimator.s: src/wifi_estimator.cpp.s
 
 # target to generate assembly for a file
 src/wifi_estimator.cpp.s:
-	cd /root/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.s
+	cd /home/uav/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.s
 .PHONY : src/wifi_estimator.cpp.s
 
 src/wifi_estimator_node.o: src/wifi_estimator_node.cpp.o
@@ -192,7 +192,7 @@ src/wifi_estimator_node.o: src/wifi_estimator_node.cpp.o
 
 # target to build an object file
 src/wifi_estimator_node.cpp.o:
-	cd /root/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o
+	cd /home/uav/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o
 .PHONY : src/wifi_estimator_node.cpp.o
 
 src/wifi_estimator_node.i: src/wifi_estimator_node.cpp.i
@@ -200,7 +200,7 @@ src/wifi_estimator_node.i: src/wifi_estimator_node.cpp.i
 
 # target to preprocess a source file
 src/wifi_estimator_node.cpp.i:
-	cd /root/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.i
+	cd /home/uav/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.i
 .PHONY : src/wifi_estimator_node.cpp.i
 
 src/wifi_estimator_node.s: src/wifi_estimator_node.cpp.s
@@ -208,7 +208,7 @@ src/wifi_estimator_node.s: src/wifi_estimator_node.cpp.s
 
 # target to generate assembly for a file
 src/wifi_estimator_node.cpp.s:
-	cd /root/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.s
+	cd /home/uav/catkin_ws/build && $(MAKE) -f wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.s
 .PHONY : src/wifi_estimator_node.cpp.s
 
 # Help Target
@@ -242,6 +242,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /root/catkin_ws/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

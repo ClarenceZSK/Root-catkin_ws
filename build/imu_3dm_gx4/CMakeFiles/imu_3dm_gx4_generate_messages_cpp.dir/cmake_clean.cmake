@@ -1,6 +1,6 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/imu_3dm_gx4_generate_messages_cpp"
-  "/root/catkin_ws/devel/include/imu_3dm_gx4/FilterOutput.h"
+  "/home/uav/catkin_ws/devel/include/imu_3dm_gx4/FilterOutput.h"
 )
 
 # Per-language clean rules from dependency scanning.

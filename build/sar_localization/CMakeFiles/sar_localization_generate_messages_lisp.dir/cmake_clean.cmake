@@ -1,7 +1,7 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/sar_localization_generate_messages_lisp"
-  "/root/catkin_ws/devel/share/common-lisp/ros/sar_localization/msg/Motor.lisp"
-  "/root/catkin_ws/devel/share/common-lisp/ros/sar_localization/msg/Csi.lisp"
+  "/home/uav/catkin_ws/devel/share/common-lisp/ros/sar_localization/msg/Csi.lisp"
+  "/home/uav/catkin_ws/devel/share/common-lisp/ros/sar_localization/msg/Motor.lisp"
 )
 
 # Per-language clean rules from dependency scanning.

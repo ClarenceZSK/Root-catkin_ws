@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/root/catkin_ws/src/data_generator/src/data_generator.cpp
+/home/uav/catkin_ws/src/data_generator/src/data_generator.cpp
 data_generator.h
-/root/catkin_ws/src/data_generator/src/data_generator.h
+/home/uav/catkin_ws/src/data_generator/src/data_generator.h
 
-/root/catkin_ws/src/data_generator/src/data_generator.h
+/home/uav/catkin_ws/src/data_generator/src/data_generator.h
 cstdlib
 -
 cmath
@@ -30,9 +30,9 @@ eigen3/Eigen/Dense
 eigen3/Eigen/Geometry
 -
 
-/root/catkin_ws/src/data_generator/src/data_generator_node.cpp
+/home/uav/catkin_ws/src/data_generator/src/data_generator_node.cpp
 ros/ros.h
-/root/catkin_ws/src/data_generator/src/ros/ros.h
+/home/uav/catkin_ws/src/data_generator/src/ros/ros.h
 nav_msgs/Path.h
 -
 nav_msgs/Odometry.h
@@ -46,7 +46,7 @@ sensor_msgs/PointCloud.h
 visualization_msgs/Marker.h
 -
 data_generator.h
-/root/catkin_ws/src/data_generator/src/data_generator.h
+/home/uav/catkin_ws/src/data_generator/src/data_generator.h
 opencv2/opencv.hpp
 -
 

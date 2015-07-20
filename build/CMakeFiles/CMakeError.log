@@ -1,23 +1,23 @@
 Determining if the pthread_create exist failed with the following output:
-Change Dir: /root/catkin_ws/build/CMakeFiles/CMakeTmp
+Change Dir: /home/uav/catkin_ws/build/CMakeFiles/CMakeTmp
 
-Run Build Command:/usr/bin/make "cmTryCompileExec1033342094/fast"
-/usr/bin/make -f CMakeFiles/cmTryCompileExec1033342094.dir/build.make CMakeFiles/cmTryCompileExec1033342094.dir/build
-make[1]: Entering directory `/root/catkin_ws/build/CMakeFiles/CMakeTmp'
-/usr/bin/cmake -E cmake_progress_report /root/catkin_ws/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec1033342094.dir/CheckSymbolExists.c.o
-/usr/bin/cc    -o CMakeFiles/cmTryCompileExec1033342094.dir/CheckSymbolExists.c.o   -c /root/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
-Linking C executable cmTryCompileExec1033342094
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec1033342094.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTryCompileExec1033342094.dir/CheckSymbolExists.c.o  -o cmTryCompileExec1033342094 -rdynamic 
-CMakeFiles/cmTryCompileExec1033342094.dir/CheckSymbolExists.c.o: In function `main':
+Run Build Command:/usr/bin/make "cmTryCompileExec3011109285/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3011109285.dir/build.make CMakeFiles/cmTryCompileExec3011109285.dir/build
+make[1]: Entering directory `/home/uav/catkin_ws/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/uav/catkin_ws/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3011109285.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3011109285.dir/CheckSymbolExists.c.o   -c /home/uav/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec3011109285
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3011109285.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTryCompileExec3011109285.dir/CheckSymbolExists.c.o  -o cmTryCompileExec3011109285 -rdynamic 
+CMakeFiles/cmTryCompileExec3011109285.dir/CheckSymbolExists.c.o: In function `main':
 CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
 collect2: error: ld returned 1 exit status
-make[1]: *** [cmTryCompileExec1033342094] Error 1
-make[1]: Leaving directory `/root/catkin_ws/build/CMakeFiles/CMakeTmp'
-make: *** [cmTryCompileExec1033342094/fast] Error 2
+make[1]: *** [cmTryCompileExec3011109285] Error 1
+make[1]: Leaving directory `/home/uav/catkin_ws/build/CMakeFiles/CMakeTmp'
+make: *** [cmTryCompileExec3011109285/fast] Error 2
 
-File /root/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+File /home/uav/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
 #include <pthread.h>
 
@@ -33,21 +33,21 @@ int main(int argc, char** argv)
 }
 
 Determining if the function pthread_create exists in the pthreads failed with the following output:
-Change Dir: /root/catkin_ws/build/CMakeFiles/CMakeTmp
+Change Dir: /home/uav/catkin_ws/build/CMakeFiles/CMakeTmp
 
-Run Build Command:/usr/bin/make "cmTryCompileExec143260507/fast"
-/usr/bin/make -f CMakeFiles/cmTryCompileExec143260507.dir/build.make CMakeFiles/cmTryCompileExec143260507.dir/build
-make[1]: Entering directory `/root/catkin_ws/build/CMakeFiles/CMakeTmp'
-/usr/bin/cmake -E cmake_progress_report /root/catkin_ws/build/CMakeFiles/CMakeTmp/CMakeFiles 1
-Building C object CMakeFiles/cmTryCompileExec143260507.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec143260507.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
-Linking C executable cmTryCompileExec143260507
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec143260507.dir/link.txt --verbose=1
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec143260507.dir/CheckFunctionExists.c.o  -o cmTryCompileExec143260507 -rdynamic -lpthreads 
+Run Build Command:/usr/bin/make "cmTryCompileExec2067473116/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2067473116.dir/build.make CMakeFiles/cmTryCompileExec2067473116.dir/build
+make[1]: Entering directory `/home/uav/catkin_ws/build/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/uav/catkin_ws/build/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec2067473116.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec2067473116.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec2067473116
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec2067473116.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec2067473116.dir/CheckFunctionExists.c.o  -o cmTryCompileExec2067473116 -rdynamic -lpthreads 
 /usr/bin/ld: cannot find -lpthreads
 collect2: error: ld returned 1 exit status
-make[1]: *** [cmTryCompileExec143260507] Error 1
-make[1]: Leaving directory `/root/catkin_ws/build/CMakeFiles/CMakeTmp'
-make: *** [cmTryCompileExec143260507/fast] Error 2
+make[1]: *** [cmTryCompileExec2067473116] Error 1
+make[1]: Leaving directory `/home/uav/catkin_ws/build/CMakeFiles/CMakeTmp'
+make: *** [cmTryCompileExec2067473116/fast] Error 2
 
 

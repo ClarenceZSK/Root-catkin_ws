@@ -1,8 +1,8 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o"
   "CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o"
-  "/root/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4.pdb"
-  "/root/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4"
+  "/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4.pdb"
+  "/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4"
 )
 
 # Per-language clean rules from dependency scanning.

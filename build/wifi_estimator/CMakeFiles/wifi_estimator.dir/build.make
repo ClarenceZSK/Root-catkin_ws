@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /root/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/catkin_ws/build
+CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
 
 # Include any dependencies generated for this target.
 include wifi_estimator/CMakeFiles/wifi_estimator.dir/depend.make
@@ -50,18 +50,18 @@ include wifi_estimator/CMakeFiles/wifi_estimator.dir/progress.make
 include wifi_estimator/CMakeFiles/wifi_estimator.dir/flags.make
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o: wifi_estimator/CMakeFiles/wifi_estimator.dir/flags.make
-wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o: /root/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /root/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_1)
+wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o: /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/uav/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o"
-	cd /root/catkin_ws/build/wifi_estimator && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o -c /root/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp
+	cd /home/uav/catkin_ws/build/wifi_estimator && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o -c /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.i"
-	cd /root/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /root/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp > CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.i
+	cd /home/uav/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp > CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.i
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.s"
-	cd /root/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /root/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.s
+	cd /home/uav/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.s
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o.requires:
 .PHONY : wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o.requires
@@ -73,18 +73,18 @@ wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o.provi
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o.provides.build: wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o: wifi_estimator/CMakeFiles/wifi_estimator.dir/flags.make
-wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o: /root/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /root/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_2)
+wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o: /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/uav/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o"
-	cd /root/catkin_ws/build/wifi_estimator && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o -c /root/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp
+	cd /home/uav/catkin_ws/build/wifi_estimator && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o -c /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.i"
-	cd /root/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /root/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp > CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.i
+	cd /home/uav/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp > CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.i
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.s"
-	cd /root/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /root/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.s
+	cd /home/uav/catkin_ws/build/wifi_estimator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp -o CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.s
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o.requires:
 .PHONY : wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o.requires
@@ -103,83 +103,83 @@ wifi_estimator_OBJECTS = \
 # External object files for target wifi_estimator
 wifi_estimator_EXTERNAL_OBJECTS =
 
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libcv_bridge.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libtf.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libtf2_ros.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libactionlib.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libmessage_filters.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libroscpp.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_signals.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libxmlrpcpp.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libtf2.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libroscpp_serialization.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librosconsole.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librosconsole_log4cxx.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librosconsole_backend_interface.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/liblog4cxx.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_regex.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librostime.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libcpp_common.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_system.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_thread.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libpthread.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
-/root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator"
-	cd /root/catkin_ws/build/wifi_estimator && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/wifi_estimator.dir/link.txt --verbose=$(VERBOSE)
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator.cpp.o
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/build.make
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libcv_bridge.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libtf.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libtf2_ros.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libactionlib.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libmessage_filters.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libroscpp.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_signals.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libxmlrpcpp.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libtf2.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libroscpp_serialization.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librosconsole.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librosconsole_log4cxx.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librosconsole_backend_interface.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/liblog4cxx.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_regex.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/librostime.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /opt/ros/indigo/lib/libcpp_common.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_system.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libboost_thread.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libpthread.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
+/home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator: wifi_estimator/CMakeFiles/wifi_estimator.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator"
+	cd /home/uav/catkin_ws/build/wifi_estimator && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/wifi_estimator.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-wifi_estimator/CMakeFiles/wifi_estimator.dir/build: /root/catkin_ws/devel/lib/wifi_estimator/wifi_estimator
+wifi_estimator/CMakeFiles/wifi_estimator.dir/build: /home/uav/catkin_ws/devel/lib/wifi_estimator/wifi_estimator
 .PHONY : wifi_estimator/CMakeFiles/wifi_estimator.dir/build
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/requires: wifi_estimator/CMakeFiles/wifi_estimator.dir/src/wifi_estimator_node.cpp.o.requires
@@ -187,10 +187,10 @@ wifi_estimator/CMakeFiles/wifi_estimator.dir/requires: wifi_estimator/CMakeFiles
 .PHONY : wifi_estimator/CMakeFiles/wifi_estimator.dir/requires
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/clean:
-	cd /root/catkin_ws/build/wifi_estimator && $(CMAKE_COMMAND) -P CMakeFiles/wifi_estimator.dir/cmake_clean.cmake
+	cd /home/uav/catkin_ws/build/wifi_estimator && $(CMAKE_COMMAND) -P CMakeFiles/wifi_estimator.dir/cmake_clean.cmake
 .PHONY : wifi_estimator/CMakeFiles/wifi_estimator.dir/clean
 
 wifi_estimator/CMakeFiles/wifi_estimator.dir/depend:
-	cd /root/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /root/catkin_ws/src /root/catkin_ws/src/wifi_estimator /root/catkin_ws/build /root/catkin_ws/build/wifi_estimator /root/catkin_ws/build/wifi_estimator/CMakeFiles/wifi_estimator.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uav/catkin_ws/src /home/uav/catkin_ws/src/wifi_estimator /home/uav/catkin_ws/build /home/uav/catkin_ws/build/wifi_estimator /home/uav/catkin_ws/build/wifi_estimator/CMakeFiles/wifi_estimator.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : wifi_estimator/CMakeFiles/wifi_estimator.dir/depend
 
