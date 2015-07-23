@@ -1,7 +1,7 @@
 FILE(REMOVE_RECURSE
   "CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o"
-  "/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream.pdb"
-  "/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream"
+  "/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream.pdb"
+  "/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream"
 )
 
 # Per-language clean rules from dependency scanning.

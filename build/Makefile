@@ -39,10 +39,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/clarence/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
+CMAKE_BINARY_DIR = /home/clarence/catkin_ws/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -120,9 +120,9 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/uav/catkin_ws/build/CMakeFiles /home/uav/catkin_ws/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/clarence/catkin_ws/build/CMakeFiles /home/clarence/catkin_ws/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/uav/catkin_ws/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/clarence/catkin_ws/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -488,6 +488,58 @@ std_msgs_generate_messages_py/fast:
 .PHONY : std_msgs_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named i9dof_imu
+
+# Build rule for target.
+i9dof_imu: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 i9dof_imu
+.PHONY : i9dof_imu
+
+# fast build rule for target.
+i9dof_imu/fast:
+	$(MAKE) -f i9dof_imu/CMakeFiles/i9dof_imu.dir/build.make i9dof_imu/CMakeFiles/i9dof_imu.dir/build
+.PHONY : i9dof_imu/fast
+
+#=============================================================================
+# Target rules for targets named sensor_msgs_generate_messages_cpp
+
+# Build rule for target.
+sensor_msgs_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 sensor_msgs_generate_messages_cpp
+.PHONY : sensor_msgs_generate_messages_cpp
+
+# fast build rule for target.
+sensor_msgs_generate_messages_cpp/fast:
+	$(MAKE) -f i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build.make i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build
+.PHONY : sensor_msgs_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named sensor_msgs_generate_messages_lisp
+
+# Build rule for target.
+sensor_msgs_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 sensor_msgs_generate_messages_lisp
+.PHONY : sensor_msgs_generate_messages_lisp
+
+# fast build rule for target.
+sensor_msgs_generate_messages_lisp/fast:
+	$(MAKE) -f i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build.make i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build
+.PHONY : sensor_msgs_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named sensor_msgs_generate_messages_py
+
+# Build rule for target.
+sensor_msgs_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 sensor_msgs_generate_messages_py
+.PHONY : sensor_msgs_generate_messages_py
+
+# fast build rule for target.
+sensor_msgs_generate_messages_py/fast:
+	$(MAKE) -f i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_py.dir/build.make i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_py.dir/build
+.PHONY : sensor_msgs_generate_messages_py/fast
+
+#=============================================================================
 # Target rules for targets named _imu_3dm_gx4_generate_messages_check_deps_FilterOutput
 
 # Build rule for target.
@@ -642,45 +694,6 @@ imu_3dm_gx4_genpy: cmake_check_build_system
 imu_3dm_gx4_genpy/fast:
 	$(MAKE) -f imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genpy.dir/build.make imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genpy.dir/build
 .PHONY : imu_3dm_gx4_genpy/fast
-
-#=============================================================================
-# Target rules for targets named sensor_msgs_generate_messages_cpp
-
-# Build rule for target.
-sensor_msgs_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 sensor_msgs_generate_messages_cpp
-.PHONY : sensor_msgs_generate_messages_cpp
-
-# fast build rule for target.
-sensor_msgs_generate_messages_cpp/fast:
-	$(MAKE) -f imu_3dm_gx4/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build.make imu_3dm_gx4/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build
-.PHONY : sensor_msgs_generate_messages_cpp/fast
-
-#=============================================================================
-# Target rules for targets named sensor_msgs_generate_messages_lisp
-
-# Build rule for target.
-sensor_msgs_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 sensor_msgs_generate_messages_lisp
-.PHONY : sensor_msgs_generate_messages_lisp
-
-# fast build rule for target.
-sensor_msgs_generate_messages_lisp/fast:
-	$(MAKE) -f imu_3dm_gx4/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build.make imu_3dm_gx4/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build
-.PHONY : sensor_msgs_generate_messages_lisp/fast
-
-#=============================================================================
-# Target rules for targets named sensor_msgs_generate_messages_py
-
-# Build rule for target.
-sensor_msgs_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 sensor_msgs_generate_messages_py
-.PHONY : sensor_msgs_generate_messages_py
-
-# fast build rule for target.
-sensor_msgs_generate_messages_py/fast:
-	$(MAKE) -f imu_3dm_gx4/CMakeFiles/sensor_msgs_generate_messages_py.dir/build.make imu_3dm_gx4/CMakeFiles/sensor_msgs_generate_messages_py.dir/build
-.PHONY : sensor_msgs_generate_messages_py/fast
 
 #=============================================================================
 # Target rules for targets named LOS_2D
@@ -1033,6 +1046,10 @@ help:
 	@echo "... std_msgs_generate_messages_cpp"
 	@echo "... std_msgs_generate_messages_lisp"
 	@echo "... std_msgs_generate_messages_py"
+	@echo "... i9dof_imu"
+	@echo "... sensor_msgs_generate_messages_cpp"
+	@echo "... sensor_msgs_generate_messages_lisp"
+	@echo "... sensor_msgs_generate_messages_py"
 	@echo "... _imu_3dm_gx4_generate_messages_check_deps_FilterOutput"
 	@echo "... diagnostic_msgs_generate_messages_cpp"
 	@echo "... diagnostic_msgs_generate_messages_lisp"
@@ -1045,9 +1062,6 @@ help:
 	@echo "... imu_3dm_gx4_generate_messages_py"
 	@echo "... imu_3dm_gx4_genlisp"
 	@echo "... imu_3dm_gx4_genpy"
-	@echo "... sensor_msgs_generate_messages_cpp"
-	@echo "... sensor_msgs_generate_messages_lisp"
-	@echo "... sensor_msgs_generate_messages_py"
 	@echo "... LOS_2D"
 	@echo "... LOS_2D_singleThread"
 	@echo "... LOS_3D"

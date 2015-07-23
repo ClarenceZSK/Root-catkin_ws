@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
 PROJECT_CATKIN_DEPENDS = "roscpp;rospy;std_msgs".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "wifi_estimator"
-PROJECT_SPACE_DIR = "/home/uav/catkin_ws/devel"
+PROJECT_SPACE_DIR = "/home/clarence/catkin_ws/devel"
 PROJECT_VERSION = "0.0.0"

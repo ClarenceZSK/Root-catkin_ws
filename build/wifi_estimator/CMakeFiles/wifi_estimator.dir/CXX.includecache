@@ -6,23 +6,23 @@
 
 #IncludeRegexTransform: 
 
-/home/uav/catkin_ws/src/wifi_estimator/src/parameter.h
+/home/clarence/catkin_ws/src/wifi_estimator/src/parameter.h
 
-/home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp
+/home/clarence/catkin_ws/src/wifi_estimator/src/wifi_estimator.cpp
 wifi_estimator.h
-/home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.h
+/home/clarence/catkin_ws/src/wifi_estimator/src/wifi_estimator.h
 
-/home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.h
+/home/clarence/catkin_ws/src/wifi_estimator/src/wifi_estimator.h
 eigen3/Eigen/Dense
 -
 vector
 -
 parameter.h
-/home/uav/catkin_ws/src/wifi_estimator/src/parameter.h
+/home/clarence/catkin_ws/src/wifi_estimator/src/parameter.h
 ros/console.h
 -
 
-/home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp
+/home/clarence/catkin_ws/src/wifi_estimator/src/wifi_estimator_node.cpp
 ros/ros.h
 -
 nav_msgs/Path.h
@@ -38,7 +38,7 @@ sensor_msgs/PointCloud.h
 queue
 -
 wifi_estimator.h
-/home/uav/catkin_ws/src/wifi_estimator/src/wifi_estimator.h
+/home/clarence/catkin_ws/src/wifi_estimator/src/wifi_estimator.h
 
 /opt/ros/indigo/include/XmlRpcDecl.h
 ros/macros.h

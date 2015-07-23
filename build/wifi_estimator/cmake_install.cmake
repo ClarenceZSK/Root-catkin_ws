@@ -1,8 +1,8 @@
-# Install script for directory: /home/uav/catkin_ws/src/wifi_estimator
+# Install script for directory: /home/clarence/catkin_ws/src/wifi_estimator
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  SET(CMAKE_INSTALL_PREFIX "/home/uav/catkin_ws/install")
+  SET(CMAKE_INSTALL_PREFIX "/home/clarence/catkin_ws/install")
 ENDIF(NOT DEFINED CMAKE_INSTALL_PREFIX)
 STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -33,17 +33,17 @@ IF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/uav/catkin_ws/build/wifi_estimator/catkin_generated/installspace/wifi_estimator.pc")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/clarence/catkin_ws/build/wifi_estimator/catkin_generated/installspace/wifi_estimator.pc")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/wifi_estimator/cmake" TYPE FILE FILES
-    "/home/uav/catkin_ws/build/wifi_estimator/catkin_generated/installspace/wifi_estimatorConfig.cmake"
-    "/home/uav/catkin_ws/build/wifi_estimator/catkin_generated/installspace/wifi_estimatorConfig-version.cmake"
+    "/home/clarence/catkin_ws/build/wifi_estimator/catkin_generated/installspace/wifi_estimatorConfig.cmake"
+    "/home/clarence/catkin_ws/build/wifi_estimator/catkin_generated/installspace/wifi_estimatorConfig-version.cmake"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/wifi_estimator" TYPE FILE FILES "/home/uav/catkin_ws/src/wifi_estimator/package.xml")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/wifi_estimator" TYPE FILE FILES "/home/clarence/catkin_ws/src/wifi_estimator/package.xml")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

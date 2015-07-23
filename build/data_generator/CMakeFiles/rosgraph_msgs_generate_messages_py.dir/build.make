@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/clarence/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
+CMAKE_BINARY_DIR = /home/clarence/catkin_ws/build
 
 # Utility rule file for rosgraph_msgs_generate_messages_py.
 
@@ -56,10 +56,10 @@ data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build: rosgraph
 .PHONY : data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
 
 data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean:
-	cd /home/uav/catkin_ws/build/data_generator && $(CMAKE_COMMAND) -P CMakeFiles/rosgraph_msgs_generate_messages_py.dir/cmake_clean.cmake
+	cd /home/clarence/catkin_ws/build/data_generator && $(CMAKE_COMMAND) -P CMakeFiles/rosgraph_msgs_generate_messages_py.dir/cmake_clean.cmake
 .PHONY : data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean
 
 data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/depend:
-	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uav/catkin_ws/src /home/uav/catkin_ws/src/data_generator /home/uav/catkin_ws/build /home/uav/catkin_ws/build/data_generator /home/uav/catkin_ws/build/data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/clarence/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clarence/catkin_ws/src /home/clarence/catkin_ws/src/data_generator /home/clarence/catkin_ws/build /home/clarence/catkin_ws/build/data_generator /home/clarence/catkin_ws/build/data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : data_generator/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/depend
 

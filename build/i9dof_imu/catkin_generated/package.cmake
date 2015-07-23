@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "i9dof_imu")
+set(i9dof_imu_MAINTAINER "ksu <ksu@todo.todo>")
+set(i9dof_imu_DEPRECATED "")
+set(i9dof_imu_VERSION "0.0.0")
+set(i9dof_imu_BUILD_DEPENDS "roscpp" "rospy" "std_msgs" "sensor_msgs")
+set(i9dof_imu_RUN_DEPENDS "sensor_msgs" "roscpp" "rospy" "std_msgs")
+set(i9dof_imu_BUILDTOOL_DEPENDS "catkin")

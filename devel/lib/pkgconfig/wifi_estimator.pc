@@ -1,8 +1,8 @@
-prefix=/home/uav/catkin_ws/devel
+prefix=/home/clarence/catkin_ws/devel
 
 Name: wifi_estimator
 Description: Description of wifi_estimator
 Version: 0.0.0
 Cflags: 
-Libs: -L/home/uav/catkin_ws/devel/lib 
+Libs: -L/home/clarence/catkin_ws/devel/lib 
 Requires: roscpp rospy std_msgs

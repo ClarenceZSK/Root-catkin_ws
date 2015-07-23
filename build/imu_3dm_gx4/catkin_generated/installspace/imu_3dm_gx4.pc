@@ -1,8 +1,8 @@
-prefix=/home/uav/catkin_ws/install
+prefix=/home/clarence/catkin_ws/install
 
 Name: imu_3dm_gx4
 Description: Description of imu_3dm_gx4
 Version: 0.0.2
-Cflags: -I/home/uav/catkin_ws/install/include
-Libs: -L/home/uav/catkin_ws/install/lib 
+Cflags: -I/home/clarence/catkin_ws/install/include
+Libs: -L/home/clarence/catkin_ws/install/lib 
 Requires: 

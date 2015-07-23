@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/clarence/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
+CMAKE_BINARY_DIR = /home/clarence/catkin_ws/build
 
 # Include any dependencies generated for this target.
 include sar_localization/CMakeFiles/log_csi_stream.dir/depend.make
@@ -50,18 +50,18 @@ include sar_localization/CMakeFiles/log_csi_stream.dir/progress.make
 include sar_localization/CMakeFiles/log_csi_stream.dir/flags.make
 
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: sar_localization/CMakeFiles/log_csi_stream.dir/flags.make
-sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /home/uav/catkin_ws/src/sar_localization/src/log_csi_stream.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/uav/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_1)
+sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o: /home/clarence/catkin_ws/src/sar_localization/src/log_csi_stream.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/clarence/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o"
-	cd /home/uav/catkin_ws/build/sar_localization && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o -c /home/uav/catkin_ws/src/sar_localization/src/log_csi_stream.cpp
+	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o -c /home/clarence/catkin_ws/src/sar_localization/src/log_csi_stream.cpp
 
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.i"
-	cd /home/uav/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/uav/catkin_ws/src/sar_localization/src/log_csi_stream.cpp > CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.i
+	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/clarence/catkin_ws/src/sar_localization/src/log_csi_stream.cpp > CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.i
 
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.s"
-	cd /home/uav/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/uav/catkin_ws/src/sar_localization/src/log_csi_stream.cpp -o CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.s
+	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/clarence/catkin_ws/src/sar_localization/src/log_csi_stream.cpp -o CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.s
 
 sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o.requires:
 .PHONY : sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o.requires
@@ -79,64 +79,64 @@ log_csi_stream_OBJECTS = \
 # External object files for target log_csi_stream
 log_csi_stream_EXTERNAL_OBJECTS =
 
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/build.make
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libcv_bridge.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libtf.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libtf2_ros.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libactionlib.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libmessage_filters.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libroscpp.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_signals.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libxmlrpcpp.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libtf2.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libroscpp_serialization.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librosconsole.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librosconsole_log4cxx.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librosconsole_backend_interface.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/liblog4cxx.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_regex.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librostime.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libcpp_common.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_system.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_thread.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libpthread.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
-/home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream"
-	cd /home/uav/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/log_csi_stream.dir/link.txt --verbose=$(VERBOSE)
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/build.make
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libcv_bridge.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_video.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_superres.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_stitching.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_ocl.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_objdetect.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_ml.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_legacy.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_gpu.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_flann.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_features2d.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_core.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_contrib.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libopencv_calib3d.so.2.4.8
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libtf.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libtf2_ros.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libactionlib.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libmessage_filters.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libroscpp.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_signals.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libxmlrpcpp.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libtf2.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libroscpp_serialization.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librosconsole.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librosconsole_log4cxx.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librosconsole_backend_interface.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/liblog4cxx.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_regex.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/librostime.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /opt/ros/indigo/lib/libcpp_common.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_system.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_thread.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libpthread.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream"
+	cd /home/clarence/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/log_csi_stream.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-sar_localization/CMakeFiles/log_csi_stream.dir/build: /home/uav/catkin_ws/devel/lib/sar_localization/log_csi_stream
+sar_localization/CMakeFiles/log_csi_stream.dir/build: /home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream
 .PHONY : sar_localization/CMakeFiles/log_csi_stream.dir/build
 
 sar_localization/CMakeFiles/log_csi_stream.dir/requires: sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o.requires
 .PHONY : sar_localization/CMakeFiles/log_csi_stream.dir/requires
 
 sar_localization/CMakeFiles/log_csi_stream.dir/clean:
-	cd /home/uav/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -P CMakeFiles/log_csi_stream.dir/cmake_clean.cmake
+	cd /home/clarence/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -P CMakeFiles/log_csi_stream.dir/cmake_clean.cmake
 .PHONY : sar_localization/CMakeFiles/log_csi_stream.dir/clean
 
 sar_localization/CMakeFiles/log_csi_stream.dir/depend:
-	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uav/catkin_ws/src /home/uav/catkin_ws/src/sar_localization /home/uav/catkin_ws/build /home/uav/catkin_ws/build/sar_localization /home/uav/catkin_ws/build/sar_localization/CMakeFiles/log_csi_stream.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/clarence/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clarence/catkin_ws/src /home/clarence/catkin_ws/src/sar_localization /home/clarence/catkin_ws/build /home/clarence/catkin_ws/build/sar_localization /home/clarence/catkin_ws/build/sar_localization/CMakeFiles/log_csi_stream.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : sar_localization/CMakeFiles/log_csi_stream.dir/depend
 

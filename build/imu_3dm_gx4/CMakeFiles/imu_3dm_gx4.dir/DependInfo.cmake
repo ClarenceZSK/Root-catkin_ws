@@ -4,8 +4,8 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.cpp" "/home/uav/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o"
-  "/home/uav/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp" "/home/uav/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o"
+  "/home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu.cpp" "/home/clarence/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o"
+  "/home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp" "/home/clarence/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -22,7 +22,7 @@ SET(CMAKE_TARGET_LINKED_INFO_FILES
 
 # The include file search paths:
 SET(CMAKE_C_TARGET_INCLUDE_PATH
-  "/home/uav/catkin_ws/devel/include"
+  "/home/clarence/catkin_ws/devel/include"
   )
 SET(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
 SET(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})

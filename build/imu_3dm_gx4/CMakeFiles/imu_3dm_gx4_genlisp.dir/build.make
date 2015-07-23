@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/clarence/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
+CMAKE_BINARY_DIR = /home/clarence/catkin_ws/build
 
 # Utility rule file for imu_3dm_gx4_genlisp.
 
@@ -56,10 +56,10 @@ imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/build: imu_3dm_gx4_genlisp
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/build
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/clean:
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && $(CMAKE_COMMAND) -P CMakeFiles/imu_3dm_gx4_genlisp.dir/cmake_clean.cmake
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && $(CMAKE_COMMAND) -P CMakeFiles/imu_3dm_gx4_genlisp.dir/cmake_clean.cmake
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/clean
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/depend:
-	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uav/catkin_ws/src /home/uav/catkin_ws/src/imu_3dm_gx4 /home/uav/catkin_ws/build /home/uav/catkin_ws/build/imu_3dm_gx4 /home/uav/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/clarence/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clarence/catkin_ws/src /home/clarence/catkin_ws/src/imu_3dm_gx4 /home/clarence/catkin_ws/build /home/clarence/catkin_ws/build/imu_3dm_gx4 /home/clarence/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir/depend
 

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/uav/catkin_ws/devel/include/sar_localization/Motor.h
+/home/clarence/catkin_ws/devel/include/sar_localization/Motor.h
 string
 -
 vector
@@ -24,21 +24,21 @@ ros/message_operations.h
 std_msgs/Header.h
 -
 
-/home/uav/catkin_ws/src/sar_localization/src/motor_message.cpp
+/home/clarence/catkin_ws/src/sar_localization/src/motor_message.cpp
 ros/ros.h
-/home/uav/catkin_ws/src/sar_localization/src/ros/ros.h
+/home/clarence/catkin_ws/src/sar_localization/src/ros/ros.h
 ros/time.h
-/home/uav/catkin_ws/src/sar_localization/src/ros/time.h
+/home/clarence/catkin_ws/src/sar_localization/src/ros/time.h
 std_msgs/String.h
-/home/uav/catkin_ws/src/sar_localization/src/std_msgs/String.h
+/home/clarence/catkin_ws/src/sar_localization/src/std_msgs/String.h
 std_msgs/Int16.h
-/home/uav/catkin_ws/src/sar_localization/src/std_msgs/Int16.h
+/home/clarence/catkin_ws/src/sar_localization/src/std_msgs/Int16.h
 std_msgs/Float32.h
-/home/uav/catkin_ws/src/sar_localization/src/std_msgs/Float32.h
+/home/clarence/catkin_ws/src/sar_localization/src/std_msgs/Float32.h
 std_msgs/Header.h
-/home/uav/catkin_ws/src/sar_localization/src/std_msgs/Header.h
+/home/clarence/catkin_ws/src/sar_localization/src/std_msgs/Header.h
 sar_localization/Motor.h
-/home/uav/catkin_ws/src/sar_localization/src/sar_localization/Motor.h
+/home/clarence/catkin_ws/src/sar_localization/src/sar_localization/Motor.h
 sstream
 -
 ros/console.h

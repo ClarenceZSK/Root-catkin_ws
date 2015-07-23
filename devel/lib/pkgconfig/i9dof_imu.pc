@@ -1,0 +1,8 @@
+prefix=/home/clarence/catkin_ws/devel
+
+Name: i9dof_imu
+Description: Description of i9dof_imu
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/clarence/catkin_ws/devel/lib 
+Requires: 

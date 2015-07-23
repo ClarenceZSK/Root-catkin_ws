@@ -1,8 +1,8 @@
-# Install script for directory: /home/uav/catkin_ws/src/data_generator
+# Install script for directory: /home/clarence/catkin_ws/src/data_generator
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  SET(CMAKE_INSTALL_PREFIX "/home/uav/catkin_ws/install")
+  SET(CMAKE_INSTALL_PREFIX "/home/clarence/catkin_ws/install")
 ENDIF(NOT DEFINED CMAKE_INSTALL_PREFIX)
 STRING(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -33,17 +33,17 @@ IF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/uav/catkin_ws/build/data_generator/catkin_generated/installspace/data_generator.pc")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/clarence/catkin_ws/build/data_generator/catkin_generated/installspace/data_generator.pc")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/data_generator/cmake" TYPE FILE FILES
-    "/home/uav/catkin_ws/build/data_generator/catkin_generated/installspace/data_generatorConfig.cmake"
-    "/home/uav/catkin_ws/build/data_generator/catkin_generated/installspace/data_generatorConfig-version.cmake"
+    "/home/clarence/catkin_ws/build/data_generator/catkin_generated/installspace/data_generatorConfig.cmake"
+    "/home/clarence/catkin_ws/build/data_generator/catkin_generated/installspace/data_generatorConfig-version.cmake"
     )
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/data_generator" TYPE FILE FILES "/home/uav/catkin_ws/src/data_generator/package.xml")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/data_generator" TYPE FILE FILES "/home/clarence/catkin_ws/src/data_generator/package.xml")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

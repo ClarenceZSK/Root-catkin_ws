@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/uav/catkin_ws/src
+CMAKE_SOURCE_DIR = /home/clarence/catkin_ws/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/uav/catkin_ws/build
+CMAKE_BINARY_DIR = /home/clarence/catkin_ws/build
 
 # Include any dependencies generated for this target.
 include imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/depend.make
@@ -50,18 +50,18 @@ include imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/progress.make
 include imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/flags.make
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/flags.make
-imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o: /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/uav/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_1)
+imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o: /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/clarence/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o"
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o -c /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o -c /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.i"
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp > CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.i
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp > CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.i
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.s"
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp -o CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.s
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu_3dm_gx4.cpp -o CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.s
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o.requires:
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o.requires
@@ -73,18 +73,18 @@ imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o.provides: imu_3dm_g
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o.provides.build: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/flags.make
-imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o: /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/uav/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_2)
+imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o: /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/clarence/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o"
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o -c /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.cpp
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o -c /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu.cpp
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.i"
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.cpp > CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.i
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu.cpp > CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.i
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.s"
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/uav/catkin_ws/src/imu_3dm_gx4/src/imu.cpp -o CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.s
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/clarence/catkin_ws/src/imu_3dm_gx4/src/imu.cpp -o CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.s
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o.requires:
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o.requires
@@ -103,32 +103,32 @@ imu_3dm_gx4_OBJECTS = \
 # External object files for target imu_3dm_gx4
 imu_3dm_gx4_EXTERNAL_OBJECTS =
 
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/build.make
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libroscpp.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_signals.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librosconsole.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librosconsole_log4cxx.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librosconsole_backend_interface.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/liblog4cxx.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_regex.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libxmlrpcpp.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libroscpp_serialization.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librostime.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libcpp_common.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_system.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_thread.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libpthread.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
-/home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4"
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/imu_3dm_gx4.dir/link.txt --verbose=$(VERBOSE)
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu.cpp.o
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/build.make
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libroscpp.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_signals.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librosconsole.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librosconsole_log4cxx.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librosconsole_backend_interface.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/liblog4cxx.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_regex.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libxmlrpcpp.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libroscpp_serialization.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/librostime.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_date_time.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /opt/ros/indigo/lib/libcpp_common.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_system.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libboost_thread.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libpthread.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+/home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4"
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/imu_3dm_gx4.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/build: /home/uav/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4
+imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/build: /home/clarence/catkin_ws/devel/lib/imu_3dm_gx4/imu_3dm_gx4
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/build
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/requires: imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/src/imu_3dm_gx4.cpp.o.requires
@@ -136,10 +136,10 @@ imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/requires: imu_3dm_gx4/CMakeFiles/imu_3dm_
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/requires
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/clean:
-	cd /home/uav/catkin_ws/build/imu_3dm_gx4 && $(CMAKE_COMMAND) -P CMakeFiles/imu_3dm_gx4.dir/cmake_clean.cmake
+	cd /home/clarence/catkin_ws/build/imu_3dm_gx4 && $(CMAKE_COMMAND) -P CMakeFiles/imu_3dm_gx4.dir/cmake_clean.cmake
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/clean
 
 imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/depend:
-	cd /home/uav/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/uav/catkin_ws/src /home/uav/catkin_ws/src/imu_3dm_gx4 /home/uav/catkin_ws/build /home/uav/catkin_ws/build/imu_3dm_gx4 /home/uav/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/clarence/catkin_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/clarence/catkin_ws/src /home/clarence/catkin_ws/src/imu_3dm_gx4 /home/clarence/catkin_ws/build /home/clarence/catkin_ws/build/imu_3dm_gx4 /home/clarence/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : imu_3dm_gx4/CMakeFiles/imu_3dm_gx4.dir/depend
 

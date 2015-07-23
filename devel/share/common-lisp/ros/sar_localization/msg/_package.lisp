@@ -1,10 +1,10 @@
 (cl:defpackage sar_localization-msg
   (:use )
   (:export
-   "<IMU>"
-   "IMU"
    "<CSI>"
    "CSI"
+   "<IMU>"
+   "IMU"
    "<MOTOR>"
    "MOTOR"
   ))
