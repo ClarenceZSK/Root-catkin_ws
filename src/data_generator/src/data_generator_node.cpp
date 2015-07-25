@@ -95,8 +95,8 @@ int main(int argc, char** argv)
     nav_msgs::Path path;
     path.header.frame_id = "world";
 	default_random_engine random_generator;
-    //std::normal_distribution<double> distribution (0.0, 1.0);
-    std::uniform_real_distribution<double> distribution (-10, 10);
+    std::normal_distribution<double> distribution (0.0, 10.0);
+    //std::uniform_real_distribution<double> distribution (-10, 10);
 
     while (ros::ok())
     {

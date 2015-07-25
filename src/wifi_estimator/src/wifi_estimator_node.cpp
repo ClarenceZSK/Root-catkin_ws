@@ -14,6 +14,7 @@ using namespace std;
 ros::Publisher pub_path;
 ros::Publisher pub_odometry;
 ros::Publisher pub_pose;
+ros::Publisher pub_ap;
 nav_msgs::Path path;
 
 queue<sensor_msgs::Imu> imu_buf;
@@ -22,6 +23,9 @@ WiFiEstimator estimator;
 
 void imu_callback(const sensor_msgs::ImuConstPtr &imu_msg)
 {
+    //double t = imu_msg.header.stamp.toSec();
+
+    //ROS_INFO("processing IMU data with stamp %lf", t);
     imu_buf.push(*imu_msg);
 }
 
@@ -47,7 +51,12 @@ void send_imu(const sensor_msgs::Imu &imu_msg)
 
 void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
 {
+    sensor_msgs::PointCloud point_cloud;
+    point_cloud.header.frame_id = "world";
+    point_cloud.header.stamp = ros::Time::now();
     double t = wifi_msg->header.stamp.toSec();
+
+    ROS_INFO("WiFi data with stamp %lf", t);
     if (imu_buf.empty() || t < imu_buf.front().header.stamp.toSec())
     {
         ROS_ERROR("wait for imu data");
@@ -75,6 +84,13 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
     ROS_INFO_STREAM("ap: " << solution.p_ap[0].transpose());
     ROS_INFO_STREAM("gravity: " << solution.g.transpose() << " norm: " << solution.g.norm());
 
+    Vector3d p_ap = solution.p_ap[0];
+    geometry_msgs::Point32 p;
+    p.x = p_ap(0);
+    p.y = p_ap(1);
+    p.z = p_ap(2);
+    point_cloud.points.push_back(p);
+
     nav_msgs::Odometry odometry;
     odometry.header.stamp = ros::Time::now();
     odometry.header.frame_id = "world";
@@ -100,6 +116,7 @@ void wifi_callback(const sensor_msgs::PointCloudPtr &wifi_msg)
     //       path.poses.back().pose.position.x,
     //       path.poses.back().pose.position.y,
     //       path.poses.back().pose.position.z);
+    pub_ap.publish(point_cloud);
     pub_path.publish(path);
     pub_pose.publish(pose_stamped);
 }
@@ -113,15 +130,16 @@ int main(int argc, char **argv)
     pub_path     = n.advertise<nav_msgs::Path>("path", 1000);
     pub_odometry = n.advertise<nav_msgs::Odometry>("odometry", 1000);
     pub_pose     = n.advertise<geometry_msgs::PoseStamped>("pose", 1000);
+    pub_ap	 = n.advertise<sensor_msgs::PointCloud>("ap", 1000);
 
     path.header.frame_id = "world";
 
-    ros::Subscriber sub_imu = n.subscribe("/wifi_estimator/wifi_imu", 1000, imu_callback);
+    //ros::Subscriber sub_imu = n.subscribe("/wifi_estimator/wifi_imu", 1000, imu_callback);
+    ros::Subscriber sub_imu = n.subscribe("/i9dof_imu/imu", 1000, imu_callback);
     ros::Subscriber sub_wifi = n.subscribe("/wifi_estimator/wifi", 1000, wifi_callback);
     //ros::Subscriber sub_imu = n.subscribe("/data_generator/imu", 1000, imu_callback);
     //ros::Subscriber sub_imu = n.subscribe("/imu_3dm_gx4/imu", 1000, imu_callback);
     //ros::Subscriber sub_wifi = n.subscribe("/data_generator/wifi", 1000, wifi_callback);
-
     ros::spin();
     return 0;
 }
