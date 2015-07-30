@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/home/clarence/catkin_ws/src/data_generator/src/data_generator.cpp
+data_generator.h
+/home/clarence/catkin_ws/src/data_generator/src/data_generator.h
+
 /home/clarence/catkin_ws/src/data_generator/src/data_generator.h
 cstdlib
 -

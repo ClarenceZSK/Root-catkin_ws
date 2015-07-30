@@ -31,6 +31,8 @@
 #include <complex>
 #include <vector>
 #include <math.h>
+#include <fstream>
+#include <map>
 
 #define CN_NETLINK_USERS		11	/* Highest index + 1 */
 #define CN_IDX_IWLAGN   (CN_NETLINK_USERS + 0xf)
@@ -39,6 +41,7 @@
 #define MAX_PAYLOAD 2048
 #define SLOW_MSG_CNT 1
 
+sig_atomic_t volatile g_request_shutdown = 0;
 int sock_fd = -1;							// the socket
 //FILE* out = NULL;
 
@@ -106,11 +109,13 @@ int main(int argc, char** argv)
 
 	/* Set up the "caught_signal" function as this program's sig handler */
 	signal(SIGINT, caught_signal);
+	map<int, int> phaseMap;
+	ofstream csiFile;
+	csiFile.open("CSI_DIS.txt");
 	/* Poll socket forever waiting for a message */
-	while (ros::ok())
+	while (!g_request_shutdown)
 	{
 		/* Receive from socket with infinite timeout */
-		//printf("Enter ros::ok()\n");
 		ret = recv(sock_fd, buf, sizeof(buf), 0);
 		//printf("ret = %d\n", ret);
 		if (ret == -1)
@@ -223,6 +228,7 @@ int main(int argc, char** argv)
 				csi1_ordered_entry = csi1_entry;
 				if(perm(1) == 2)
 				{
+				cout << "msg:";
 					csi2_ordered_entry = csi2_entry;
 					csi3_ordered_entry = csi3_entry;
 				}
@@ -353,9 +359,8 @@ int main(int argc, char** argv)
 			msg.csi1_image.data.clear();
 			msg.csi2_real.data.clear();
 			msg.csi2_image.data.clear();
-			bool test = 0;
-			if(test)
-				cout << "msg:";
+			bool test = 1;
+			complex<double> hatCSI;
 			for (int i = 0; i < Ntx; ++i)
 			{
 				for (int j = 0; j < 30; ++j)
@@ -365,11 +370,19 @@ int main(int argc, char** argv)
 					msg.csi2_real.data.push_back(csi2(i, j).real() );
 					msg.csi2_image.data.push_back(csi2(i, j).imag() );
 					if(test)
-						cout << "csi1:" << csi1(i,j) << " csi2:" << csi2(i, j);
+					{
+						//cout << "csi1:" << csi1(i,j) << " csi2:" << csi2(i, j);
+						hatCSI += csi1(i,j)*conj(csi2(i,j));
+					}
 				}
 			}
 			if(test)
-				cout << endl;
+			{
+				hatCSI /= 30.0;
+				cout << "Polar form of hatCSI: " << abs(hatCSI) << ", phase:" << arg(hatCSI) << endl;
+				int v = phaseMap[arg(hatCSI)];
+				phaseMap[arg(hatCSI)] = 1+v;
+			}
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
 
@@ -385,7 +398,13 @@ int main(int argc, char** argv)
 		//if (ret != l)
 		//	exit_program_err(1, "fwrite");
 	}
-
+	map<int, int>::iterator iter;
+	for(iter = phaseMap.begin(); iter != phaseMap.end(); ++iter)
+	{
+		csiFile << iter->first << " " << iter->second << endl;
+		cout << iter->first << ", " << iter->second << endl;
+	}
+	csiFile.close();
 	exit_program(0);
 	return 0;
 }
@@ -414,7 +433,8 @@ FILE* open_file(char* filename, char* spec)
 void caught_signal(int sig)
 {
 	fprintf(stderr, "Caught signal %d\n", sig);
-	exit_program(0);
+	g_request_shutdown = 1;
+	//exit_program(0);
 }
 
 void exit_program(int code)
