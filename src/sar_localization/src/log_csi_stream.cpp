@@ -382,6 +382,7 @@ int main(int argc, char** argv)
 				cout << "Polar form of hatCSI: " << abs(hatCSI) << ", phase:" << arg(hatCSI) << endl;
 				int v = phaseMap[arg(hatCSI)];
 				phaseMap[arg(hatCSI)] = 1+v;
+				cout << "Phase map size:" << phaseMap.size() << endl;
 			}
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
