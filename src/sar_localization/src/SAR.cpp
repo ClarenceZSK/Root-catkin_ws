@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Eigen;
 //SAR
-SAR::SAR():Landa(0.0515), frame_count(0), round_count(0), current_time(-1)
+SAR::SAR():Landa(0.05168), frame_count(0), round_count(0), current_time(-1)
 {
 	//initStart = false;
 	baseDirection << 0, 1, 0;
