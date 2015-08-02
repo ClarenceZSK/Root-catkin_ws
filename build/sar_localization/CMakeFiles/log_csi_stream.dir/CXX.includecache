@@ -89,6 +89,8 @@ fstream
 -
 map
 -
+valarray
+-
 
 /opt/eigen/Eigen/Cholesky
 Core

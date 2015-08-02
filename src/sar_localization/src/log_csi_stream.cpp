@@ -34,6 +34,12 @@
 #include <fstream>
 #include <map>
 
+//add FFT and IFFT to mitigate multipath fading effect
+#include <valarray>
+typedef std::complex<double> Complex;
+typedef std::valarray<Complex> CArray;
+//////////////////////////////////////////////////////
+
 #define CN_NETLINK_USERS		11	/* Highest index + 1 */
 #define CN_IDX_IWLAGN   (CN_NETLINK_USERS + 0xf)
 #define CN_VAL_IWLAGN   0x1
@@ -59,6 +65,72 @@ using namespace Eigen;
 
 ros::Publisher          csi_pub;
 
+// Cooley-Tukey FFT (in-place, breadth-first, decimation-in-frequency)
+// Better optimized but less intuitive
+void fft(CArray &x)
+{
+	// DFT
+	unsigned int N = x.size(), k = N, n;
+	double thetaT = 3.14159265358979323846264338328L / N;
+	Complex phiT = Complex(cos(thetaT), sin(thetaT)), T;
+	while (k > 1)
+	{
+		n = k;
+		k >>= 1;
+		phiT = phiT * phiT;
+		T = 1.0L;
+		for (unsigned int l = 0; l < k; l++)
+		{
+			for (unsigned int a = l; a < N; a += n)
+			{
+				unsigned int b = a + k;
+				Complex t = x[a] - x[b];
+				x[a] += x[b];
+				x[b] = t * T;
+			}
+			T *= phiT;
+		}
+	}
+	// Decimate
+	unsigned int m = (unsigned int)log2(N);
+	for (unsigned int a = 0; a < N; a++)
+	{
+		unsigned int b = a;
+		// Reverse bits
+		b = (((b & 0xaaaaaaaa) >> 1) | ((b & 0x55555555) << 1));
+		b = (((b & 0xcccccccc) >> 2) | ((b & 0x33333333) << 2));
+		b = (((b & 0xf0f0f0f0) >> 4) | ((b & 0x0f0f0f0f) << 4));
+		b = (((b & 0xff00ff00) >> 8) | ((b & 0x00ff00ff) << 8));
+		b = ((b >> 16) | (b << 16)) >> (32 - m);
+		if (b > a)
+		{
+			Complex t = x[a];
+			x[a] = x[b];
+			x[b] = t;
+		}
+	}
+	// Normalize
+	Complex f = 1.0 / sqrt(N);
+	for (unsigned int i = 0; i < N; i++)
+		x[i] *= f;
+}
+
+// inverse fft (in-place)
+void ifft(CArray& x)
+{
+    // conjugate the complex numbers
+    x = x.apply(std::conj);
+ 
+    // forward fft
+    fft( x );
+ 
+    // conjugate the complex numbers again
+    x = x.apply(std::conj);
+ 
+    // scale the numbers
+    x /= x.size();
+}
+
 int main(int argc, char** argv)
 {
 	/*init ros*/
@@ -73,12 +145,6 @@ int main(int argc, char** argv)
 	int ret;
 	unsigned short l;	//l2;
 	int count = 0;
-
-	/* Make sure usage is correct */
-	//check_usage(argc, argv);
-
-	/* Open and check log file */
-	//out = open_file(argv[1], "w");
 
 	/* Setup the socket */
 	sock_fd = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_CONNECTOR);
@@ -111,7 +177,9 @@ int main(int argc, char** argv)
 	signal(SIGINT, caught_signal);
 	map<int, int> phaseMap;
 	ofstream csiFile;
+	ofstream fftTestFile;
 	csiFile.open("CSI_DIS.txt");
+	fftTestFile.open("FFT_TEST.txt");
 	/* Poll socket forever waiting for a message */
 	while (!g_request_shutdown)
 	{
@@ -361,6 +429,101 @@ int main(int argc, char** argv)
 			msg.csi2_image.data.clear();
 			bool test = 1;
 			complex<double> hatCSI;
+			//test fft effect
+			
+			Complex ffttest[30];
+			for(int k = 0; k < 30; ++k)
+			{
+				ffttest[k] = csi2(0,k);
+			}
+			CArray fftdata(ffttest, 30);
+			cout << "Origin: " << endl;
+			for(int k = 0; k < 30; ++k)
+			{
+				double mag = abs(fftdata[k]);
+				cout << mag << endl;
+				fftTestFile << abs(fftdata[k]) << " ";
+			}
+			fftTestFile << endl;
+
+			ifft(fftdata);
+			cout << "ifft, time domain sequence:" << endl;
+			for(int k = 0; k < 30; ++k)
+			{
+				double mag = abs(fftdata[k]);
+				cout << mag << endl;
+			}
+			//search first peak
+			bool up = false;
+			double peakValue;
+			int peakIndex;
+			for(int k = 0; k < 29; ++k)
+			{
+				int kp = k+1;
+				if(abs(fftdata[k]) < abs(fftdata[kp]) )
+				{
+					up = true;
+				}
+				if(up)
+				{
+					if(abs(fftdata[k]) > abs(fftdata[kp]) )
+					{
+						peakValue = abs(fftdata[k]);
+						peakIndex = k;
+						break;
+					}
+				}
+			}
+			if(!up)
+			{
+				cout << "No peak found!" << endl;
+			}
+			else
+			{
+				cout << "Peak value:" << peakValue << endl;
+				//set trunction window
+				int upIndex = 29, downIndex = 0;
+				for(int k = peakIndex+1; k < 30; ++k)
+				{
+					if(abs(fftdata[k]) < 0.5*peakValue)
+					{
+						upIndex = k;
+						break;
+					}
+				}
+				for(int k = peakIndex-1; k >= 0; --k)
+				{
+					if(abs(fftdata[k]) < 0.5*peakValue)
+					{
+						downIndex = k;
+						break;
+					}
+				}
+				cout << "The window is: (" << downIndex << ", " << upIndex << ")" << endl;
+				//set 0 to data out of the window
+				for(int k = 0; k < 30; ++k)
+				{
+					if(k < downIndex)
+					{
+						fftdata[k] = 0;
+					}
+					if(k > upIndex)
+					{
+						fftdata[k] = 0;
+					}
+				}
+			}
+			//fft back to CSI
+			fft(fftdata);
+			cout << "Afte time domain filtering, CSI:" << endl;
+			for(int k = 0; k < 30; ++k)
+			{
+				double mag = abs(fftdata[k]);
+				cout << mag << endl;
+				fftTestFile << abs(fftdata[k]) << " ";
+			}
+			fftTestFile << endl;
+			
 			for (int i = 0; i < Ntx; ++i)
 			{
 				for (int j = 0; j < 30; ++j)
@@ -379,14 +542,16 @@ int main(int argc, char** argv)
 			if(test)
 			{
 				hatCSI /= 30.0;
-				cout << "Polar form of hatCSI: " << abs(hatCSI) << ", phase:" << arg(hatCSI) << endl;
-				int v = phaseMap[arg(hatCSI)];
-				phaseMap[arg(hatCSI)] = 1+v;
+				double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
+				cout << "Polar form of hatCSI: " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
+				//int v = phaseMap[arg(hatCSI)*180/M_PI];
+				int v = phaseMap[orientation];
+				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				phaseMap[orientation] = 1+v;
 				cout << "Phase map size:" << phaseMap.size() << endl;
 			}
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
-
 			++count;
 			 if (count % 100 == 0)
 				 printf("receive %d bytes [msgcnt=%u]\n", ret, count);
@@ -406,6 +571,7 @@ int main(int argc, char** argv)
 		cout << iter->first << ", " << iter->second << endl;
 	}
 	csiFile.close();
+	fftTestFile.close();
 	exit_program(0);
 	return 0;
 }
