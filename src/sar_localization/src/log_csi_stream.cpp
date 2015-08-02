@@ -33,6 +33,8 @@
 #include <math.h>
 #include <fstream>
 #include <map>
+#include <glib.h>
+#include <unistd.h>
 
 //add FFT and IFFT to mitigate multipath fading effect
 #include <valarray>
@@ -65,6 +67,29 @@ using namespace Eigen;
 
 ros::Publisher          csi_pub;
 
+void fft(CArray& x)
+{
+    const size_t N = x.size();
+    if (N <= 1) return;
+ 
+    // divide
+    CArray even = x[std::slice(0, N/2, 2)];
+    CArray  odd = x[std::slice(1, N/2, 2)];
+ 
+    // conquer
+    fft(even);
+    fft(odd);
+ 
+    // combine
+    for (size_t k = 0; k < N/2; ++k)
+    {
+        Complex t = std::polar(1.0, -2 * M_PI * k / N) * odd[k];
+        x[k    ] = even[k] + t;
+        x[k+N/2] = even[k] - t;
+    }
+}
+
+/*
 // Cooley-Tukey FFT (in-place, breadth-first, decimation-in-frequency)
 // Better optimized but less intuitive
 void fft(CArray &x)
@@ -114,7 +139,7 @@ void fft(CArray &x)
 	for (unsigned int i = 0; i < N; i++)
 		x[i] *= f;
 }
-
+*/
 // inverse fft (in-place)
 void ifft(CArray& x)
 {
@@ -129,6 +154,113 @@ void ifft(CArray& x)
  
     // scale the numbers
     x /= x.size();
+}
+
+
+Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
+{	
+	Eigen::MatrixXcd smoothedCsi(csi.rows(), csi.cols());
+	for(int i = 0; i < csi.rows(); ++i)
+	{
+		int cols = csi.cols();
+		Complex ffttest[60];
+		for(int k = 0; k < cols; ++k)
+		{
+			ffttest[k] = csi(i,k);
+		}
+		CArray fftdata(ffttest, cols);
+	
+		cout << "Origin: " << endl;
+		for(int k = 0; k < cols; ++k)
+		{
+			double mag = abs(fftdata[k]);
+			cout << mag << endl;
+			//fftTestFile << abs(fftdata[k]) << " ";
+		}
+		//fftTestFile << endl;
+
+		ifft(fftdata);
+		cout << "ifft, time domain sequence:" << endl;
+		for(int k = 0; k < cols; ++k)
+		{
+			double mag = abs(fftdata[k]);
+			cout << mag << endl;
+		}
+		//search first peak
+		/*
+		bool up = false;
+		double peakValue;
+		int peakIndex;
+		for(int k = 0; k < 29; ++k)
+		{
+			int kp = k+1;
+			if(abs(fftdata[k]) < abs(fftdata[kp]) )
+			{
+				up = true;
+			}
+			if(up)
+			{
+				if(abs(fftdata[k]) > abs(fftdata[kp]) )
+				{
+					peakValue = abs(fftdata[k]);
+					peakIndex = k;
+					break;
+				}
+			}
+		}
+		if(!up)
+		{
+			cout << "No peak found!" << endl;
+		}
+		else
+		{
+			cout << "Peak value:" << peakValue << endl;
+			//set trunction window
+			int upIndex = 29, downIndex = 0;
+			for(int k = peakIndex+1; k < 30; ++k)
+			{
+				if(abs(fftdata[k]) < 0.5*peakValue)
+				{
+					upIndex = k;
+					break;
+				}
+			}
+			for(int k = peakIndex-1; k >= 0; --k)
+			{
+				if(abs(fftdata[k]) < 0.5*peakValue)
+				{
+					downIndex = k;
+					break;
+				}
+			}
+			cout << "The window is: (" << downIndex << ", " << upIndex << ")" << endl;
+			//set 0 to data out of the window
+			for(int k = 0; k < 30; ++k)
+			{
+				if(k < downIndex)
+				{
+					fftdata[k] = 0;
+				}
+				if(k > upIndex)
+				{
+					fftdata[k] = 0;
+				}
+			}
+		}
+		*/
+		//fft back to CSI
+		fft(fftdata);
+		cout << "Afte time domain filtering, CSI:" << endl;
+		for(int k = 0; k < cols; ++k)
+		{
+			double mag = abs(fftdata[k]);
+			cout << mag << endl;
+			//fftTestFile << abs(fftdata[k]) << " ";
+			smoothedCsi(i,k) = fftdata[k];
+		}
+		//fftTestFile << endl;
+	}		
+	return smoothedCsi;
 }
 
 int main(int argc, char** argv)
@@ -430,99 +562,13 @@ int main(int argc, char** argv)
 			bool test = 1;
 			complex<double> hatCSI;
 			//test fft effect
+			Eigen::MatrixXcd smoothedCsi1(Ntx, 30);
+			Eigen::MatrixXcd smoothedCsi2(Ntx, 30);
+			Eigen::MatrixXcd smoothedCsi3(Ntx, 30);
 			
-			Complex ffttest[30];
-			for(int k = 0; k < 30; ++k)
-			{
-				ffttest[k] = csi2(0,k);
-			}
-			CArray fftdata(ffttest, 30);
-			cout << "Origin: " << endl;
-			for(int k = 0; k < 30; ++k)
-			{
-				double mag = abs(fftdata[k]);
-				cout << mag << endl;
-				fftTestFile << abs(fftdata[k]) << " ";
-			}
-			fftTestFile << endl;
+			smoothedCsi1 = preprocessingCSI(csi1);
+			smoothedCsi2 = preprocessingCSI(csi2);
 
-			ifft(fftdata);
-			cout << "ifft, time domain sequence:" << endl;
-			for(int k = 0; k < 30; ++k)
-			{
-				double mag = abs(fftdata[k]);
-				cout << mag << endl;
-			}
-			//search first peak
-			bool up = false;
-			double peakValue;
-			int peakIndex;
-			for(int k = 0; k < 29; ++k)
-			{
-				int kp = k+1;
-				if(abs(fftdata[k]) < abs(fftdata[kp]) )
-				{
-					up = true;
-				}
-				if(up)
-				{
-					if(abs(fftdata[k]) > abs(fftdata[kp]) )
-					{
-						peakValue = abs(fftdata[k]);
-						peakIndex = k;
-						break;
-					}
-				}
-			}
-			if(!up)
-			{
-				cout << "No peak found!" << endl;
-			}
-			else
-			{
-				cout << "Peak value:" << peakValue << endl;
-				//set trunction window
-				int upIndex = 29, downIndex = 0;
-				for(int k = peakIndex+1; k < 30; ++k)
-				{
-					if(abs(fftdata[k]) < 0.5*peakValue)
-					{
-						upIndex = k;
-						break;
-					}
-				}
-				for(int k = peakIndex-1; k >= 0; --k)
-				{
-					if(abs(fftdata[k]) < 0.5*peakValue)
-					{
-						downIndex = k;
-						break;
-					}
-				}
-				cout << "The window is: (" << downIndex << ", " << upIndex << ")" << endl;
-				//set 0 to data out of the window
-				for(int k = 0; k < 30; ++k)
-				{
-					if(k < downIndex)
-					{
-						fftdata[k] = 0;
-					}
-					if(k > upIndex)
-					{
-						fftdata[k] = 0;
-					}
-				}
-			}
-			//fft back to CSI
-			fft(fftdata);
-			cout << "Afte time domain filtering, CSI:" << endl;
-			for(int k = 0; k < 30; ++k)
-			{
-				double mag = abs(fftdata[k]);
-				cout << mag << endl;
-				fftTestFile << abs(fftdata[k]) << " ";
-			}
-			fftTestFile << endl;
 			
 			for (int i = 0; i < Ntx; ++i)
 			{
