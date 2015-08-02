@@ -106,7 +106,7 @@ void ifft(CArray& x)
     x /= x.size();
 }
 
-void setWindow(CArray& x)
+void setWindow(fftw_complex[] &x)
 {
 	bool up = false;
 	double peakValue;
@@ -114,15 +114,17 @@ void setWindow(CArray& x)
 	for(int k = 0; k < 29; ++k)
 	{
 		int kp = k+1;
-		if(abs(x[k]) < abs(x[kp]) )
+		Complex xk (x[k][0], x[k][1]);
+		Complex xkp (x[kp][0], x[kp][1]);
+		if(abs(xk) < abs(xkp) )
 		{
 			up = true;
 		}
 		if(up)
 		{
-			if(abs(x[k]) > abs(x[kp]) )
+			if(abs(xk) > abs(xkp) )
 			{
-				peakValue = abs(x[k]);
+				peakValue = abs(xk);
 				peakIndex = k;
 				break;
 			}
@@ -139,7 +141,8 @@ void setWindow(CArray& x)
 		int upIndex = 29, downIndex = 0;
 		for(int k = peakIndex+1; k < 30; ++k)
 		{
-			if(abs(x[k]) < 0.5*peakValue)
+			Complex xk (x[k][0], x[k][1]);
+			if(abs(xk) < 0.5*peakValue)
 			{
 				upIndex = k;
 				break;
@@ -147,7 +150,8 @@ void setWindow(CArray& x)
 		}
 		for(int k = peakIndex-1; k >= 0; --k)
 		{
-			if(abs(x[k]) < 0.5*peakValue)
+			Complex xk (x[k][0], x[k][1]);
+			if(abs(xk) < 0.5*peakValue)
 			{
 				downIndex = k;
 				break;
@@ -159,95 +163,35 @@ void setWindow(CArray& x)
 		{
 			if(k < downIndex)
 			{
-				x[k] = 0;
+				x[k][0] = 0;
+				x[k][1] = 0;
 			}
 			if(k > upIndex)
 			{
-				x[k] = 0;
+				x[k][0] = 0;
+				x[k][1] = 0;
 			}
 		}
 	}
 }
 
-/*
 Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
 {	
 	Eigen::MatrixXcd smoothedCsi(csi.rows(), csi.cols());
 	for(int i = 0; i < csi.rows(); ++i)
 	{
 		int cols = csi.cols();
-		cols = 8;
-		//Complex ffttest[60];
 		fftw_complex *in, *out;
 		fftw_plan p;
 
 		in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * cols );
 		out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * cols );
-		p = fftw_plan_dft_1d(cols, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+		p = fftw_plan_dft_1d(cols, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
 
 		for(int k = 0; k < cols; ++k)
 		{
-			//ffttest[k] = csi(i,k);
-			//ffttest[k] = 1;
-			in[k] = 1;
-		}
-		//CArray fftdata(ffttest, cols);
-	
-		cout << "Origin: " << endl;
-		for(int k = 0; k < cols; ++k)
-		{
-			//double mag = abs(fftdata[k]);
-			cout << fftdata[k] << endl;
-			//fftTestFile << abs(fftdata[k]) << " ";
-		}
-		//fftTestFile << endl;
-
-		ifft(fftdata);
-		//cout << "ifft, time domain sequence:" << endl;
-		cout << "fft:" << endl;
-		for(int k = 0; k < cols; ++k)
-		{
-			//double mag = abs(fftdata[k]);
-			cout << fftdata[k] << endl;
-		}
-
-		//search first peak
-		//setWindow(fftdata);
-		
-		//fft back to CSI
-		fft(fftdata);
-		cout << "ifft:" << endl;
-		for(int k = 0; k < cols; ++k)
-		{
-			//double mag = abs(fftdata[k]);
-			cout << fftdata[k] << endl;
-			//fftTestFile << abs(fftdata[k]) << " ";
-			smoothedCsi(i,k) = fftdata[k];
-		}
-		//fftTestFile << endl;
-	}		
-	return smoothedCsi;
-}
-*/
-
-Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
-{	
-	Eigen::MatrixXcd smoothedCsi(csi.rows(), csi.cols());
-	for(int i = 0; i < csi.rows(); ++i)
-	{
-		int cols = csi.cols();
-		cols = 8;
-		fftw_complex *in, *out;
-		fftw_plan p;
-
-		in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * cols );
-		out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * cols );
-		p = fftw_plan_dft_1d(cols, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-
-		for(int k = 0; k < cols; ++k)
-		{
-			in[k][0] = 1;
-			in[k][1] = 0;
+			in[k][0] = csi(i,k).real();
+			in[k][1] = csi(i,k).imag();
 		}
 	
 		cout << "Origin: " << endl;
@@ -257,7 +201,7 @@ Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
 		}
 		
 		fftw_execute(p);
-		cout << "fft:" << endl;
+		cout << "ifft:" << endl;
 		for(int k = 0; k < cols; ++k)
 		{
 			cout << "(" << out[k][0] << ", " << out[k][1] << ")"  << endl;
@@ -268,21 +212,24 @@ Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
 			in[k][0] = out[k][0];
 			in[k][1] = out[k][1];
 		}
-		p = fftw_plan_dft_1d(cols, in, out, FFTW_BACKWARD, FFTW_ESTIMATE);
+		p = fftw_plan_dft_1d(cols, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
 		//search first peak
-		//setWindow(fftdata);
+		setWindow(in);
 		
 		fftw_execute(p);
 		//fft back to CSI
-		cout << "ifft:" << endl;
+		cout << "fft:" << endl;
 		for(int k = 0; k < cols; ++k)
 		{
-			cout << "(" << out[k][0] << ", " << out[k][1] << ")"  << endl;
-			Complex newCsi (out[k][0], out[k][1]);
+			cout << "(" << out[k][0]/cols << ", " << out[k][1]/cols << ")"  << endl;
+			Complex newCsi (out[k][0]/cols, out[k][1]/cols);
 			smoothedCsi(i,k) = newCsi;
 		}
+		fftw_destroy_plan(p);
+		fftw_free(in); fftw_free(out);
 	}		
+
 	return smoothedCsi;
 }
 
