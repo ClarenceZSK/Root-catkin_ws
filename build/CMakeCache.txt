@@ -206,6 +206,9 @@ EMPY_EXECUTABLE:FILEPATH=/usr/bin/empy
 //Empy script
 EMPY_SCRIPT:STRING=/usr/bin/empy
 
+//Path to a library.
+FFTW_LIBRARY:FILEPATH=/usr/local/lib/libfftw3.a
+
 //Path to a file.
 GLIB2_INTERNAL_INCLUDE_DIR:PATH=/usr/lib/x86_64-linux-gnu/glib-2.0/include
 

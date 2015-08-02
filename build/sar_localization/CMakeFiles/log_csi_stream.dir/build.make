@@ -121,6 +121,7 @@ log_csi_stream_EXTERNAL_OBJECTS =
 /home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libboost_thread.so
 /home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libpthread.so
 /home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/lib/x86_64-linux-gnu/libconsole_bridge.so
+/home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: /usr/local/lib/libfftw3.a
 /home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable /home/clarence/catkin_ws/devel/lib/sar_localization/log_csi_stream"
 	cd /home/clarence/catkin_ws/build/sar_localization && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/log_csi_stream.dir/link.txt --verbose=$(VERBOSE)

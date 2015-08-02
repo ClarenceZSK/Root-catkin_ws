@@ -97,6 +97,11 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+find_library(FFTW_LIBRARY
+		NAMES fftw3 fftw)
+set(FFTW_LIBRARIES "${FFTW_LIBRARY}")
+
+
 ###########
 ## Build ##
 ###########
@@ -245,7 +250,10 @@ add_dependencies(LOS_3D sar_localization_generate_messages_cpp)
 
 
 add_executable(log_csi_stream src/log_csi_stream.cpp)
-target_link_libraries(log_csi_stream ${catkin_LIBRARIES})
+target_link_libraries(log_csi_stream 
+		${catkin_LIBRARIES}
+		${FFTW_LIBRARIES}
+		)
 add_dependencies(log_csi_stream sar_localization_generate_messages_cpp)
 
 #add_executable(wifi_estimator

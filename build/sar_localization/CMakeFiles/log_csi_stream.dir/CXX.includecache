@@ -95,6 +95,8 @@ unistd.h
 -
 valarray
 -
+fftw3.h
+-
 
 /opt/eigen/Eigen/Cholesky
 Core
