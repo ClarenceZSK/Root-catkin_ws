@@ -257,8 +257,10 @@ int main(int argc, char** argv)
 	map<int, int> phaseMap;
 	map<int, int> phaseMapSmooth;
 	ofstream csiFile;
+	ofstream csiFileSmooth;
 	ofstream fftTestFile;
 	csiFile.open("CSI_DIS.txt");
+	csiFileSmooth.open("CSI_DIS_SMOOTH.txt");
 	fftTestFile.open("FFT_TEST.txt");
 	/* Poll socket forever waiting for a message */
 	while (!g_request_shutdown)
@@ -551,7 +553,12 @@ int main(int argc, char** argv)
 				hatCSISmoothed /= 30.0;
 				//double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
 				cout << "hatCSI:  " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
-				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl; 
+				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
+				if(abs(hatCSISmoothed) < 20 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 50)
+				{
+					cout << "No LOS signal!!! Drop the CSI!" << endl;
+					continue;
+				}	
 				int v = phaseMap[arg(hatCSI)*180/M_PI];
 				int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
 				//int v = phaseMap[orientation];
@@ -577,14 +584,19 @@ int main(int argc, char** argv)
 	}
 	map<int, int>::iterator iter1 = phaseMap.begin();
 	map<int, int>::iterator iter2 = phaseMapSmooth.begin();
-	while(iter1 != phaseMap.end() && iter2 != phaseMapSmooth.end())
+	while(iter1 != phaseMap.end() )
 	{
-		csiFile << iter1->second << " " << iter2->second << endl;
-		cout << iter1->first << ", " << iter1->second << "; " << iter2->first << ", " << iter2->second << endl;
+		csiFile << iter1->first << " " << iter1->second << endl;
+		//cout << iter1->first << ", " << iter1->second << "; " << iter2->first << ", " << iter2->second << endl;
 		++iter1;
+	}
+	while(iter2 != phaseMapSmooth.end())
+	{
+		csiFileSmooth << iter2->first << " " << iter2->second << endl;
 		++iter2;
 	}
 	csiFile.close();
+	csiFileSmooth.close();
 	fftTestFile.close();
 	exit_program(0);
 	return 0;
