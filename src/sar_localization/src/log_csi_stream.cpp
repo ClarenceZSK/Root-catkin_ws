@@ -98,7 +98,7 @@ void setWindow(fftw_complex *x)
 	}
 	else
 	{
-		cout << "Peak value:" << peakValue << endl;
+		//cout << "Peak value:" << peakValue << endl;
 		//set trunction window
 		int upIndex = 29, downIndex = 0;
 		for(int k = peakIndex+1; k < 30; ++k)
@@ -119,7 +119,7 @@ void setWindow(fftw_complex *x)
 				break;
 			}
 		}
-		cout << "The window is: (" << downIndex << ", " << upIndex << ")" << endl;
+		//cout << "The window is: (" << downIndex << ", " << upIndex << ")" << endl;
 		//set 0 to data out of the window
 		for(int k = 0; k < 30; ++k)
 		{
@@ -552,13 +552,15 @@ int main(int argc, char** argv)
 				hatCSI /= 30.0;
 				hatCSISmoothed /= 30.0;
 				//double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
-				cout << "hatCSI:  " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
-				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
+				//cout << "hatCSI:  " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
 				if(abs(hatCSISmoothed) < 20 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 50)
 				{
-					cout << "No LOS signal!!! Drop the CSI!" << endl;
+					//cout << "No LOS signal!!! Drop the CSI!" << endl;
+					int v = phaseMap[arg(hatCSI)*180/M_PI];
+					phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
 					continue;
 				}	
+				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
 				int v = phaseMap[arg(hatCSI)*180/M_PI];
 				int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
 				//int v = phaseMap[orientation];
