@@ -378,7 +378,6 @@ int main(int argc, char** argv)
 				csi1_ordered_entry = csi1_entry;
 				if(perm(1) == 2)
 				{
-				cout << "msg:";
 					csi2_ordered_entry = csi2_entry;
 					csi3_ordered_entry = csi3_entry;
 				}
