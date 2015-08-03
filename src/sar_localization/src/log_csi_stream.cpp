@@ -68,49 +68,11 @@ using namespace Eigen;
 
 ros::Publisher          csi_pub;
 
-void fft(CArray& x)
-{
-    const size_t N = x.size();
-    if (N <= 1) return;
- 
-    // divide
-    CArray even = x[std::slice(0, N/2, 2)];
-    CArray  odd = x[std::slice(1, N/2, 2)];
- 
-    // conquer
-    fft(even);
-    fft(odd);
- 
-    // combine
-    for (size_t k = 0; k < N/2; ++k)
-    {
-        Complex t = std::polar(1.0, -2 * M_PI * k / N) * odd[k];
-        x[k    ] = even[k] + t;
-        x[k+N/2] = even[k] - t;
-    }
-}
-
-// inverse fft (in-place)
-void ifft(CArray& x)
-{
-    // conjugate the complex numbers
-    x = x.apply(std::conj);
- 
-    // forward fft
-    fft( x );
- 
-    // conjugate the complex numbers again
-    x = x.apply(std::conj);
- 
-    // scale the numbers
-    x /= x.size();
-}
-
-void setWindow(fftw_complex[] &x)
+void setWindow(fftw_complex *x)
 {
 	bool up = false;
-	double peakValue;
-	int peakIndex;
+	double peakValue = 0;
+	int peakIndex = 0;
 	for(int k = 0; k < 29; ++k)
 	{
 		int kp = k+1;
@@ -193,20 +155,25 @@ Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
 			in[k][0] = csi(i,k).real();
 			in[k][1] = csi(i,k).imag();
 		}
-	
+		/*
 		cout << "Origin: " << endl;
 		for(int k = 0; k < cols; ++k)
 		{
-			cout << "(" << in[k][0] << ", " << in[k][1] << ")" << endl;
+			Complex ink (in[k][0], in[k][1]);
+			cout << abs(ink) << endl;
+			//cout << "(" << in[k][0] << ", " << in[k][1] << ")" << endl;
 		}
-		
+		*/
 		fftw_execute(p);
+		/*
 		cout << "ifft:" << endl;
 		for(int k = 0; k < cols; ++k)
 		{
-			cout << "(" << out[k][0] << ", " << out[k][1] << ")"  << endl;
+			Complex outk (out[k][0], out[k][1]);
+			cout << abs(outk) << endl;
+			//cout << "(" << out[k][0] << ", " << out[k][1] << ")"  << endl;
 		}
-
+		*/
 		for(int k = 0; k < cols; ++k)
 		{
 			in[k][0] = out[k][0];
@@ -216,13 +183,23 @@ Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
 
 		//search first peak
 		setWindow(in);
-		
-		fftw_execute(p);
-		//fft back to CSI
-		cout << "fft:" << endl;
+
+		//cout << "after filtering in time domain:" << endl;
+		/*
 		for(int k = 0; k < cols; ++k)
 		{
-			cout << "(" << out[k][0]/cols << ", " << out[k][1]/cols << ")"  << endl;
+			Complex ink (in[k][0], in[k][1]);
+			cout << abs(ink) << endl;
+		}
+		*/
+		fftw_execute(p);
+		//fft back to CSI
+		//cout << "fft:" << endl;
+		for(int k = 0; k < cols; ++k)
+		{
+			//Complex outk (out[k][0]/cols, out[k][1]/cols);
+			//cout << abs(outk) << endl;
+			//cout << "(" << out[k][0]/cols << ", " << out[k][1]/cols << ")"  << endl;
 			Complex newCsi (out[k][0]/cols, out[k][1]/cols);
 			smoothedCsi(i,k) = newCsi;
 		}
@@ -278,6 +255,7 @@ int main(int argc, char** argv)
 	/* Set up the "caught_signal" function as this program's sig handler */
 	signal(SIGINT, caught_signal);
 	map<int, int> phaseMap;
+	map<int, int> phaseMapSmooth;
 	ofstream csiFile;
 	ofstream fftTestFile;
 	csiFile.open("CSI_DIS.txt");
@@ -530,13 +508,23 @@ int main(int argc, char** argv)
 			msg.csi2_real.data.clear();
 			msg.csi2_image.data.clear();
 			bool test = 1;
-			complex<double> hatCSI;
+			Complex hatCSI;
+			Complex hatCSISmoothed;
 			//test fft effect
 			Eigen::MatrixXcd smoothedCsi1(Ntx, 30);
 			Eigen::MatrixXcd smoothedCsi2(Ntx, 30);
 			Eigen::MatrixXcd smoothedCsi3(Ntx, 30);
-			
-			//smoothedCsi1 = preprocessingCSI(csi1);
+			/*
+			for (int i = 0; i < Ntx; ++i)
+			{
+				for(int j = 0; j < 30; ++j)
+				{
+					fftTestFile << abs(csi2(i,j)) << " ";
+				}
+				fftTestFile << endl;
+			}
+			*/
+			smoothedCsi1 = preprocessingCSI(csi1);
 			smoothedCsi2 = preprocessingCSI(csi2);
 
 			
@@ -550,21 +538,28 @@ int main(int argc, char** argv)
 					msg.csi2_image.data.push_back(csi2(i, j).imag() );
 					if(test)
 					{
-						//cout << "csi1:" << csi1(i,j) << " csi2:" << csi2(i, j);
 						hatCSI += csi1(i,j)*conj(csi2(i,j));
+						hatCSISmoothed += smoothedCsi1(i,j)*conj(smoothedCsi2(i,j));
+						//fftTestFile << abs(smoothedCsi2(i,j)) << " ";
 					}
 				}
+				//fftTestFile << endl;
 			}
 			if(test)
 			{
 				hatCSI /= 30.0;
-				double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
-				cout << "Polar form of hatCSI: " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
-				//int v = phaseMap[arg(hatCSI)*180/M_PI];
-				int v = phaseMap[orientation];
-				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
-				phaseMap[orientation] = 1+v;
+				hatCSISmoothed /= 30.0;
+				//double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
+				cout << "hatCSI:  " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
+				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl; 
+				int v = phaseMap[arg(hatCSI)*180/M_PI];
+				int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
+				//int v = phaseMap[orientation];
+				phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI] = 1+vpr;
+				//phaseMap[orientation] = 1+v;
 				cout << "Phase map size:" << phaseMap.size() << endl;
+				cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
 			}
 			msg.check_csi = check_csi;
 			csi_pub.publish(msg);
@@ -580,11 +575,14 @@ int main(int argc, char** argv)
 		//if (ret != l)
 		//	exit_program_err(1, "fwrite");
 	}
-	map<int, int>::iterator iter;
-	for(iter = phaseMap.begin(); iter != phaseMap.end(); ++iter)
+	map<int, int>::iterator iter1 = phaseMap.begin();
+	map<int, int>::iterator iter2 = phaseMapSmooth.begin();
+	while(iter1 != phaseMap.end() && iter2 != phaseMapSmooth.end())
 	{
-		csiFile << iter->first << " " << iter->second << endl;
-		cout << iter->first << ", " << iter->second << endl;
+		csiFile << iter1->second << " " << iter2->second << endl;
+		cout << iter1->first << ", " << iter1->second << "; " << iter2->first << ", " << iter2->second << endl;
+		++iter1;
+		++iter2;
 	}
 	csiFile.close();
 	fftTestFile.close();
