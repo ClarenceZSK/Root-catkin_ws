@@ -272,8 +272,10 @@ int main(int argc, char** argv)
 			exit_program_err(-1, "recv");
 		/* Pull out the message portion and print some stats */
 		cmsg = (cn_msg*) NLMSG_DATA(buf);
+		/*
 		if (count % SLOW_MSG_CNT == 0)
 			printf("received %d bytes: id: %d val: %d seq: %d clen: %d\n", cmsg->len, cmsg->id.idx, cmsg->id.val, cmsg->seq, cmsg->len);
+		*/
 		/* Log the data to file */
 		l = (unsigned short) cmsg->len;
 		//l2 = htons(l);
@@ -371,7 +373,7 @@ int main(int argc, char** argv)
 			perm(0) = ((antenna_sel) & 0x3) + 1;
 			perm(1) = ((antenna_sel >> 2) & 0x3) + 1;
 			perm(2) = ((antenna_sel >> 4) & 0x3) + 1;
-			cout << "perm: " << perm(0) << ", " << perm(1) << ", " << perm(2) << endl;
+			//cout << "perm: " << perm(0) << ", " << perm(1) << ", " << perm(2) << endl;
 			//Get ordered entry. From antenna A to C
 			if(perm(0) == 1)
 			{
@@ -508,23 +510,14 @@ int main(int argc, char** argv)
 			msg.csi1_image.data.clear();
 			msg.csi2_real.data.clear();
 			msg.csi2_image.data.clear();
-			bool test = 1;
+			//bool test = 0;
 			Complex hatCSI;
 			Complex hatCSISmoothed;
+			//double amplitudeHatCSI = 0;
 			//test fft effect
 			Eigen::MatrixXcd smoothedCsi1(Ntx, 30);
 			Eigen::MatrixXcd smoothedCsi2(Ntx, 30);
-			Eigen::MatrixXcd smoothedCsi3(Ntx, 30);
-			/*
-			for (int i = 0; i < Ntx; ++i)
-			{
-				for(int j = 0; j < 30; ++j)
-				{
-					fftTestFile << abs(csi2(i,j)) << " ";
-				}
-				fftTestFile << endl;
-			}
-			*/
+			//Eigen::MatrixXcd smoothedCsi3(Ntx, 30);
 			smoothedCsi1 = preprocessingCSI(csi1);
 			smoothedCsi2 = preprocessingCSI(csi2);
 
@@ -533,47 +526,51 @@ int main(int argc, char** argv)
 			{
 				for (int j = 0; j < 30; ++j)
 				{
-					msg.csi1_real.data.push_back(csi1(i, j).real() );
-					msg.csi1_image.data.push_back(csi1(i, j).imag() );
-					msg.csi2_real.data.push_back(csi2(i, j).real() );
-					msg.csi2_image.data.push_back(csi2(i, j).imag() );
-					if(test)
+					//amplitudeHatCSI += abs(csi1(i,j)*conj(csi2(i,j)) );
+					hatCSI += csi1(i,j)*conj(csi2(i,j));
+					hatCSISmoothed += smoothedCsi1(i,j)*conj(smoothedCsi2(i,j));
+				}
+			}
+			//amplitudeHatCSI /= Ntx*30.0;
+			hatCSI /= Ntx*30.0;
+			hatCSISmoothed /= Ntx*30.0;
+			//double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
+			//cout << "hatCSI:  " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
+			if(abs(hatCSISmoothed) < 10 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
+			{
+				//cout << "No LOS signal!!! Drop the CSI!" << endl;
+				//int v = phaseMap[arg(hatCSI)*180/M_PI];
+				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				continue;
+			}
+			else
+			{	
+				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
+				//int v = phaseMap[arg(hatCSI)*180/M_PI];
+				//int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
+				//int v = phaseMap[orientation];
+				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				//phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI] = 1+vpr;
+				//phaseMap[orientation] = 1+v;
+				//cout << "Phase map size:" << phaseMap.size() << endl;
+				//cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
+			
+				for (int i = 0; i < Ntx; ++i)
+				{
+					for (int j = 0; j < 30; ++j)
 					{
-						hatCSI += csi1(i,j)*conj(csi2(i,j));
-						hatCSISmoothed += smoothedCsi1(i,j)*conj(smoothedCsi2(i,j));
-						//fftTestFile << abs(smoothedCsi2(i,j)) << " ";
+						msg.csi1_real.data.push_back(csi1(i, j).real() );
+						msg.csi1_image.data.push_back(csi1(i, j).imag() );
+						msg.csi2_real.data.push_back(csi2(i, j).real() );
+						msg.csi2_image.data.push_back(csi2(i, j).imag() );
 					}
 				}
-				//fftTestFile << endl;
+				msg.check_csi = check_csi;
+				csi_pub.publish(msg);
+				++count;
+				if (count % 100 == 0)
+					printf("receive %d bytes [msgcnt=%u]\n", ret, count);
 			}
-			if(test)
-			{
-				hatCSI /= 30.0;
-				hatCSISmoothed /= 30.0;
-				//double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
-				//cout << "hatCSI:  " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
-				if(abs(hatCSISmoothed) < 20 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 50)
-				{
-					//cout << "No LOS signal!!! Drop the CSI!" << endl;
-					int v = phaseMap[arg(hatCSI)*180/M_PI];
-					phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
-					continue;
-				}	
-				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
-				int v = phaseMap[arg(hatCSI)*180/M_PI];
-				int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
-				//int v = phaseMap[orientation];
-				phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
-				phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI] = 1+vpr;
-				//phaseMap[orientation] = 1+v;
-				cout << "Phase map size:" << phaseMap.size() << endl;
-				cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
-			}
-			msg.check_csi = check_csi;
-			csi_pub.publish(msg);
-			++count;
-			 if (count % 100 == 0)
-				 printf("receive %d bytes [msgcnt=%u]\n", ret, count);
 		}	//End of if(code)
 		ros::spinOnce();
 		//printf("Exit decoder\n");
