@@ -98,7 +98,6 @@ void setWindow(fftw_complex *x)
 	}
 	else
 	{
-		//cout << "Peak value:" << peakValue << endl;
 		//set trunction window
 		int upIndex = 29, downIndex = 0;
 		for(int k = peakIndex+1; k < 30; ++k)

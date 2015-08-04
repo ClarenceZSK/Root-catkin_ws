@@ -265,6 +265,7 @@ double SAR::SAR_Profile_2D()
 	double maxPower = 0;
 	++round_count;
 	double sumPow = 0;
+	//cout << "Processing data size:" << selectedInput.size() << endl;
 	myfile << "#" << round_count << endl;
 	for(int alpha = 0; alpha < 360; alpha += resolution)
 	{

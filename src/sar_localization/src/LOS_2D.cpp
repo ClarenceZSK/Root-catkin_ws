@@ -183,7 +183,8 @@ void SAR_processing(void* data_ptr)
 			retFile << "Round:" << sar.round_count << "; max power:" << sar.maxPow << "; sample size:" << sar.selectedInput.size() << "; Alpha:" << angle << endl;
 			//printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
 			//publish wifi msgs
-			if(sar.failureDetectionAvailable && sar.currentHighPeak > min(sar.failThre * sar.stablePeakPower, 0.019) )
+			//if(sar.failureDetectionAvailable && sar.currentHighPeak > min(sar.failThre * sar.stablePeakPower, 0.019) )
+			if(sar.failureDetectionAvailable && sar.currentHighPeak > 0.020 )
 			{
 				printf("Round:%d, Max power:%.1f, Norm peak: %f, Stable peak: %f, Sample size: %d, Alpha:%.1f\n", sar.round_count, sar.maxPow, sar.currentHighPeak, sar.stablePeakPower, (int) sar.selectedInput.size(), angle);
 				sar.point_msg.x = cos(DegreeToRadian(angle) );
@@ -206,7 +207,7 @@ void SAR_processing(void* data_ptr)
 			}
 			else
 			{
-				cout << "Unstable waiting! Current power:" << sar.currentHighPeak << "Stable peak:" << sar.stablePeakPower << endl;
+				//cout << "Unstable waiting! Current power:" << sar.currentHighPeak << "Stable peak:" << sar.stablePeakPower << endl;
 			}
 			/////////////////////////////////////
 			sar.preAngle = angle;
