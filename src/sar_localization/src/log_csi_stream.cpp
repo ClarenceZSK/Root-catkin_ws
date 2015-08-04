@@ -272,10 +272,10 @@ int main(int argc, char** argv)
 			exit_program_err(-1, "recv");
 		/* Pull out the message portion and print some stats */
 		cmsg = (cn_msg*) NLMSG_DATA(buf);
-		/*
+		
 		if (count % SLOW_MSG_CNT == 0)
 			printf("received %d bytes: id: %d val: %d seq: %d clen: %d\n", cmsg->len, cmsg->id.idx, cmsg->id.val, cmsg->seq, cmsg->len);
-		*/
+		
 		/* Log the data to file */
 		l = (unsigned short) cmsg->len;
 		//l2 = htons(l);
@@ -292,11 +292,8 @@ int main(int argc, char** argv)
 			//printf("Enter data decode\n");
 			unsigned long timestamp_low = pt[1] + (pt[2]<<8) + (pt[3]<<16) + (pt[4]<<24);
 			unsigned short bfee_count = pt[5] + (pt[6]<<8);
-			//printf("bfee_count = %d\n", bfee_count);
 			uint8_t Nrx = pt[9];
-			//printf("Nrx = %d, ", Nrx);
 			uint8_t Ntx = pt[10];
-			//printf("Ntx = %d\n", Ntx);
 			uint8_t rssi_a = pt[11];
 			uint8_t rssi_b = pt[12];
 			uint8_t rssi_c = pt[13];
@@ -305,21 +302,13 @@ int main(int argc, char** argv)
 			uint8_t agc = pt[15];
 			uint8_t antenna_sel = pt[16];
 			unsigned int len = (uint8_t) pt[17] + (pt[18]<<8);
-			//for (int mi = 0; mi <=212; ++mi)
-			//printf("pt[17]=%u, pt[18]=%u\n", (uint8_t) pt[17],(uint8_t) pt[18]);
-			//if(len > 400)
-			//{
-			//	printf("pt[17] is %d, pt[18] is %d\n", pt[17], pt[18]);
-			//}
-			//printf("len is %u, ", len);
-			unsigned int fake_rate_n_flags = pt[19] + (pt[20]<<8);
+			//unsigned int fake_rate_n_flags = pt[19] + (pt[20]<<8);
 			unsigned int calc_len = (30 * (Nrx * Ntx * 8 * 2 + 3) + 7)/8;
-			//printf("calc_len is %d\n", calc_len);
 			unsigned int i, j, k;
 			unsigned int index = 0, remainder;
 			unsigned char *payload = (unsigned char*) &pt[21];
 			char tmp;
-			int size[] = {Ntx, Nrx, 30};
+			//int size[] = {Ntx, Nrx, 30};
 			//Eigen::Matrix<std::vector<complex<double> >, Ntx, Nrx> csi_entry;
 			//Note!!! We must use all transmitters' csi_entry, but only need two receivers' csi
 			Eigen::MatrixXcd csi1_entry(Ntx, 30);
@@ -534,9 +523,8 @@ int main(int argc, char** argv)
 			//amplitudeHatCSI /= Ntx*30.0;
 			hatCSI /= Ntx*30.0;
 			hatCSISmoothed /= Ntx*30.0;
-			//double orientation = acos( (arg(hatCSI)+M_PI)*0.05168/(2*M_PI*0.24) );
-			//cout << "hatCSI:  " << abs(hatCSI) << ", phase:" << arg(hatCSI)*180/M_PI << endl; //", orientation: " << orientation << endl;
-			if(abs(hatCSISmoothed) < 10 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
+			if(abs(hatCSISmoothed) < 1 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
+			//if(abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
 			{
 				//cout << "No LOS signal!!! Drop the CSI!" << endl;
 				//int v = phaseMap[arg(hatCSI)*180/M_PI];
@@ -545,7 +533,7 @@ int main(int argc, char** argv)
 			}
 			else
 			{	
-				cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
+				//cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
 				//int v = phaseMap[arg(hatCSI)*180/M_PI];
 				//int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
 				//int v = phaseMap[orientation];
@@ -554,15 +542,17 @@ int main(int argc, char** argv)
 				//phaseMap[orientation] = 1+v;
 				//cout << "Phase map size:" << phaseMap.size() << endl;
 				//cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
-			
+				double orientation = acos( (arg(hatCSISmoothed)+M_PI)*0.05168/(2*M_PI*0.24) )*180/M_PI;
+				cout << "Smoothed hatCSI:  " << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << ", orientation: " << orientation << endl;
+
 				for (int i = 0; i < Ntx; ++i)
 				{
 					for (int j = 0; j < 30; ++j)
 					{
-						msg.csi1_real.data.push_back(csi1(i, j).real() );
-						msg.csi1_image.data.push_back(csi1(i, j).imag() );
-						msg.csi2_real.data.push_back(csi2(i, j).real() );
-						msg.csi2_image.data.push_back(csi2(i, j).imag() );
+						msg.csi1_real.data.push_back(smoothedCsi1(i, j).real() );
+						msg.csi1_image.data.push_back(smoothedCsi1(i, j).imag() );
+						msg.csi2_real.data.push_back(smoothedCsi2(i, j).real() );
+						msg.csi2_image.data.push_back(smoothedCsi2(i, j).imag() );
 					}
 				}
 				msg.check_csi = check_csi;
@@ -580,6 +570,7 @@ int main(int argc, char** argv)
 		//if (ret != l)
 		//	exit_program_err(1, "fwrite");
 	}
+	/*
 	map<int, int>::iterator iter1 = phaseMap.begin();
 	map<int, int>::iterator iter2 = phaseMapSmooth.begin();
 	while(iter1 != phaseMap.end() )
@@ -593,6 +584,7 @@ int main(int argc, char** argv)
 		csiFileSmooth << iter2->first << " " << iter2->second << endl;
 		++iter2;
 	}
+	*/
 	csiFile.close();
 	csiFileSmooth.close();
 	fftTestFile.close();
