@@ -81,9 +81,10 @@ public:
 	bool checkData();
 	bool selectData();
 	double SAR_Profile_2D();
-	double finerResolution(int c_yaw);
-	vector<int> SAR_Profile_3D();		//search alpha and beta
-	vector<int> SAR_Profile_3D_fast();	//search alpha with the 2D solution first, then fix alpha and search beta
+	double finerResolutionYaw(int c_yaw, int res_std);
+	double finerResolutionPitch(double c_yaw, int c_pitch, int res_std);
+	//vector<int> SAR_Profile_3D();		//search alpha and beta
+	double SAR_Profile_3D_fast(double yaw);	//search alpha with the 2D solution first, then fix alpha and search beta
 	void switchAP();
 
 	static const int WINDOW_SIZE	= 1000;

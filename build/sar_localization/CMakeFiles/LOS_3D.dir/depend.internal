@@ -3,9 +3,8 @@
 
 sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o
  /home/clarence/catkin_ws/devel/include/sar_localization/Csi.h
- /home/clarence/catkin_ws/devel/include/sar_localization/Motor.h
  /home/clarence/catkin_ws/src/sar_localization/src/LOS_3D.cpp
- /home/clarence/catkin_ws/src/sar_localization/src/SAR_S.h
+ /home/clarence/catkin_ws/src/sar_localization/src/SAR.h
  /opt/eigen/Eigen/Cholesky
  /opt/eigen/Eigen/Core
  /opt/eigen/Eigen/Dense
@@ -357,9 +356,9 @@ sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o
  /usr/include/glib-2.0/glib/gversionmacros.h
  /usr/include/glib-2.0/glib/gwin32.h
  /usr/lib/x86_64-linux-gnu/glib-2.0/include/glibconfig.h
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o
- /home/clarence/catkin_ws/src/sar_localization/src/SAR_S.h
- /home/clarence/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o
+ /home/clarence/catkin_ws/src/sar_localization/src/SAR.cpp
+ /home/clarence/catkin_ws/src/sar_localization/src/SAR.h
  /opt/eigen/Eigen/Cholesky
  /opt/eigen/Eigen/Core
  /opt/eigen/Eigen/Dense

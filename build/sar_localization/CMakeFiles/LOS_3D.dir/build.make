@@ -72,39 +72,39 @@ sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o.provides: sar_localizati
 
 sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o.provides.build: sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o: sar_localization/CMakeFiles/LOS_3D.dir/flags.make
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o: /home/clarence/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o: sar_localization/CMakeFiles/LOS_3D.dir/flags.make
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o: /home/clarence/catkin_ws/src/sar_localization/src/SAR.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/clarence/catkin_ws/build/CMakeFiles $(CMAKE_PROGRESS_2)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o"
-	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o -c /home/clarence/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o"
+	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/LOS_3D.dir/src/SAR.cpp.o -c /home/clarence/catkin_ws/src/sar_localization/src/SAR.cpp
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.i"
-	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/clarence/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp > CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.i
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/LOS_3D.dir/src/SAR.cpp.i"
+	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/clarence/catkin_ws/src/sar_localization/src/SAR.cpp > CMakeFiles/LOS_3D.dir/src/SAR.cpp.i
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.s"
-	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/clarence/catkin_ws/src/sar_localization/src/SAR_singleThread.cpp -o CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.s
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/LOS_3D.dir/src/SAR.cpp.s"
+	cd /home/clarence/catkin_ws/build/sar_localization && /usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/clarence/catkin_ws/src/sar_localization/src/SAR.cpp -o CMakeFiles/LOS_3D.dir/src/SAR.cpp.s
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires:
-.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires:
+.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires
-	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides.build
-.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires
+	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides.build
+.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides
 
-sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.provides.build: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o
+sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.provides.build: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o
 
 # Object files for target LOS_3D
 LOS_3D_OBJECTS = \
 "CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o" \
-"CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o"
+"CMakeFiles/LOS_3D.dir/src/SAR.cpp.o"
 
 # External object files for target LOS_3D
 LOS_3D_EXTERNAL_OBJECTS =
 
 /home/clarence/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o
-/home/clarence/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o
+/home/clarence/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o
 /home/clarence/catkin_ws/devel/lib/sar_localization/LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/build.make
 /home/clarence/catkin_ws/devel/lib/sar_localization/LOS_3D: /opt/ros/indigo/lib/libcv_bridge.so
 /home/clarence/catkin_ws/devel/lib/sar_localization/LOS_3D: /usr/lib/x86_64-linux-gnu/libopencv_videostab.so.2.4.8
@@ -157,7 +157,7 @@ sar_localization/CMakeFiles/LOS_3D.dir/build: /home/clarence/catkin_ws/devel/lib
 .PHONY : sar_localization/CMakeFiles/LOS_3D.dir/build
 
 sar_localization/CMakeFiles/LOS_3D.dir/requires: sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o.requires
-sar_localization/CMakeFiles/LOS_3D.dir/requires: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o.requires
+sar_localization/CMakeFiles/LOS_3D.dir/requires: sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o.requires
 .PHONY : sar_localization/CMakeFiles/LOS_3D.dir/requires
 
 sar_localization/CMakeFiles/LOS_3D.dir/clean:

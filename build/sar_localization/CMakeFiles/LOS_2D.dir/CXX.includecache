@@ -64,6 +64,10 @@ unistd.h
 glib.h
 -
 
+/home/clarence/catkin_ws/src/sar_localization/src/SAR.cpp
+SAR.h
+/home/clarence/catkin_ws/src/sar_localization/src/SAR.h
+
 /home/clarence/catkin_ws/src/sar_localization/src/SAR.h
 ros/ros.h
 /home/clarence/catkin_ws/src/sar_localization/src/ros/ros.h

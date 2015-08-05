@@ -228,7 +228,7 @@ add_dependencies(LOS_2D sar_localization_generate_messages_cpp)
 
 add_executable(LOS_3D
 	src/LOS_3D.cpp
-	src/SAR_singleThread.cpp
+	src/SAR.cpp
 	)
 target_link_libraries(
     LOS_3D

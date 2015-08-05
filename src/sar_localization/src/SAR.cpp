@@ -240,12 +240,12 @@ double SAR::powerCalculation(Vector3d dr_std)
 	return ret;
 }
 
-double SAR::finerResolution(int c_yaw)
+double SAR::finerResolutionYaw(int c_yaw, int res_std)
 {
 	double ret = 0;
 	double maxPower = 0;
 	double resolution = min(0.1, 1.0/RSL);
-	for(double alpha = c_yaw-1; alpha < c_yaw+1; alpha += resolution)
+	for(double alpha = c_yaw-res_std; alpha < c_yaw+res_std; alpha += resolution)
 	{
 		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 0);
 		double powtmp = powerCalculation(dr);
@@ -253,6 +253,24 @@ double SAR::finerResolution(int c_yaw)
 		{
 			maxPower= powtmp;
 			ret = alpha;
+		}
+	}
+	return ret;
+}
+
+double SAR::finerResolutionPitch(double c_yaw, int c_pitch, int res_std)
+{
+	double ret = 0;
+	double maxPower = 0;
+	double resolution = min(0.1, 1.0/RSL);
+	for(double beta = c_pitch-res_std; beta < c_pitch+res_std; beta += resolution)
+	{
+		Vector3d dr (sin(degreeToRadian(beta) )*cos(degreeToRadian(c_yaw) ), sin(degreeToRadian(beta) )*sin(degreeToRadian(c_yaw) ), cos(degreeToRadian(beta) ) );
+		double powtmp = powerCalculation(dr);
+		if(maxPower < powtmp)
+		{
+			maxPower= powtmp;
+			ret = beta;
 		}
 	}
 	return ret;
@@ -296,25 +314,26 @@ double SAR::SAR_Profile_2D()
 	//if(ret_yaw >= 180)
 	//	ret_yaw -= 180;
 	//finer resolution searching
-	double finer_yaw = finerResolution(ret_yaw);
-	//double finer_yaw = ret_yaw;
+	double finer_yaw = finerResolutionYaw(ret_yaw, resolution);
 	return finer_yaw;
 }
-
-vector<int> SAR::SAR_Profile_3D()
+/*
+vector<double> SAR::SAR_Profile_3D()
 {
-	vector<int> ret;
+	vector<double> ret;
 	int resolution = STEP_SIZE;      //search resolution
 	double maxPower = 0;
 	int ret_yaw, ret_pitch;
     ++round_count;
+	double sumPow = 0;
 	myfile << "#" << round_count << endl;
 	for(int alpha = 0; alpha < 360; alpha += resolution)
 	{
-		for(int beta = 0; beta <= 180; beta += resolution)
+		for(int beta = 0; beta <= 180; beta += 2*resolution)
 		{
 			Vector3d dr (sin(degreeToRadian(beta) ) * cos(degreeToRadian(alpha) ), sin(degreeToRadian(beta) ) * sin(degreeToRadian(alpha) ), cos(degreeToRadian(beta) ) );
 			double powtmp = powerCalculation(dr);
+			sumPow += powtmp;
           	if(maxPower < powtmp)
           	{
               	maxPower= powtmp;
@@ -325,34 +344,39 @@ vector<int> SAR::SAR_Profile_3D()
 		}
 	}
 	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
-	ret.push_back(ret_yaw);
-    ret.push_back(ret_pitch);
+	maxPow = maxPower;
+	currentHighPeak = maxPow/sumPow;
+	if(!failureDetectionAvailable)
+	{
+		sumStable += maxPow/sumPow;
+		++staticCount;
+		stablePeakPower = sumStable/staticCount;
+		if(staticCount >= 100)
+		{
+			failureDetectionAvailable = true;
+		}
+	}
+	//debug
+	//if(ret_yaw >= 180)
+	//	ret_yaw -= 180;
+	//finer resolution searching
+	double finer_yaw = finerResolution(ret_yaw, resolution);
+	ret.push_back(finer_yaw);
+    ret.push_back(finer_pitch);
 	return ret;
 }
+*/
 
-vector<int> SAR::SAR_Profile_3D_fast()
+double SAR::SAR_Profile_3D_fast(double yaw)
 {
-	vector<int> ret;
     int resolution = STEP_SIZE;      //search resolution
     double maxPower = 0;
-    int ret_yaw, ret_pitch;
+    int ret_pitch = 0;
     ++round_count;
 	myfile << "#" << round_count << endl;
-    for(int alpha = 0; alpha < 360; alpha += resolution)
-    {
-		Vector3d dr (cos(degreeToRadian(alpha) ), sin(degreeToRadian(alpha) ), 1);
-		double powtmp = powerCalculation(dr);
-		if(maxPower < powtmp)
-		{
-			maxPower = powtmp;
-			ret_yaw = alpha;
-		}
-		myfile << powtmp << endl;
-	}
-	maxPower = 0;
 	for(int beta = 0; beta <= 180; beta += resolution)
 	{
-		Vector3d dr (sin(degreeToRadian(beta) ) * cos(degreeToRadian(ret_yaw) ), sin(degreeToRadian(beta) ) * sin(degreeToRadian(ret_yaw) ), cos(degreeToRadian(beta) ) );
+		Vector3d dr (sin(degreeToRadian(beta) ) * cos(degreeToRadian(yaw) ), sin(degreeToRadian(beta) ) * sin(degreeToRadian(yaw) ), cos(degreeToRadian(beta) ) );
 		double powtmp = powerCalculation(dr);
 		if(maxPower < powtmp)
 		{
@@ -361,10 +385,9 @@ vector<int> SAR::SAR_Profile_3D_fast()
 		}
 		myfile << powtmp << endl;
 	}
-	printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
-	ret.push_back(ret_yaw);
-    ret.push_back(ret_pitch);
-    return ret;
+	//printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
+	double finer_pitch = finerResolutionPitch(yaw, ret_pitch, resolution);
+    return finer_pitch;
 }
 
 void SAR::switchAP()

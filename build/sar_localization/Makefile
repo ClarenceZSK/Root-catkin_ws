@@ -549,6 +549,7 @@ src/SAR.o: src/SAR.cpp.o
 # target to build an object file
 src/SAR.cpp.o:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o
+	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o
 .PHONY : src/SAR.cpp.o
 
 src/SAR.i: src/SAR.cpp.i
@@ -557,6 +558,7 @@ src/SAR.i: src/SAR.cpp.i
 # target to preprocess a source file
 src/SAR.cpp.i:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.i
+	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.i
 .PHONY : src/SAR.cpp.i
 
 src/SAR.s: src/SAR.cpp.s
@@ -565,6 +567,7 @@ src/SAR.s: src/SAR.cpp.s
 # target to generate assembly for a file
 src/SAR.cpp.s:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.s
+	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.s
 .PHONY : src/SAR.cpp.s
 
 src/SAR_singleThread.o: src/SAR_singleThread.cpp.o
@@ -573,7 +576,6 @@ src/SAR_singleThread.o: src/SAR_singleThread.cpp.o
 # target to build an object file
 src/SAR_singleThread.cpp.o:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/SAR_singleThread.cpp.o
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.o
 .PHONY : src/SAR_singleThread.cpp.o
 
 src/SAR_singleThread.i: src/SAR_singleThread.cpp.i
@@ -582,7 +584,6 @@ src/SAR_singleThread.i: src/SAR_singleThread.cpp.i
 # target to preprocess a source file
 src/SAR_singleThread.cpp.i:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/SAR_singleThread.cpp.i
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.i
 .PHONY : src/SAR_singleThread.cpp.i
 
 src/SAR_singleThread.s: src/SAR_singleThread.cpp.s
@@ -591,7 +592,6 @@ src/SAR_singleThread.s: src/SAR_singleThread.cpp.s
 # target to generate assembly for a file
 src/SAR_singleThread.cpp.s:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/SAR_singleThread.cpp.s
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR_singleThread.cpp.s
 .PHONY : src/SAR_singleThread.cpp.s
 
 src/log_csi_stream.o: src/log_csi_stream.cpp.o
