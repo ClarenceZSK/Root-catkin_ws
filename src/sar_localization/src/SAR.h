@@ -116,11 +116,16 @@ public:
 	//Failure detection
 	//1. Learn a peak value for static detection
 	double stablePeakPower;
+	double stablePeakPower3D;
 	double sumStable;
+	double sumStable3D;
 	double currentHighPeak;
+	double currentHighPeak3D;
 	double failThre;
 	int staticCount;
+	int staticCount3D;
 	bool failureDetectionAvailable;
+	bool failureDetectionAvailable3D;
 	////////////////////////////////////////
 	sensor_msgs::ChannelFloat32 channel_msg;
 	sensor_msgs::PointCloud wifi_msg;

@@ -16,10 +16,14 @@ SAR::SAR():Landa(0.05168), frame_count(0), round_count(0), current_time(-1)
 	preAngle = -1;
 	//Failure detection
 	staticCount = 0;
+	staticCount3D = 0;
 	sumStable = 0;
+	sumStable3D = 0;
 	stablePeakPower = -1;
+	stablePeakPower3D = -1;
 	failThre = 0.8;
 	failureDetectionAvailable = false;
+	failureDetectionAvailable3D = false;
 	ROS_INFO("SAR init finished");
 }
 
@@ -373,11 +377,12 @@ double SAR::SAR_Profile_3D_fast(double yaw)
     double maxPower = 0;
     int ret_pitch = 0;
     ++round_count;
-	myfile << "#" << round_count << endl;
+	double sumPow = 0;
 	for(int beta = 0; beta <= 180; beta += resolution)
 	{
 		Vector3d dr (sin(degreeToRadian(beta) ) * cos(degreeToRadian(yaw) ), sin(degreeToRadian(beta) ) * sin(degreeToRadian(yaw) ), cos(degreeToRadian(beta) ) );
 		double powtmp = powerCalculation(dr);
+		sumPow += powtmp;
 		if(maxPower < powtmp)
 		{
 			maxPower = powtmp;
@@ -385,6 +390,18 @@ double SAR::SAR_Profile_3D_fast(double yaw)
 		}
 		myfile << powtmp << endl;
 	}
+	currentHighPeak3D = maxPow/sumPow;
+	if(!failureDetectionAvailable3D)
+	{
+		sumStable3D += maxPow/sumPow;
+		++staticCount3D;
+		stablePeakPower3D = sumStable3D/staticCount3D;
+		if(staticCount3D >= 100)
+		{
+			failureDetectionAvailable3D = true;
+		}
+	}
+	
 	//printf("round:%d,maxPow:%0.3f,", round_count, maxPower);
 	double finer_pitch = finerResolutionPitch(yaw, ret_pitch, resolution);
     return finer_pitch;

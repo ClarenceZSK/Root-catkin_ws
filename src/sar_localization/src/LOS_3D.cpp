@@ -185,7 +185,7 @@ void SAR_processing(void* data_ptr)
 			//printf("Newest IDX: %d, Sample size: %d, Alpha:--------%.1f\n", sar.newestIdx, (int) sar.selectedInput.size(), angle);
 			//publish wifi msgs
 			//if(sar.failureDetectionAvailable && sar.currentHighPeak > min(sar.failThre * sar.stablePeakPower, 0.019) )
-			if(sar.failureDetectionAvailable && sar.currentHighPeak > 0.020 )
+			if(sar.failureDetectionAvailable && sar.failureDetectionAvailable3D && sar.currentHighPeak > 0.020 && sar.currentHighPeak3D > 0.018)
 			{
 				printf("Round:%d, Max power:%.1f, Norm peak: %f, Stable peak: %f, Sample size: %d, Yaw:%.1f, Pitch:%.1f\n", sar.round_count, sar.maxPow, sar.currentHighPeak, sar.stablePeakPower, (int) sar.selectedInput.size(), yaw, pitch);
 				sar.point_msg.x = sin(DegreeToRadian(pitch) )*cos(DegreeToRadian(yaw) );
