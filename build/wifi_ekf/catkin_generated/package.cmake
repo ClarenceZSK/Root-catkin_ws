@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "wifi_ekf")
+set(wifi_ekf_MAINTAINER "dvorak <dvorak@todo.todo>")
+set(wifi_ekf_DEPRECATED "")
+set(wifi_ekf_VERSION "0.0.0")
+set(wifi_ekf_BUILD_DEPENDS "roscpp")
+set(wifi_ekf_RUN_DEPENDS "roscpp")
+set(wifi_ekf_BUILDTOOL_DEPENDS "catkin")

@@ -447,6 +447,12 @@ tf2_ros_DIR:PATH=/opt/ros/indigo/share/tf2_ros/cmake
 tf_DIR:PATH=/opt/ros/indigo/share/tf/cmake
 
 //Value Computed by CMake
+wifi_ekf_BINARY_DIR:STATIC=/home/clarence/catkin_ws/build/wifi_ekf
+
+//Value Computed by CMake
+wifi_ekf_SOURCE_DIR:STATIC=/home/clarence/catkin_ws/src/wifi_ekf
+
+//Value Computed by CMake
 wifi_estimator_BINARY_DIR:STATIC=/home/clarence/catkin_ws/build/wifi_estimator
 
 //Value Computed by CMake
@@ -561,7 +567,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=7
+CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=8
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

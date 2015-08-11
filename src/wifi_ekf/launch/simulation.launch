@@ -1,0 +1,8 @@
+<launch>
+    <node pkg="data_generator" name="data_generator" type="data_generator" output="log" />
+    <node pkg="wifi_ekf" name="wifi_ekf" type="wifi_ekf" output="screen">
+        <remap from="~imu" to="/data_generator/imu" />
+        <remap from="~wifi" to="/data_generator/wifi" />
+    </node>
+</launch>
+

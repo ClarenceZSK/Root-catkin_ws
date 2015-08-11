@@ -995,6 +995,19 @@ tf_generate_messages_py/fast:
 .PHONY : tf_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named wifi_ekf
+
+# Build rule for target.
+wifi_ekf: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 wifi_ekf
+.PHONY : wifi_ekf
+
+# fast build rule for target.
+wifi_ekf/fast:
+	$(MAKE) -f wifi_ekf/CMakeFiles/wifi_ekf.dir/build.make wifi_ekf/CMakeFiles/wifi_ekf.dir/build
+.PHONY : wifi_ekf/fast
+
+#=============================================================================
 # Target rules for targets named wifi_estimator
 
 # Build rule for target.
@@ -1085,6 +1098,7 @@ help:
 	@echo "... tf_generate_messages_cpp"
 	@echo "... tf_generate_messages_lisp"
 	@echo "... tf_generate_messages_py"
+	@echo "... wifi_ekf"
 	@echo "... wifi_estimator"
 .PHONY : help
 

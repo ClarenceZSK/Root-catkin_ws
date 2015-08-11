@@ -180,7 +180,7 @@ Eigen::MatrixXcd preprocessingCSI(Eigen::MatrixXcd csi)
 		}
 		p = fftw_plan_dft_1d(cols, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-		//search first peak
+		//search first peak 
 		setWindow(in);
 
 		//cout << "after filtering in time domain:" << endl;
@@ -255,6 +255,11 @@ int main(int argc, char** argv)
 	signal(SIGINT, caught_signal);
 	map<int, int> phaseMap;
 	map<int, int> phaseMapSmooth;
+	for(int i = -180; i < 180; ++i)
+	{
+		phaseMap[i] = 0;
+		phaseMapSmooth[i] = 0;
+	}
 	ofstream csiFile;
 	ofstream csiFileSmooth;
 	ofstream fftTestFile;
@@ -526,23 +531,23 @@ int main(int argc, char** argv)
 			//if(abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
 			{
 				//cout << "No LOS signal!!! Drop the CSI!" << endl;
-				//int v = phaseMap[arg(hatCSI)*180/M_PI];
-				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				int v = phaseMap[arg(hatCSI)*180/M_PI];
+				phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
 				continue;
 			}
 			else
 			{	
 				//cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
-				//int v = phaseMap[arg(hatCSI)*180/M_PI];
-				//int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
+				int v = phaseMap[arg(hatCSI)*180/M_PI];
+				int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
 				//int v = phaseMap[orientation];
-				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
-				//phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI] = 1+vpr;
+				phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI] = 1+vpr;
 				//phaseMap[orientation] = 1+v;
-				//cout << "Phase map size:" << phaseMap.size() << endl;
-				//cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
-				double orientation = acos( (arg(hatCSISmoothed)+M_PI)*0.05168/(2*M_PI*0.24) )*180/M_PI;
-				cout << "Smoothed hatCSI:  " << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << ", orientation: " << orientation << endl;
+				cout << "Phase map size:" << phaseMap.size() << endl;
+				cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
+				double orientation = (arg(hatCSISmoothed)+M_PI)*0.05168/(2*M_PI*0.06);
+				cout << "Smoothed hatCSI:  " << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI+180 << ", orientation: " << orientation << endl;
 
 				for (int i = 0; i < Ntx; ++i)
 				{
@@ -569,21 +574,22 @@ int main(int argc, char** argv)
 		//if (ret != l)
 		//	exit_program_err(1, "fwrite");
 	}
-	/*
-	map<int, int>::iterator iter1 = phaseMap.begin();
-	map<int, int>::iterator iter2 = phaseMapSmooth.begin();
-	while(iter1 != phaseMap.end() )
+	if(!phaseMap.empty() && !phaseMapSmooth.empty() )
 	{
-		csiFile << iter1->first << " " << iter1->second << endl;
-		//cout << iter1->first << ", " << iter1->second << "; " << iter2->first << ", " << iter2->second << endl;
-		++iter1;
+		map<int, int>::iterator iter1 = phaseMap.begin();
+		map<int, int>::iterator iter2 = phaseMapSmooth.begin();
+		while(iter1 != phaseMap.end() )
+		{
+			csiFile << iter1->first << " " << iter1->second << endl;
+			//cout << iter1->first << ", " << iter1->second << "; " << iter2->first << ", " << iter2->second << endl;
+			++iter1;
+		}
+		while(iter2 != phaseMapSmooth.end())
+		{
+			csiFileSmooth << iter2->first << " " << iter2->second << endl;
+			++iter2;
+		}
 	}
-	while(iter2 != phaseMapSmooth.end())
-	{
-		csiFileSmooth << iter2->first << " " << iter2->second << endl;
-		++iter2;
-	}
-	*/
 	csiFile.close();
 	csiFileSmooth.close();
 	fftTestFile.close();

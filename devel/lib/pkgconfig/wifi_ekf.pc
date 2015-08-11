@@ -1,0 +1,8 @@
+prefix=/home/clarence/catkin_ws/devel
+
+Name: wifi_ekf
+Description: Description of wifi_ekf
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/clarence/catkin_ws/devel/lib 
+Requires: 

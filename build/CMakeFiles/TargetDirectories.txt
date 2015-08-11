@@ -63,4 +63,5 @@
 /home/clarence/catkin_ws/build/sar_localization/CMakeFiles/tf_generate_messages_cpp.dir
 /home/clarence/catkin_ws/build/sar_localization/CMakeFiles/tf_generate_messages_lisp.dir
 /home/clarence/catkin_ws/build/sar_localization/CMakeFiles/tf_generate_messages_py.dir
+/home/clarence/catkin_ws/build/wifi_ekf/CMakeFiles/wifi_ekf.dir
 /home/clarence/catkin_ws/build/wifi_estimator/CMakeFiles/wifi_estimator.dir

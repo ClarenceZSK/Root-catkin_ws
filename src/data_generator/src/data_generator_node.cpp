@@ -24,14 +24,14 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "data_generator");
     ros::NodeHandle n("~");
 
-    ros::Publisher pub_imu      = n.advertise<sensor_msgs::Imu>("/data_generator/imu", 1000);
-    ros::Publisher pub_image    = n.advertise<sensor_msgs::PointCloud>("/sensors/image", 1000);
-    ros::Publisher pub_wifi     = n.advertise<sensor_msgs::PointCloud>("/data_generator/wifi", 1000);
+    ros::Publisher pub_imu      = n.advertise<sensor_msgs::Imu>("imu", 1000);
+    ros::Publisher pub_image    = n.advertise<sensor_msgs::PointCloud>("image", 1000);
+    ros::Publisher pub_wifi     = n.advertise<sensor_msgs::PointCloud>("wifi", 1000);
 
     ros::Publisher pub_path     = n.advertise<nav_msgs::Path>("path", 1000);
     ros::Publisher pub_odometry = n.advertise<nav_msgs::Odometry>("odometry", 1000);
     ros::Publisher pub_pose     = n.advertise<geometry_msgs::PoseStamped>("pose", 1000);
-    //ros::Publisher pub_cloud    = n.advertise<sensor_msgs::PointCloud>("cloud", 1000);
+    ros::Publisher pub_cloud    = n.advertise<sensor_msgs::PointCloud>("cloud", 1000);
     ros::Publisher pub_ap       = n.advertise<sensor_msgs::PointCloud>("ap", 1000);
     ros::Publisher pub_line     = n.advertise<visualization_msgs::Marker>("sar", 1000);
 
@@ -39,7 +39,6 @@ int main(int argc, char** argv)
 
     DataGenerator generator;
     ros::Rate loop_rate(generator.FREQ);
-    printf("%d\n", argc);
 
     //if (argc == 1)
     //    while (pub_imu.getNumSubscribers() == 0)
@@ -48,7 +47,6 @@ int main(int argc, char** argv)
     sensor_msgs::PointCloud point_cloud;
     point_cloud.header.frame_id = "world";
     point_cloud.header.stamp = ros::Time::now();
-	/*
     for (auto & it : generator.getCloud())
     {
         geometry_msgs::Point32 p;
@@ -60,7 +58,7 @@ int main(int argc, char** argv)
     pub_cloud.publish(point_cloud);
 
     point_cloud.points.clear();
-    */
+
     visualization_msgs::Marker line_ap[DataGenerator::NUMBER_OF_AP];
     for (int i = 0; i < DataGenerator::NUMBER_OF_AP; i++)
     {
@@ -95,13 +93,13 @@ int main(int argc, char** argv)
     nav_msgs::Path path;
     path.header.frame_id = "world";
 	default_random_engine random_generator;
-    std::normal_distribution<double> distribution (0.0, 10.0);
-    //std::uniform_real_distribution<double> distribution (-10, 10);
+	std::normal_distribution<double> distribution (0.0, 10.0);
+
 
     while (ros::ok())
     {
         double current_time = generator.getTime();
-        //ROS_INFO("time: %lf", current_time);
+        ROS_INFO("time: %lf", current_time);
 
         Vector3d position     = generator.getPosition();
         Vector3d velocity     = generator.getVelocity();
@@ -158,62 +156,43 @@ int main(int argc, char** argv)
         imu.orientation.w = q.w();
 
         pub_imu.publish(imu);
-        //ROS_INFO("publish imu data with stamp %lf", imu.header.stamp.toSec());
+        ROS_INFO("publish imu data with stamp %lf", imu.header.stamp.toSec());
 
-        //publish image data
-        if (publish_count % generator.IMU_PER_IMG == 0)
+        //publish wifi data
+        if (publish_count % generator.IMU_PER_WIFI == 0)
         {
             sensor_msgs::PointCloud wifi;
             sensor_msgs::ChannelFloat32 id_ap;
-            //wifi.header.stamp = ros::Time(current_time);
-            wifi.header.stamp = ros::Time::now();
+            wifi.header.stamp = ros::Time(current_time);
 
             for (int i = 0; i < DataGenerator::NUMBER_OF_AP; i++)
             {
                 Vector3d sar;
-				//Vector3d disturb = Vector3d(distribution(random_generator), distribution(random_generator),0);
-				double disturb = distribution(random_generator);
                 sar(0) = line_ap[i].points[0].x - line_ap[i].points[1].x;
                 sar(1) = line_ap[i].points[0].y - line_ap[i].points[1].y;
                 sar(2) = line_ap[i].points[0].z - line_ap[i].points[1].z;
-				//cout << "Sar before disturbing:\n" << sar << endl;
-				//sar = sar + disturb;
-				cout << "Disturb:\n" << disturb << endl;
                 sar.normalize();
-				cout << "Sar normalize:\n" << sar << endl;
-
-				bool downScope = 0;
-				if(sar(1) < 0)
-				{
-					downScope = 1;
-				}
-				double angle = acos(sar(0))*180.0/M_PI;
-				if(downScope)
-				{
-					angle = 360 - angle;
-				}
-				cout << "Angle: " << angle << endl;
-				angle += disturb;
-				angle = angle * M_PI/180.0;
-
-				sar(0) = cos(angle);
-				sar(1) = sin(angle);
-				sar(2) = 0;
-				cout << "Sar:\n" << sar << endl;
-
                 geometry_msgs::Point32 p;
-                p.x = sar(0);
-                p.y = sar(1);
-                p.z = sar(2);
+				//noise
+				double disturb = distribution(random_generator);
+				cout << "Disturb: " << disturb << endl;
+                p.x = sar.dot(rotation.col(0));
+				cout << "disturb before:" << p.x << endl;
+                p.y = 0.0;
+                p.z = 0.0;
+				double angle = -2*M_PI*p.x*0.06/0.0514/M_PI*180 + disturb;
+				p.x = -1*angle/180.0*M_PI/2/M_PI/0.06*0.0514;
+				cout << "disturb after: " << p.x << endl;
                 wifi.points.push_back(p);
                 id_ap.values.push_back(i);
             }
             wifi.channels.push_back(id_ap);
             pub_wifi.publish(wifi);
-        	ROS_INFO("publish wifi data %d", publish_count);
+        }
 
-		/*
-            //publish image data
+        //publish image data
+        if (publish_count % generator.IMU_PER_IMG == 0)
+        {
             ROS_INFO("feature count: %lu", generator.getImage().size());
             sensor_msgs::PointCloud feature;
             sensor_msgs::ChannelFloat32 ids;
@@ -235,16 +214,9 @@ int main(int argc, char** argv)
                 p.y = id_pts.second(1);
                 p.z = id_pts.second(2);
 
-                //project point
-                //p.y /= p.x;
-                //p.z /= p.x;
-                //p.x = 1;
-
                 feature.points.push_back(p);
                 ids.values.push_back(id);
 
-                p.x /= p.z;
-                p.y /= p.z;
 
                 char label[10];
                 sprintf(label, "%d", id / DataGenerator::NUMBER_OF_CAMERA);
@@ -261,10 +233,8 @@ int main(int argc, char** argv)
                 cv::imshow(name, simu_img[k]);
             }
             cv::waitKey(1);
-		*/
-            if (generator.getTime() > 6 * DataGenerator::MAX_TIME)
+            if (generator.getTime() > 3 * DataGenerator::MAX_TIME)
                 break;
-
         }
 
         //update work
