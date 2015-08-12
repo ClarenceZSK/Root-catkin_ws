@@ -42,8 +42,8 @@ void WifiEkf::predict(double t, const Eigen::Vector3d &linear_acceleration_body,
                           angular_velocity_body(0) * dt / 2,
                           angular_velocity_body(1) * dt / 2,
                           angular_velocity_body(2) * dt / 2);
-    dq.w() = 1 - dq.vec().transpose() * dq.vec();
-    q = (Eigen::Quaterniond(q) * dq).normalized();
+    dq.w() = sqrt(1 - dq.vec().transpose() * dq.vec() );
+    q = (Eigen::Quaterniond(q) * dq).normalized().toRotationMatrix();
 
     Eigen::Vector3d linear_acceleration_world = q * linear_acceleration_body - g;
     v += linear_acceleration_world * dt;
