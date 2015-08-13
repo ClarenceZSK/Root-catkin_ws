@@ -89,9 +89,9 @@ void WifiEkf::update(double z)
 	std::cout << "H=\n" << H << std::endl;
 	Eigen::Matrix<double, 1, 12> Hp = myJacobian(delta_p, delta_theta, delta_ap);
 	std::cout << "Hp=\n" << Hp << std::endl;
-    double s = H * P * H.transpose() + W_cov;
-    Eigen::Matrix<double, 12, 1> K = P * H.transpose() * (1.0 / s);
-    P = (Eigen::Matrix<double, 12, 12>::Identity() - K * H) * P;
+    double s = Hp * P * Hp.transpose() + W_cov;
+    Eigen::Matrix<double, 12, 1> K = P * Hp.transpose() * (1.0 / s);
+    P = (Eigen::Matrix<double, 12, 12>::Identity() - K * Hp) * P;
     Eigen::Matrix<double, 12, 1> dx = K * y;
     p += dx.segment<3>(0);
     v += dx.segment<3>(3);
@@ -112,7 +112,8 @@ double WifiEkf::measurement(const Eigen::Vector3d &_p, const Eigen::Matrix3d &_q
 Eigen::Matrix<double, 1, 12> WifiEkf::myJacobian(const Eigen::Vector3d &_delta_p, const Eigen::Vector3d &_delta_theta, const Eigen::Vector3d &_delta_ap)
 {
     Eigen::Matrix<double, 1, 12> J = Eigen::Matrix<double, 1, 12>::Zero();
-	double C = 2*M_PI*R/LANDA;
+	//double C = -2*M_PI*R/LANDA;
+	double C = -1;
 	double N = (p(0) - ap(0) ) * (q(0,0) + _delta_theta(2)*q(0,1) - _delta_theta(1)*q(0,2) ) + (p(1) - ap(1)) * (q(1,0) + _delta_theta(2)*q(1,1) - _delta_theta(1)*q(1,2) ) + (p(2) - ap(2)) * (q(2,0) + _delta_theta(2)*q(2,1) - _delta_theta(1)*q(2,2) );
 	double M = (p - ap).norm();
 	for(int i = 0; i < 3; ++i)

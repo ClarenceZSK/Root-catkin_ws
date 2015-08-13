@@ -233,7 +233,7 @@ int main(int argc, char** argv)
                 cv::imshow(name, simu_img[k]);
             }
             cv::waitKey(1);
-            if (generator.getTime() > 3 * DataGenerator::MAX_TIME)
+            if (generator.getTime() > 6 * DataGenerator::MAX_TIME)
                 break;
         }
 
