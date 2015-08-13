@@ -1,6 +1,8 @@
 #include "wifi_ekf.h"
 
-#define EPS 1e-6
+#define EPS 	1e-6
+#define R  		0.06
+#define LANDA 	0.05168
 
 template <typename Derived>
 Eigen::Matrix<typename Derived::Scalar, 3, 3> skewSymmetric(const Eigen::MatrixBase<Derived> &q)
@@ -16,6 +18,11 @@ WifiEkf::WifiEkf():
     g(Eigen::Vector3d::Zero()),
     p(Eigen::Vector3d::Zero()),
     v(Eigen::Vector3d::Zero()),
+	
+    delta_p(Eigen::Vector3d::Zero()),
+    delta_ap(Eigen::Vector3d::Zero()),
+    delta_theta(Eigen::Vector3d::Zero()),
+	
     q(Eigen::Matrix3d::Identity()),
     P(Eigen::Matrix<double, 12, 12>::Zero())
 {
@@ -45,9 +52,15 @@ void WifiEkf::predict(double t, const Eigen::Vector3d &linear_acceleration_body,
     dq.w() = sqrt(1 - dq.vec().transpose() * dq.vec() );
     q = (Eigen::Quaterniond(q) * dq).normalized().toRotationMatrix();
 
+	delta_theta(0) = angular_velocity_body(0)*dt;
+	delta_theta(1) = angular_velocity_body(1)*dt;
+	delta_theta(2) = angular_velocity_body(2)*dt;
+
     Eigen::Vector3d linear_acceleration_world = q * linear_acceleration_body - g;
     v += linear_acceleration_world * dt;
+    delta_p = v * dt + 0.5 * linear_acceleration_world * dt * dt;
     p += v * dt + 0.5 * linear_acceleration_world * dt * dt;
+
 
     {
         Eigen::Matrix<double, 9, 9> F = Eigen::Matrix<double, 9, 9>::Zero();
@@ -73,6 +86,9 @@ void WifiEkf::update(double z)
     double y = z - measurement(p, q, ap);
     printf("%f %f\n", z, measurement(p, q, ap));
     Eigen::Matrix<double, 1, 12> H = jacobian();
+	std::cout << "H=\n" << H << std::endl;
+	Eigen::Matrix<double, 1, 12> Hp = myJacobian(delta_p, delta_theta, delta_ap);
+	std::cout << "Hp=\n" << Hp << std::endl;
     double s = H * P * H.transpose() + W_cov;
     Eigen::Matrix<double, 12, 1> K = P * H.transpose() * (1.0 / s);
     P = (Eigen::Matrix<double, 12, 12>::Identity() - K * H) * P;
@@ -81,6 +97,7 @@ void WifiEkf::update(double z)
     v += dx.segment<3>(3);
     q = (Eigen::Quaterniond(q) * Eigen::Quaterniond(1.0, dx(6) / 2, dx(7) / 2, dx(8) / 2)).normalized().toRotationMatrix();
     ap += dx.segment<3>(9);
+	delta_ap = dx.segment<3>(9);
     ROS_INFO_STREAM("P2: " << P.diagonal().transpose());
 }
 
@@ -90,6 +107,24 @@ double WifiEkf::measurement(const Eigen::Vector3d &_p, const Eigen::Matrix3d &_q
     Eigen::Vector3d distance = (_ap - _p).normalized();
     Eigen::Vector3d antenna = _q.col(0);
     return distance.dot(antenna);
+}
+
+Eigen::Matrix<double, 1, 12> WifiEkf::myJacobian(const Eigen::Vector3d &_delta_p, const Eigen::Vector3d &_delta_theta, const Eigen::Vector3d &_delta_ap)
+{
+    Eigen::Matrix<double, 1, 12> J = Eigen::Matrix<double, 1, 12>::Zero();
+	double C = 2*M_PI*R/LANDA;
+	double N = (p(0) - ap(0) ) * (q(0,0) + _delta_theta(2)*q(0,1) - _delta_theta(1)*q(0,2) ) + (p(1) - ap(1)) * (q(1,0) + _delta_theta(2)*q(1,1) - _delta_theta(1)*q(1,2) ) + (p(2) - ap(2)) * (q(2,0) + _delta_theta(2)*q(2,1) - _delta_theta(1)*q(2,2) );
+	double M = (p - ap).norm();
+	for(int i = 0; i < 3; ++i)
+	{
+		J(i) = (C*M*(q(i,0) + _delta_theta(2)*q(i,1) - _delta_theta(1)*q(i,2) ) - (p(i) - ap(i))*C*N*(1.0/M) )/(M*M);
+		J(i+3) = 0;
+		J(i+9) = (-1*C*M*(q(i,0) + _delta_theta(2)*q(i,1) - _delta_theta(1)*q(i,2) ) + (p(i) - ap(i))*C*N*(1.0/M) )/(M*M);
+	}
+	J(6) = 0;
+	J(7) = -1*C/M * (q(0,2)*(p(0)-ap(0)) + q(1,2)*(p(1)-ap(1)) + q(2,2)*(p(2)-ap(2)) );
+	J(8) = C/M * (q(0,1)*(p(0)-ap(0)) + q(1,1)*(p(1)-ap(1)) + q(2,1)*(p(2)-ap(2)) );
+	return J;	
 }
 
 Eigen::Matrix<double, 1, 12> WifiEkf::jacobian()

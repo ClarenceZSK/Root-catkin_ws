@@ -14,6 +14,7 @@ public:
     void update(double z);
     double measurement(const Eigen::Vector3d &_p, const Eigen::Matrix3d &_q, const Eigen::Vector3d &_ap);
     Eigen::Matrix<double, 1, 12> jacobian();
+    Eigen::Matrix<double, 1, 12> myJacobian(const Eigen::Vector3d &_delta_p, const Eigen::Vector3d &_delta_theta, const Eigen::Vector3d &_delta_ap);
 
     Eigen::Vector3d g; //gravity
 
@@ -21,6 +22,11 @@ public:
     Eigen::Vector3d p, v; //position, velocity
     Eigen::Matrix3d q; //rotation
     Eigen::Vector3d ap; // ap
+
+    Eigen::Vector3d delta_p; // ap
+    Eigen::Vector3d delta_ap; // ap
+    Eigen::Vector3d delta_theta; // ap
+
     Eigen::Matrix<double, 12, 12> P; //cov of about state
 
     const Eigen::Matrix3d acc_cov = 0.1 * 0.01 * Eigen::Matrix3d::Identity();
