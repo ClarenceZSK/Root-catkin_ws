@@ -23,13 +23,7 @@ ros/message_operations.h
 -
 std_msgs/Header.h
 -
-std_msgs/Float64MultiArray.h
--
-std_msgs/Float64MultiArray.h
--
-std_msgs/Float64MultiArray.h
--
-std_msgs/Float64MultiArray.h
+std_msgs/Float64.h
 -
 
 /home/clarence/catkin_ws/src/sar_localization/src/LOS_3D.cpp
@@ -63,10 +57,6 @@ unistd.h
 -
 glib.h
 -
-
-/home/clarence/catkin_ws/src/sar_localization/src/SAR.cpp
-SAR.h
-/home/clarence/catkin_ws/src/sar_localization/src/SAR.h
 
 /home/clarence/catkin_ws/src/sar_localization/src/SAR.h
 ros/ros.h
@@ -1923,6 +1913,22 @@ ros/message_operations.h
 -
 
 /opt/ros/indigo/include/std_msgs/Float32.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+
+/opt/ros/indigo/include/std_msgs/Float64.h
 string
 -
 vector

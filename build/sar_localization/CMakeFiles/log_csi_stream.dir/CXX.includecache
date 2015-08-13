@@ -23,13 +23,7 @@ ros/message_operations.h
 -
 std_msgs/Header.h
 -
-std_msgs/Float64MultiArray.h
--
-std_msgs/Float64MultiArray.h
--
-std_msgs/Float64MultiArray.h
--
-std_msgs/Float64MultiArray.h
+std_msgs/Float64.h
 -
 
 /home/clarence/catkin_ws/src/sar_localization/src/log_csi_stream.cpp
@@ -43,6 +37,8 @@ std_msgs/Int16.h
 /home/clarence/catkin_ws/src/sar_localization/src/std_msgs/Int16.h
 std_msgs/Float32.h
 /home/clarence/catkin_ws/src/sar_localization/src/std_msgs/Float32.h
+std_msgs/Float64.h
+/home/clarence/catkin_ws/src/sar_localization/src/std_msgs/Float64.h
 std_msgs/Header.h
 /home/clarence/catkin_ws/src/sar_localization/src/std_msgs/Header.h
 std_msgs/MultiArrayLayout.h
@@ -1751,6 +1747,22 @@ ros/forwards.h
 /opt/ros/indigo/include/rosconsole/macros_generated.h
 
 /opt/ros/indigo/include/std_msgs/Float32.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+
+/opt/ros/indigo/include/std_msgs/Float64.h
 string
 -
 vector

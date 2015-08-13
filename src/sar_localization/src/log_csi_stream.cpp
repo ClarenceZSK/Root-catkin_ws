@@ -7,6 +7,7 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Int16.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Float64.h"
 #include "std_msgs/Header.h"
 #include "std_msgs/MultiArrayLayout.h"
 #include "std_msgs/MultiArrayDimension.h"
@@ -69,7 +70,8 @@ void exit_program_err(int code, char* func);
 using namespace std;
 using namespace Eigen;
 
-ros::Publisher          csi_pub;
+//ros::Publisher          csi_pub;
+ros::Publisher          cosValue_pub;
 
 void setWindow(fftw_complex *x)
 {
@@ -217,7 +219,8 @@ int main(int argc, char** argv)
 	/*init ros*/
 	ros::init(argc, argv, "csi_publisher");
 	ros::NodeHandle handle;
-	csi_pub = handle.advertise<sar_localization::Csi>("csi", 1000);
+	//csi_pub = handle.advertise<sar_localization::Csi>("csi", 1000);
+	cosValue_pub = handle.advertise<std_msgs::Float64>("cos_value", 1000);
 	//ros::Rate listen_rate(100);
 	/* Local variables */
 	struct sockaddr_nl proc_addr, kern_addr;	// addrs for recv, send, bind
@@ -500,12 +503,12 @@ int main(int argc, char** argv)
 			//Start to publish CSI by ROS Msg
 			//sar_localization::Csi msg;
 			//msg.header.stamp = ros::Time::now();
-			msg.Ntx = Ntx;
+			//msg.Ntx = Ntx;
 			//initialization
-			msg.csi1_real.data.clear();
-			msg.csi1_image.data.clear();
-			msg.csi2_real.data.clear();
-			msg.csi2_image.data.clear();
+			//msg.csi1_real.data.clear();
+			//msg.csi1_image.data.clear();
+			//msg.csi2_real.data.clear();
+			//msg.csi2_image.data.clear();
 			//bool test = 0;
 			Complex hatCSI;
 			Complex hatCSISmoothed;
@@ -564,8 +567,10 @@ int main(int argc, char** argv)
 				//cout << "Phase map size:" << phaseMap.size() << endl;
 				//cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
 				double cos_value = -1*(avgPhaseSmooth)*LANDA/(2*M_PI*R);
+				msg.cos_value.data = cos_value;
 				cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << ", cos_value: " << cos_value << endl;
-
+				
+				/*
 				for (int i = 0; i < Ntx; ++i)
 				{
 					for (int j = 0; j < 30; ++j)
@@ -577,7 +582,9 @@ int main(int argc, char** argv)
 					}
 				}
 				msg.check_csi = check_csi;
-				csi_pub.publish(msg);
+				*/
+				//csi_pub.publish(msg);
+				cosValue_pub.publish(msg);
 				++count;
 				if (count % 100 == 0)
 					printf("receive %d bytes [msgcnt=%u]\n", ret, count);

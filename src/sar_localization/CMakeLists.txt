@@ -55,7 +55,7 @@ find_package(OpenCV REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
+add_message_files(
    FILES
    Csi.msg
    Motor.msg
@@ -197,46 +197,46 @@ INCLUDE_DIRECTORIES(
 #target_link_libraries(serial_message ${catkin_LIBRARIES})
 #add_dependencies(serial_message sar_localization_generate_messages_cpp)
 
-add_executable(motor_message src/motor_message.cpp)
-target_link_libraries(motor_message ${catkin_LIBRARIES})
-add_dependencies(motor_message sar_localization_generate_messages_cpp)
+#add_executable(motor_message src/motor_message.cpp)
+#target_link_libraries(motor_message ${catkin_LIBRARIES})
+#add_dependencies(motor_message sar_localization_generate_messages_cpp)
 
 
-add_executable(LOS_2D_singleThread
-	src/LOS_2D_singleThread.cpp
-	src/SAR_singleThread.cpp
-	)
-target_link_libraries(
-	LOS_2D_singleThread
-	${catkin_LIBRARIES}
-	${GLIB2_LIBRARY}
-   	${GTHREAD2_LIBRARY}
-)
-add_dependencies(LOS_2D_singleThread sar_localization_generate_messages_cpp)
+#add_executable(LOS_2D_singleThread
+#	src/LOS_2D_singleThread.cpp
+#	src/SAR_singleThread.cpp
+#	)
+#target_link_libraries(
+#	LOS_2D_singleThread
+#	${catkin_LIBRARIES}
+#	${GLIB2_LIBRARY}
+#   	${GTHREAD2_LIBRARY}
+#)
+#add_dependencies(LOS_2D_singleThread sar_localization_generate_messages_cpp)
 
-add_executable(LOS_2D
-    src/LOS_2D.cpp
-    src/SAR.cpp
-    )
-target_link_libraries(
-    LOS_2D
-    ${catkin_LIBRARIES}
-    ${GLIB2_LIBRARY}
-    ${GTHREAD2_LIBRARY}
-)
-add_dependencies(LOS_2D sar_localization_generate_messages_cpp)
+#add_executable(LOS_2D
+#    src/LOS_2D.cpp
+#    src/SAR.cpp
+#    )
+#target_link_libraries(
+#    LOS_2D
+#    ${catkin_LIBRARIES}
+#    ${GLIB2_LIBRARY}
+#    ${GTHREAD2_LIBRARY}
+#)
+#add_dependencies(LOS_2D sar_localization_generate_messages_cpp)
 
-add_executable(LOS_3D
-	src/LOS_3D.cpp
-	src/SAR.cpp
-	)
-target_link_libraries(
-    LOS_3D
-    ${catkin_LIBRARIES}
-    ${GLIB2_LIBRARY}
-    ${GTHREAD2_LIBRARY}
-)
-add_dependencies(LOS_3D sar_localization_generate_messages_cpp)
+#add_executable(LOS_3D
+#	src/LOS_3D.cpp
+#	src/SAR.cpp
+#	)
+#target_link_libraries(
+#    LOS_3D
+#    ${catkin_LIBRARIES}
+#    ${GLIB2_LIBRARY}
+#    ${GTHREAD2_LIBRARY}
+#)
+#add_dependencies(LOS_3D sar_localization_generate_messages_cpp)
 
 #add_executable(NLOS_2D_listener src/NLOS_2D_listener.cpp)
 #target_link_libraries(

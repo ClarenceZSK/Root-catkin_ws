@@ -696,45 +696,6 @@ imu_3dm_gx4_genpy/fast:
 .PHONY : imu_3dm_gx4_genpy/fast
 
 #=============================================================================
-# Target rules for targets named LOS_2D
-
-# Build rule for target.
-LOS_2D: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 LOS_2D
-.PHONY : LOS_2D
-
-# fast build rule for target.
-LOS_2D/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/build
-.PHONY : LOS_2D/fast
-
-#=============================================================================
-# Target rules for targets named LOS_2D_singleThread
-
-# Build rule for target.
-LOS_2D_singleThread: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 LOS_2D_singleThread
-.PHONY : LOS_2D_singleThread
-
-# fast build rule for target.
-LOS_2D_singleThread/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build
-.PHONY : LOS_2D_singleThread/fast
-
-#=============================================================================
-# Target rules for targets named LOS_3D
-
-# Build rule for target.
-LOS_3D: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 LOS_3D
-.PHONY : LOS_3D
-
-# fast build rule for target.
-LOS_3D/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/build
-.PHONY : LOS_3D/fast
-
-#=============================================================================
 # Target rules for targets named _sar_localization_generate_messages_check_deps_Csi
 
 # Build rule for target.
@@ -811,19 +772,6 @@ log_csi_stream: cmake_check_build_system
 log_csi_stream/fast:
 	$(MAKE) -f sar_localization/CMakeFiles/log_csi_stream.dir/build.make sar_localization/CMakeFiles/log_csi_stream.dir/build
 .PHONY : log_csi_stream/fast
-
-#=============================================================================
-# Target rules for targets named motor_message
-
-# Build rule for target.
-motor_message: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 motor_message
-.PHONY : motor_message
-
-# fast build rule for target.
-motor_message/fast:
-	$(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/build
-.PHONY : motor_message/fast
 
 #=============================================================================
 # Target rules for targets named sar_localization_gencpp
@@ -1075,16 +1023,12 @@ help:
 	@echo "... imu_3dm_gx4_generate_messages_py"
 	@echo "... imu_3dm_gx4_genlisp"
 	@echo "... imu_3dm_gx4_genpy"
-	@echo "... LOS_2D"
-	@echo "... LOS_2D_singleThread"
-	@echo "... LOS_3D"
 	@echo "... _sar_localization_generate_messages_check_deps_Csi"
 	@echo "... _sar_localization_generate_messages_check_deps_Motor"
 	@echo "... actionlib_generate_messages_cpp"
 	@echo "... actionlib_generate_messages_lisp"
 	@echo "... actionlib_generate_messages_py"
 	@echo "... log_csi_stream"
-	@echo "... motor_message"
 	@echo "... sar_localization_gencpp"
 	@echo "... sar_localization_generate_messages"
 	@echo "... sar_localization_generate_messages_cpp"

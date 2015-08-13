@@ -1,6 +1,3 @@
-/home/clarence/catkin_ws/build/sar_localization/CMakeFiles/LOS_2D.dir
-/home/clarence/catkin_ws/build/sar_localization/CMakeFiles/LOS_2D_singleThread.dir
-/home/clarence/catkin_ws/build/sar_localization/CMakeFiles/LOS_3D.dir
 /home/clarence/catkin_ws/build/imu_3dm_gx4/CMakeFiles/_imu_3dm_gx4_generate_messages_check_deps_FilterOutput.dir
 /home/clarence/catkin_ws/build/sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Csi.dir
 /home/clarence/catkin_ws/build/sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Motor.dir
@@ -32,7 +29,6 @@
 /home/clarence/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genlisp.dir
 /home/clarence/catkin_ws/build/imu_3dm_gx4/CMakeFiles/imu_3dm_gx4_genpy.dir
 /home/clarence/catkin_ws/build/sar_localization/CMakeFiles/log_csi_stream.dir
-/home/clarence/catkin_ws/build/sar_localization/CMakeFiles/motor_message.dir
 /home/clarence/catkin_ws/build/data_generator/CMakeFiles/nav_msgs_generate_messages_cpp.dir
 /home/clarence/catkin_ws/build/data_generator/CMakeFiles/nav_msgs_generate_messages_lisp.dir
 /home/clarence/catkin_ws/build/data_generator/CMakeFiles/nav_msgs_generate_messages_py.dir

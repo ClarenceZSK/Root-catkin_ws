@@ -150,48 +150,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-sar_localization/CMakeFiles/LOS_2D.dir/rule:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/LOS_2D.dir/rule
-.PHONY : sar_localization/CMakeFiles/LOS_2D.dir/rule
-
-# Convenience name for target.
-LOS_2D: sar_localization/CMakeFiles/LOS_2D.dir/rule
-.PHONY : LOS_2D
-
-# fast build rule for target.
-LOS_2D/fast:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/build
-.PHONY : LOS_2D/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/LOS_2D_singleThread.dir/rule:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/LOS_2D_singleThread.dir/rule
-.PHONY : sar_localization/CMakeFiles/LOS_2D_singleThread.dir/rule
-
-# Convenience name for target.
-LOS_2D_singleThread: sar_localization/CMakeFiles/LOS_2D_singleThread.dir/rule
-.PHONY : LOS_2D_singleThread
-
-# fast build rule for target.
-LOS_2D_singleThread/fast:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build
-.PHONY : LOS_2D_singleThread/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/LOS_3D.dir/rule:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/LOS_3D.dir/rule
-.PHONY : sar_localization/CMakeFiles/LOS_3D.dir/rule
-
-# Convenience name for target.
-LOS_3D: sar_localization/CMakeFiles/LOS_3D.dir/rule
-.PHONY : LOS_3D
-
-# fast build rule for target.
-LOS_3D/fast:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/build
-.PHONY : LOS_3D/fast
-
-# Convenience name for target.
 sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Csi.dir/rule:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Csi.dir/rule
 .PHONY : sar_localization/CMakeFiles/_sar_localization_generate_messages_check_deps_Csi.dir/rule
@@ -274,20 +232,6 @@ log_csi_stream: sar_localization/CMakeFiles/log_csi_stream.dir/rule
 log_csi_stream/fast:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/log_csi_stream.dir/build.make sar_localization/CMakeFiles/log_csi_stream.dir/build
 .PHONY : log_csi_stream/fast
-
-# Convenience name for target.
-sar_localization/CMakeFiles/motor_message.dir/rule:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 sar_localization/CMakeFiles/motor_message.dir/rule
-.PHONY : sar_localization/CMakeFiles/motor_message.dir/rule
-
-# Convenience name for target.
-motor_message: sar_localization/CMakeFiles/motor_message.dir/rule
-.PHONY : motor_message
-
-# fast build rule for target.
-motor_message/fast:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/build
-.PHONY : motor_message/fast
 
 # Convenience name for target.
 sar_localization/CMakeFiles/sar_localization_gencpp.dir/rule:
@@ -471,129 +415,6 @@ tf_generate_messages_py/fast:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/tf_generate_messages_py.dir/build.make sar_localization/CMakeFiles/tf_generate_messages_py.dir/build
 .PHONY : tf_generate_messages_py/fast
 
-src/LOS_2D.o: src/LOS_2D.cpp.o
-.PHONY : src/LOS_2D.o
-
-# target to build an object file
-src/LOS_2D.cpp.o:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/LOS_2D.cpp.o
-.PHONY : src/LOS_2D.cpp.o
-
-src/LOS_2D.i: src/LOS_2D.cpp.i
-.PHONY : src/LOS_2D.i
-
-# target to preprocess a source file
-src/LOS_2D.cpp.i:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/LOS_2D.cpp.i
-.PHONY : src/LOS_2D.cpp.i
-
-src/LOS_2D.s: src/LOS_2D.cpp.s
-.PHONY : src/LOS_2D.s
-
-# target to generate assembly for a file
-src/LOS_2D.cpp.s:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/LOS_2D.cpp.s
-.PHONY : src/LOS_2D.cpp.s
-
-src/LOS_2D_singleThread.o: src/LOS_2D_singleThread.cpp.o
-.PHONY : src/LOS_2D_singleThread.o
-
-# target to build an object file
-src/LOS_2D_singleThread.cpp.o:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/LOS_2D_singleThread.cpp.o
-.PHONY : src/LOS_2D_singleThread.cpp.o
-
-src/LOS_2D_singleThread.i: src/LOS_2D_singleThread.cpp.i
-.PHONY : src/LOS_2D_singleThread.i
-
-# target to preprocess a source file
-src/LOS_2D_singleThread.cpp.i:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/LOS_2D_singleThread.cpp.i
-.PHONY : src/LOS_2D_singleThread.cpp.i
-
-src/LOS_2D_singleThread.s: src/LOS_2D_singleThread.cpp.s
-.PHONY : src/LOS_2D_singleThread.s
-
-# target to generate assembly for a file
-src/LOS_2D_singleThread.cpp.s:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/LOS_2D_singleThread.cpp.s
-.PHONY : src/LOS_2D_singleThread.cpp.s
-
-src/LOS_3D.o: src/LOS_3D.cpp.o
-.PHONY : src/LOS_3D.o
-
-# target to build an object file
-src/LOS_3D.cpp.o:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.o
-.PHONY : src/LOS_3D.cpp.o
-
-src/LOS_3D.i: src/LOS_3D.cpp.i
-.PHONY : src/LOS_3D.i
-
-# target to preprocess a source file
-src/LOS_3D.cpp.i:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.i
-.PHONY : src/LOS_3D.cpp.i
-
-src/LOS_3D.s: src/LOS_3D.cpp.s
-.PHONY : src/LOS_3D.s
-
-# target to generate assembly for a file
-src/LOS_3D.cpp.s:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/LOS_3D.cpp.s
-.PHONY : src/LOS_3D.cpp.s
-
-src/SAR.o: src/SAR.cpp.o
-.PHONY : src/SAR.o
-
-# target to build an object file
-src/SAR.cpp.o:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.o
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.o
-.PHONY : src/SAR.cpp.o
-
-src/SAR.i: src/SAR.cpp.i
-.PHONY : src/SAR.i
-
-# target to preprocess a source file
-src/SAR.cpp.i:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.i
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.i
-.PHONY : src/SAR.cpp.i
-
-src/SAR.s: src/SAR.cpp.s
-.PHONY : src/SAR.s
-
-# target to generate assembly for a file
-src/SAR.cpp.s:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D.dir/build.make sar_localization/CMakeFiles/LOS_2D.dir/src/SAR.cpp.s
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_3D.dir/build.make sar_localization/CMakeFiles/LOS_3D.dir/src/SAR.cpp.s
-.PHONY : src/SAR.cpp.s
-
-src/SAR_singleThread.o: src/SAR_singleThread.cpp.o
-.PHONY : src/SAR_singleThread.o
-
-# target to build an object file
-src/SAR_singleThread.cpp.o:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/SAR_singleThread.cpp.o
-.PHONY : src/SAR_singleThread.cpp.o
-
-src/SAR_singleThread.i: src/SAR_singleThread.cpp.i
-.PHONY : src/SAR_singleThread.i
-
-# target to preprocess a source file
-src/SAR_singleThread.cpp.i:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/SAR_singleThread.cpp.i
-.PHONY : src/SAR_singleThread.cpp.i
-
-src/SAR_singleThread.s: src/SAR_singleThread.cpp.s
-.PHONY : src/SAR_singleThread.s
-
-# target to generate assembly for a file
-src/SAR_singleThread.cpp.s:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/LOS_2D_singleThread.dir/build.make sar_localization/CMakeFiles/LOS_2D_singleThread.dir/src/SAR_singleThread.cpp.s
-.PHONY : src/SAR_singleThread.cpp.s
-
 src/log_csi_stream.o: src/log_csi_stream.cpp.o
 .PHONY : src/log_csi_stream.o
 
@@ -618,39 +439,12 @@ src/log_csi_stream.cpp.s:
 	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/log_csi_stream.dir/build.make sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.s
 .PHONY : src/log_csi_stream.cpp.s
 
-src/motor_message.o: src/motor_message.cpp.o
-.PHONY : src/motor_message.o
-
-# target to build an object file
-src/motor_message.cpp.o:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/src/motor_message.cpp.o
-.PHONY : src/motor_message.cpp.o
-
-src/motor_message.i: src/motor_message.cpp.i
-.PHONY : src/motor_message.i
-
-# target to preprocess a source file
-src/motor_message.cpp.i:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/src/motor_message.cpp.i
-.PHONY : src/motor_message.cpp.i
-
-src/motor_message.s: src/motor_message.cpp.s
-.PHONY : src/motor_message.s
-
-# target to generate assembly for a file
-src/motor_message.cpp.s:
-	cd /home/clarence/catkin_ws/build && $(MAKE) -f sar_localization/CMakeFiles/motor_message.dir/build.make sar_localization/CMakeFiles/motor_message.dir/src/motor_message.cpp.s
-.PHONY : src/motor_message.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... LOS_2D"
-	@echo "... LOS_2D_singleThread"
-	@echo "... LOS_3D"
 	@echo "... _sar_localization_generate_messages_check_deps_Csi"
 	@echo "... _sar_localization_generate_messages_check_deps_Motor"
 	@echo "... actionlib_generate_messages_cpp"
@@ -662,7 +456,6 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... log_csi_stream"
-	@echo "... motor_message"
 	@echo "... rebuild_cache"
 	@echo "... sar_localization_gencpp"
 	@echo "... sar_localization_generate_messages"
@@ -678,27 +471,9 @@ help:
 	@echo "... tf_generate_messages_cpp"
 	@echo "... tf_generate_messages_lisp"
 	@echo "... tf_generate_messages_py"
-	@echo "... src/LOS_2D.o"
-	@echo "... src/LOS_2D.i"
-	@echo "... src/LOS_2D.s"
-	@echo "... src/LOS_2D_singleThread.o"
-	@echo "... src/LOS_2D_singleThread.i"
-	@echo "... src/LOS_2D_singleThread.s"
-	@echo "... src/LOS_3D.o"
-	@echo "... src/LOS_3D.i"
-	@echo "... src/LOS_3D.s"
-	@echo "... src/SAR.o"
-	@echo "... src/SAR.i"
-	@echo "... src/SAR.s"
-	@echo "... src/SAR_singleThread.o"
-	@echo "... src/SAR_singleThread.i"
-	@echo "... src/SAR_singleThread.s"
 	@echo "... src/log_csi_stream.o"
 	@echo "... src/log_csi_stream.i"
 	@echo "... src/log_csi_stream.s"
-	@echo "... src/motor_message.o"
-	@echo "... src/motor_message.i"
-	@echo "... src/motor_message.s"
 .PHONY : help
 
 
