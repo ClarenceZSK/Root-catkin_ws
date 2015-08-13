@@ -50,6 +50,9 @@ typedef std::valarray<Complex> CArray;
 #define MAX_PAYLOAD 2048
 #define SLOW_MSG_CNT 1
 
+#define R 		0.06
+#define LANDA 	0.05168
+
 sig_atomic_t volatile g_request_shutdown = 0;
 int sock_fd = -1;							// the socket
 //FILE* out = NULL;
@@ -506,7 +509,10 @@ int main(int argc, char** argv)
 			//bool test = 0;
 			Complex hatCSI;
 			Complex hatCSISmoothed;
-			//double amplitudeHatCSI = 0;
+			double avgPhase = 0;
+			double avgMagnitude = 0;
+			double avgPhaseSmooth = 0;
+			double avgMagnitudeSmooth = 0;
 			//test fft effect
 			Eigen::MatrixXcd smoothedCsi1(Ntx, 30);
 			Eigen::MatrixXcd smoothedCsi2(Ntx, 30);
@@ -519,35 +525,46 @@ int main(int argc, char** argv)
 			{
 				for (int j = 0; j < 30; ++j)
 				{
-					//amplitudeHatCSI += abs(csi1(i,j)*conj(csi2(i,j)) );
-					hatCSI += csi1(i,j)*conj(csi2(i,j));
-					hatCSISmoothed += smoothedCsi1(i,j)*conj(smoothedCsi2(i,j));
+					avgMagnitude += abs(csi1(i,j)*conj(csi2(i,j)) );
+					avgPhase += arg(csi1(i,j)*conj(csi2(i,j)) );
+					//hatCSI += csi1(i,j)*conj(csi2(i,j));
+					//hatCSISmoothed += smoothedCsi1(i,j)*conj(smoothedCsi2(i,j));
+					avgMagnitudeSmooth += abs(smoothedCsi1(i,j)*conj(smoothedCsi2(i,j)) ); 
+					avgPhaseSmooth += arg(smoothedCsi1(i,j)*conj(smoothedCsi2(i,j)) ); 
 				}
 			}
-			//amplitudeHatCSI /= Ntx*30.0;
-			hatCSI /= Ntx*30.0;
-			hatCSISmoothed /= Ntx*30.0;
-			if(abs(hatCSISmoothed) < 1 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
+			avgMagnitude /= Ntx*30.0;
+			avgMagnitudeSmooth /= Ntx*30.0;
+			avgPhase /= Ntx*30.0;
+			avgPhaseSmooth /= Ntx*30.0;
+			//hatCSI /= Ntx*30.0;
+			//hatCSISmoothed /= Ntx*30.0;
+			//if(abs(hatCSISmoothed) < 1 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
 			//if(abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
+			if(avgMagnitude < 10 || fabs(avgMagnitude - avgMagnitudeSmooth) > 20)
 			{
-				//cout << "No LOS signal!!! Drop the CSI!" << endl;
-				int v = phaseMap[arg(hatCSI)*180/M_PI];
-				phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				cout << "No LOS signal!!! Drop the CSI!" << endl;
+				//int v = phaseMap[arg(hatCSI)*180/M_PI];
+				int v = phaseMap[avgPhase*180/M_PI];
+				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
+				phaseMap[avgPhase*180/M_PI] = 1+v;
 				continue;
 			}
 			else
 			{	
 				//cout << "s_hatCSI:" << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI << endl;
-				int v = phaseMap[arg(hatCSI)*180/M_PI];
-				int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
+				//int v = phaseMap[arg(hatCSI)*180/M_PI];
+				int v = phaseMap[avgPhase*180/M_PI];
+				//int vpr = phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI];
+				int vpr = phaseMapSmooth[avgPhaseSmooth*180/M_PI];
 				//int v = phaseMap[orientation];
-				phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
-				phaseMapSmooth[arg(hatCSISmoothed)*180/M_PI] = 1+vpr;
+				phaseMap[avgPhase*180/M_PI] = 1+v;
+				phaseMapSmooth[avgPhaseSmooth*180/M_PI] = 1+vpr;
 				//phaseMap[orientation] = 1+v;
-				cout << "Phase map size:" << phaseMap.size() << endl;
-				cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
-				double orientation = (arg(hatCSISmoothed)+M_PI)*0.05168/(2*M_PI*0.06);
-				cout << "Smoothed hatCSI:  " << abs(hatCSISmoothed) << ", phase:" << arg(hatCSISmoothed)*180/M_PI+180 << ", orientation: " << orientation << endl;
+				//cout << "Phase map size:" << phaseMap.size() << endl;
+				//cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
+				double cos_value = -1*(avgPhaseSmooth)*LANDA/(2*M_PI*R);
+				cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << ", cos_value: " << cos_value << endl;
 
 				for (int i = 0; i < Ntx; ++i)
 				{
