@@ -108,6 +108,7 @@ void process()
 	p_ap.y = wifi_ekf.ap(1);
 	p_ap.z = wifi_ekf.ap(2);
 	point_cloud.header.stamp = ros::Time::now();
+	point_cloud.header.frame_id = "world";
 	point_cloud.points.push_back(p_ap);
 	pub_ap.publish(point_cloud);
 	point_cloud.points.clear();
