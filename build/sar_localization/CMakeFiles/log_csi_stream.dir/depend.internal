@@ -208,6 +208,7 @@ sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o
  /opt/eigen/Eigen/src/plugins/MatrixCwiseUnaryOps.h
  /opt/ros/indigo/include/XmlRpcDecl.h
  /opt/ros/indigo/include/XmlRpcValue.h
+ /opt/ros/indigo/include/geometry_msgs/Point32.h
  /opt/ros/indigo/include/ros/advertise_options.h
  /opt/ros/indigo/include/ros/advertise_service_options.h
  /opt/ros/indigo/include/ros/assert.h
@@ -262,6 +263,8 @@ sar_localization/CMakeFiles/log_csi_stream.dir/src/log_csi_stream.cpp.o
  /opt/ros/indigo/include/ros/wall_timer.h
  /opt/ros/indigo/include/ros/wall_timer_options.h
  /opt/ros/indigo/include/rosconsole/macros_generated.h
+ /opt/ros/indigo/include/sensor_msgs/ChannelFloat32.h
+ /opt/ros/indigo/include/sensor_msgs/PointCloud.h
  /opt/ros/indigo/include/std_msgs/Float32.h
  /opt/ros/indigo/include/std_msgs/Float64.h
  /opt/ros/indigo/include/std_msgs/Float64MultiArray.h

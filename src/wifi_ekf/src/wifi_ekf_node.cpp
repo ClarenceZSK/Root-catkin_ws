@@ -10,7 +10,7 @@
 
 #include "wifi_ekf.h"
 
-#define G_CNT 0
+#define G_CNT 500
 
 #include <queue>
 using namespace std;
@@ -45,9 +45,9 @@ void imu_callback(const sensor_msgs::ImuConstPtr &imu_msg)
         sum_g += acc;
         gravity_cnt++;
 		//for simulation
-        wifi_ekf.init(imu_msg->header.stamp.toSec(), Eigen::Vector3d(0.0, 0.0, -9.8));
+        //wifi_ekf.init(imu_msg->header.stamp.toSec(), Eigen::Vector3d(0.0, 0.0, -9.8));
 		//for experiments
-        //wifi_ekf.init(imu_msg->header.stamp.toSec(), sum_g/gravity_cnt);
+        wifi_ekf.init(imu_msg->header.stamp.toSec(), sum_g/gravity_cnt);
         filter_start = true;
         return;
     }
@@ -137,8 +137,10 @@ int main(int argc, char **argv)
 
     path.header.frame_id = "world";
 
-    ros::Subscriber sub_imu  = n.subscribe("/data_generator/imu", 1000, imu_callback);
-    ros::Subscriber sub_wifi = n.subscribe("/data_generator/wifi", 1000, wifi_callback);
+    //ros::Subscriber sub_imu  = n.subscribe("/data_generator/imu", 1000, imu_callback);
+    ros::Subscriber sub_imu  = n.subscribe("/imu_3dm_gx4/imu", 1000, imu_callback);
+    //ros::Subscriber sub_wifi = n.subscribe("/data_generator/wifi", 1000, wifi_callback);
+    ros::Subscriber sub_wifi = n.subscribe("/wifi", 1000, wifi_callback);
 
     ros::Rate r(1000);
     while (ros::ok())

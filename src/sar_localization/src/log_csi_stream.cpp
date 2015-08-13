@@ -13,6 +13,7 @@
 #include "std_msgs/MultiArrayDimension.h"
 #include "std_msgs/Float64MultiArray.h"
 #include "sar_localization/Csi.h"
+#include <sensor_msgs/PointCloud.h>
 #include <ros/console.h>
 //#include <sstream>
 
@@ -71,7 +72,7 @@ using namespace std;
 using namespace Eigen;
 
 //ros::Publisher          csi_pub;
-ros::Publisher          cosValue_pub;
+ros::Publisher          pub_wifi;
 
 void setWindow(fftw_complex *x)
 {
@@ -220,7 +221,7 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "csi_publisher");
 	ros::NodeHandle handle;
 	//csi_pub = handle.advertise<sar_localization::Csi>("csi", 1000);
-	cosValue_pub = handle.advertise<std_msgs::Float64>("cos_value", 1000);
+	pub_wifi = handle.advertise<sensor_msgs::PointCloud>("wifi", 1000);
 	//ros::Rate listen_rate(100);
 	/* Local variables */
 	struct sockaddr_nl proc_addr, kern_addr;	// addrs for recv, send, bind
@@ -294,8 +295,9 @@ int main(int argc, char** argv)
 		char *pt = (char*) cmsg->data;
 		unsigned char data_code = (unsigned char) *pt;
 		///////////////////////////////////
-		sar_localization::Csi msg;
-		msg.header.stamp = ros::Time::now();
+		//sar_localization::Csi msg;
+		sensor_msgs::PointCloud wifi;
+		wifi.header.stamp = ros::Time::now();
 		///////////////////////////////////
 		if(data_code == 187)	//Get beamforming
 		{
@@ -544,9 +546,10 @@ int main(int argc, char** argv)
 			//hatCSISmoothed /= Ntx*30.0;
 			//if(abs(hatCSISmoothed) < 1 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
 			//if(abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
-			if(avgMagnitude < 10 || fabs(avgMagnitude - avgMagnitudeSmooth) > 20)
+			if(avgMagnitude < 5 || fabs(avgMagnitude - avgMagnitudeSmooth) > 20)
 			{
-				cout << "No LOS signal!!! Drop the CSI!" << endl;
+				//cout << "No LOS signal!!! Drop the CSI!" << endl;
+				//cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << endl;
 				//int v = phaseMap[arg(hatCSI)*180/M_PI];
 				int v = phaseMap[avgPhase*180/M_PI];
 				//phaseMap[arg(hatCSI)*180/M_PI] = 1+v;
@@ -567,7 +570,11 @@ int main(int argc, char** argv)
 				//cout << "Phase map size:" << phaseMap.size() << endl;
 				//cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
 				double cos_value = -1*(avgPhaseSmooth)*LANDA/(2*M_PI*R);
-				msg.cos_value.data = cos_value;
+				geometry_msgs::Point32 p;
+				p.x = cos_value;
+				p.y = 0.0;
+				p.z = 0.0;
+				wifi.points.push_back(p);
 				cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << ", cos_value: " << cos_value << endl;
 				
 				/*
@@ -584,7 +591,7 @@ int main(int argc, char** argv)
 				msg.check_csi = check_csi;
 				*/
 				//csi_pub.publish(msg);
-				cosValue_pub.publish(msg);
+				pub_wifi.publish(wifi);
 				++count;
 				if (count % 100 == 0)
 					printf("receive %d bytes [msgcnt=%u]\n", ret, count);
