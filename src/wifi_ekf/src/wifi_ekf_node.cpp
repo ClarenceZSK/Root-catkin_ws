@@ -20,6 +20,7 @@ queue<sensor_msgs::PointCloud> wifi_buf;
 ros::Publisher pub_path;
 ros::Publisher pub_odometry;
 ros::Publisher pub_pose;
+ros::Publisher pub_ap;
 nav_msgs::Path path;
 
 
@@ -101,6 +102,16 @@ void process()
     ROS_INFO_STREAM("cov: " << wifi_ekf.P.diagonal().transpose());
 
     nav_msgs::Odometry odometry;
+	sensor_msgs::PointCloud point_cloud;
+	geometry_msgs::Point32 p_ap;
+	p_ap.x = wifi_ekf.ap(0);
+	p_ap.y = wifi_ekf.ap(1);
+	p_ap.z = wifi_ekf.ap(2);
+	point_cloud.header.stamp = ros::Time::now();
+	point_cloud.points.push_back(p_ap);
+	pub_ap.publish(point_cloud);
+	point_cloud.points.clear();
+
     odometry.header.stamp = ros::Time::now();
     odometry.header.frame_id = "world";
     odometry.pose.pose.position.x = wifi_ekf.p(0);
@@ -134,6 +145,7 @@ int main(int argc, char **argv)
     pub_path     = n.advertise<nav_msgs::Path>("path", 1000);
     pub_odometry = n.advertise<nav_msgs::Odometry>("odometry", 1000);
     pub_pose     = n.advertise<geometry_msgs::PoseStamped>("pose", 1000);
+	pub_ap 		 = n.advertise<sensor_msgs::PointCloud>("ap", 1000);
 
     path.header.frame_id = "world";
 

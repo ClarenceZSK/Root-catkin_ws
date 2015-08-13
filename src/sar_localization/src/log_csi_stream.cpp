@@ -592,6 +592,7 @@ int main(int argc, char** argv)
 				*/
 				//csi_pub.publish(msg);
 				pub_wifi.publish(wifi);
+				wifi.points.clear();
 				++count;
 				if (count % 100 == 0)
 					printf("receive %d bytes [msgcnt=%u]\n", ret, count);
