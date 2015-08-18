@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/home/clarence/catkin_ws/src/wifi_ekf/src/wifi_ekf.cpp
+wifi_ekf.h
+/home/clarence/catkin_ws/src/wifi_ekf/src/wifi_ekf.h
+
 /home/clarence/catkin_ws/src/wifi_ekf/src/wifi_ekf.h
 eigen3/Eigen/Dense
 -

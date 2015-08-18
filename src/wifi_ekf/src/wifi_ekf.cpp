@@ -35,10 +35,10 @@ void WifiEkf::init(double t, const Eigen::Vector3d &_g)
     q = Eigen::Quaterniond::FromTwoVectors(_g, Eigen::Vector3d(0.0, 0.0, -1.0)).toRotationMatrix(); // R^w_b
     g = q * _g;
     ROS_INFO_STREAM("aligned g world: " << g.transpose());
-    p = Eigen::Vector3d(10, 10, 10);
+    p = Eigen::Vector3d(2, 0, -0.1);
     v.setZero();
     ap = Eigen::Vector3d(0, 0, 0);
-    P.block<3, 3>(9, 9) = 10 * Eigen::Matrix3d::Identity();
+    P.block<3, 3>(9, 9) = 0.0001 * Eigen::Matrix3d::Identity();
 }
 
 void WifiEkf::predict(double t, const Eigen::Vector3d &linear_acceleration_body, const Eigen::Vector3d &angular_velocity_body)
@@ -85,10 +85,10 @@ void WifiEkf::update(double z)
     ROS_INFO_STREAM("P1: " << P.diagonal().transpose());
     double y = z - measurement(p, q, ap);
     printf("%f %f\n", z, measurement(p, q, ap));
-    Eigen::Matrix<double, 1, 12> H = jacobian();
-	std::cout << "H=\n" << H << std::endl;
+    //Eigen::Matrix<double, 1, 12> H = jacobian();
+	//std::cout << "H=\n" << H << std::endl;
 	Eigen::Matrix<double, 1, 12> Hp = myJacobian(delta_p, delta_theta, delta_ap);
-	std::cout << "Hp=\n" << Hp << std::endl;
+	//std::cout << "Hp=\n" << Hp << std::endl;
     double s = Hp * P * Hp.transpose() + W_cov;
     Eigen::Matrix<double, 12, 1> K = P * Hp.transpose() * (1.0 / s);
     P = (Eigen::Matrix<double, 12, 12>::Identity() - K * Hp) * P;

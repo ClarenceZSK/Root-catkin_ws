@@ -180,8 +180,8 @@ int main(int argc, char** argv)
 				cout << "disturb before:" << p.x << endl;
                 p.y = 0.0;
                 p.z = 0.0;
-				double angle = -2*M_PI*p.x*0.06/0.0514/M_PI*180 + disturb;
-				p.x = -1*angle/180.0*M_PI/2/M_PI/0.06*0.0514;
+				double angle = -2*M_PI*p.x*0.04/0.0514/M_PI*180 + disturb;
+				p.x = -1*angle/180.0*M_PI/2/M_PI/0.04*0.0514;
 				cout << "disturb after: " << p.x << endl;
                 wifi.points.push_back(p);
                 id_ap.values.push_back(i);

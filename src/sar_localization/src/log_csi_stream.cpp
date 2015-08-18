@@ -273,6 +273,10 @@ int main(int argc, char** argv)
 	csiFile.open("CSI_DIS.txt");
 	csiFileSmooth.open("CSI_DIS_SMOOTH.txt");
 	fftTestFile.open("FFT_TEST.txt");
+
+	//deal with 180 degree flip
+	double preDegree = -1;
+	int thre = 20;
 	/* Poll socket forever waiting for a message */
 	while (!g_request_shutdown)
 	{
@@ -374,7 +378,7 @@ int main(int argc, char** argv)
 			perm(0) = ((antenna_sel) & 0x3) + 1;
 			perm(1) = ((antenna_sel >> 2) & 0x3) + 1;
 			perm(2) = ((antenna_sel >> 4) & 0x3) + 1;
-			//cout << "perm: " << perm(0) << ", " << perm(1) << ", " << perm(2) << endl;
+			cout << "perm: " << perm(0) << ", " << perm(1) << ", " << perm(2) << endl;
 			//Get ordered entry. From antenna A to C
 			if(perm(0) == 1)
 			{
@@ -487,6 +491,10 @@ int main(int argc, char** argv)
 			csi1 = csi1_ordered_entry * sqrt(scale / total_noise_pwr);
 			csi2 = csi2_ordered_entry * sqrt(scale / total_noise_pwr);
 			csi3 = csi3_ordered_entry * sqrt(scale / total_noise_pwr);
+			//no ordering
+			//csi1 = csi1_entry * sqrt(scale / total_noise_pwr);
+			//csi2 = csi2_entry * sqrt(scale / total_noise_pwr);
+			//csi3 = csi3_entry * sqrt(scale / total_noise_pwr);
 			if(Ntx == 2)
 			{
 				csi1 = csi1*sqrt(2);
@@ -518,26 +526,31 @@ int main(int argc, char** argv)
 			double avgMagnitude = 0;
 			double avgPhaseSmooth = 0;
 			double avgMagnitudeSmooth = 0;
+			double avgM1 = 0;
+			double avgM2 = 0;
 			//test fft effect
 			Eigen::MatrixXcd smoothedCsi1(Ntx, 30);
 			Eigen::MatrixXcd smoothedCsi2(Ntx, 30);
-			//Eigen::MatrixXcd smoothedCsi3(Ntx, 30);
-			smoothedCsi1 = preprocessingCSI(csi1);
+			Eigen::MatrixXcd smoothedCsi3(Ntx, 30);
 			smoothedCsi2 = preprocessingCSI(csi2);
-
+			smoothedCsi3 = preprocessingCSI(csi3);
 			
 			for (int i = 0; i < Ntx; ++i)
 			{
 				for (int j = 0; j < 30; ++j)
 				{
-					avgMagnitude += abs(csi1(i,j)*conj(csi2(i,j)) );
-					avgPhase += arg(csi1(i,j)*conj(csi2(i,j)) );
+					avgM1 += abs(csi2(i,j) );
+					avgM2 += abs(csi3(i,j) );
+					avgMagnitude += abs(csi2(i,j)*conj(csi3(i,j)) );
+					avgPhase += arg(csi2(i,j)*conj(csi3(i,j)) );
 					//hatCSI += csi1(i,j)*conj(csi2(i,j));
 					//hatCSISmoothed += smoothedCsi1(i,j)*conj(smoothedCsi2(i,j));
-					avgMagnitudeSmooth += abs(smoothedCsi1(i,j)*conj(smoothedCsi2(i,j)) ); 
-					avgPhaseSmooth += arg(smoothedCsi1(i,j)*conj(smoothedCsi2(i,j)) ); 
+					avgMagnitudeSmooth += abs(smoothedCsi2(i,j)*conj(smoothedCsi3(i,j)) ); 
+					avgPhaseSmooth += arg(smoothedCsi2(i,j)*conj(smoothedCsi3(i,j)) ); 
 				}
 			}
+			avgM1 /= Ntx*30.0;
+			avgM2 /= Ntx*30.0;
 			avgMagnitude /= Ntx*30.0;
 			avgMagnitudeSmooth /= Ntx*30.0;
 			avgPhase /= Ntx*30.0;
@@ -546,7 +559,7 @@ int main(int argc, char** argv)
 			//hatCSISmoothed /= Ntx*30.0;
 			//if(abs(hatCSISmoothed) < 1 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
 			//if(abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
-			if(avgMagnitude < 5 || fabs(avgMagnitude - avgMagnitudeSmooth) > 20)
+			if(avgMagnitude < 5 || fabs(avgMagnitude - avgMagnitudeSmooth) > 20 )
 			{
 				//cout << "No LOS signal!!! Drop the CSI!" << endl;
 				//cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << endl;
@@ -569,6 +582,19 @@ int main(int argc, char** argv)
 				//phaseMap[orientation] = 1+v;
 				//cout << "Phase map size:" << phaseMap.size() << endl;
 				//cout << "Smooth Phase map size:" << phaseMapSmooth.size() << endl;
+				//deal with 180 degree flip
+				if(preDegree >= 0)
+				{
+					double diff = fabs(avgPhaseSmooth*180/M_PI + 180 - preDegree);
+					if(diff > 180-thre && diff < 180+thre) //flip 180 degree
+					{
+						avgPhaseSmooth += M_PI;
+						if(avgPhaseSmooth >= 2*M_PI)
+						{
+							avgPhaseSmooth -= 2*M_PI;
+						}
+					}
+				}
 				double cos_value = -1*(avgPhaseSmooth)*LANDA/(2*M_PI*R);
 				geometry_msgs::Point32 p;
 				p.x = cos_value;
@@ -576,7 +602,6 @@ int main(int argc, char** argv)
 				p.z = 0.0;
 				wifi.points.push_back(p);
 				cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << ", cos_value: " << cos_value << endl;
-				
 				/*
 				for (int i = 0; i < Ntx; ++i)
 				{
@@ -594,6 +619,7 @@ int main(int argc, char** argv)
 				pub_wifi.publish(wifi);
 				wifi.points.clear();
 				++count;
+				preDegree = avgPhaseSmooth*180/M_PI + 180;
 				if (count % 100 == 0)
 					printf("receive %d bytes [msgcnt=%u]\n", ret, count);
 			}

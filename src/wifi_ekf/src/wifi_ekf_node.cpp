@@ -9,7 +9,9 @@
 
 
 #include "wifi_ekf.h"
-
+//simulation
+#define G_CNT 0
+//experiments
 #define G_CNT 500
 
 #include <queue>
