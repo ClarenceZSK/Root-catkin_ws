@@ -559,7 +559,7 @@ int main(int argc, char** argv)
 			//hatCSISmoothed /= Ntx*30.0;
 			//if(abs(hatCSISmoothed) < 1 || abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
 			//if(abs(abs(hatCSI)-abs(hatCSISmoothed) ) > 20)
-			if(avgMagnitude < 5 || fabs(avgMagnitude - avgMagnitudeSmooth) > 20 )
+			if(avgMagnitude < 10 || fabs(avgMagnitude - avgMagnitudeSmooth) > 20 )
 			{
 				//cout << "No LOS signal!!! Drop the CSI!" << endl;
 				//cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << endl;
@@ -589,9 +589,9 @@ int main(int argc, char** argv)
 					if(diff > 180-thre && diff < 180+thre) //flip 180 degree
 					{
 						avgPhaseSmooth += M_PI;
-						if(avgPhaseSmooth >= 2*M_PI)
+						if(avgPhaseSmooth >= 2.0*M_PI)
 						{
-							avgPhaseSmooth -= 2*M_PI;
+							avgPhaseSmooth = avgPhaseSmooth - (2.0*M_PI);
 						}
 					}
 				}
@@ -601,7 +601,7 @@ int main(int argc, char** argv)
 				p.y = 0.0;
 				p.z = 0.0;
 				wifi.points.push_back(p);
-				cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI+180 << ", cos_value: " << cos_value << endl;
+				cout << "Smoothed hatCSI:  " << avgMagnitudeSmooth << ", phase:" << avgPhaseSmooth*180/M_PI << ", cos_value: " << cos_value << endl;
 				/*
 				for (int i = 0; i < Ntx; ++i)
 				{
