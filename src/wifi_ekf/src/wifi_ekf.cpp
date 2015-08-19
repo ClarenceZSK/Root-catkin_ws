@@ -36,8 +36,10 @@ void WifiEkf::init(double t, const Eigen::Vector3d &_g)
     g = q * _g;
     ROS_INFO_STREAM("aligned g world: " << g.transpose());
     p = Eigen::Vector3d(2, 0, -0.1);
+    //p = Eigen::Vector3d(10, 10, 10);
     v.setZero();
     ap = Eigen::Vector3d(0, 0, 0);
+    //ap = Eigen::Vector3d(10, -10, 10);
     P.block<3, 3>(9, 9) = 0.0001 * Eigen::Matrix3d::Identity();
 }
 

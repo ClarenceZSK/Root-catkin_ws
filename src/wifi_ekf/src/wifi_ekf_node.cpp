@@ -10,7 +10,7 @@
 
 #include "wifi_ekf.h"
 //simulation
-#define G_CNT 0
+//#define G_CNT 0
 //experiments
 #define G_CNT 500
 
@@ -23,6 +23,7 @@ ros::Publisher pub_path;
 ros::Publisher pub_odometry;
 ros::Publisher pub_pose;
 ros::Publisher pub_ap;
+ros::Publisher pub_v;
 nav_msgs::Path path;
 
 
@@ -102,6 +103,11 @@ void process()
     ROS_INFO_STREAM("ap: " << wifi_ekf.ap.transpose());
     ROS_INFO_STREAM("gravity: " << wifi_ekf.g.transpose() << " norm: " << wifi_ekf.g.norm());
     ROS_INFO_STREAM("cov: " << wifi_ekf.P.diagonal().transpose());
+	geometry_msgs::Point32 p_v;
+	p_v.x = wifi_ekf.v(0);
+	p_v.y = wifi_ekf.v(1);
+	p_v.z = wifi_ekf.v(2);
+	pub_v.publish(p_v);
 
     nav_msgs::Odometry odometry;
 	sensor_msgs::PointCloud point_cloud;
@@ -149,6 +155,7 @@ int main(int argc, char **argv)
     pub_odometry = n.advertise<nav_msgs::Odometry>("odometry", 1000);
     pub_pose     = n.advertise<geometry_msgs::PoseStamped>("pose", 1000);
 	pub_ap 		 = n.advertise<sensor_msgs::PointCloud>("ap", 1000);
+	pub_v 		 = n.advertise<geometry_msgs::Point32>("velocity", 1000);
 
     path.header.frame_id = "world";
 
