@@ -49,6 +49,7 @@
 /home/clarence/catkin_ws/build/i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_cpp.dir
 /home/clarence/catkin_ws/build/i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_lisp.dir
 /home/clarence/catkin_ws/build/i9dof_imu/CMakeFiles/sensor_msgs_generate_messages_py.dir
+/home/clarence/catkin_ws/build/slam_data_generator/CMakeFiles/slam_data_generator.dir
 /home/clarence/catkin_ws/build/data_generator/CMakeFiles/std_msgs_generate_messages_cpp.dir
 /home/clarence/catkin_ws/build/data_generator/CMakeFiles/std_msgs_generate_messages_lisp.dir
 /home/clarence/catkin_ws/build/data_generator/CMakeFiles/std_msgs_generate_messages_py.dir

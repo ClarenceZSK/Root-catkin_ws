@@ -1,2 +1,2 @@
-data_generator:i9dof_imu:imu_3dm_gx4:sar_localization:wifi_ekf:wifi_estimator
+data_generator:i9dof_imu:imu_3dm_gx4:sar_localization:slam_data_generator:wifi_ekf:wifi_estimator
 -DCATKIN_DEVEL_PREFIX=/home/clarence/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/clarence/catkin_ws/install -G Unix Makefiles

@@ -428,6 +428,12 @@ sar_localization_SOURCE_DIR:STATIC=/home/clarence/catkin_ws/src/sar_localization
 //The directory containing a CMake configuration file for sensor_msgs.
 sensor_msgs_DIR:PATH=/opt/ros/indigo/share/sensor_msgs/cmake
 
+//Value Computed by CMake
+slam_data_generator_BINARY_DIR:STATIC=/home/clarence/catkin_ws/build/slam_data_generator
+
+//Value Computed by CMake
+slam_data_generator_SOURCE_DIR:STATIC=/home/clarence/catkin_ws/src/slam_data_generator
+
 //The directory containing a CMake configuration file for std_msgs.
 std_msgs_DIR:PATH=/opt/ros/indigo/share/std_msgs/cmake
 
@@ -567,7 +573,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=8
+CMAKE_NUMBER_OF_LOCAL_GENERATORS:INTERNAL=9
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

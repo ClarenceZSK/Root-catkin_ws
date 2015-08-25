@@ -943,6 +943,19 @@ tf_generate_messages_py/fast:
 .PHONY : tf_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named slam_data_generator
+
+# Build rule for target.
+slam_data_generator: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 slam_data_generator
+.PHONY : slam_data_generator
+
+# fast build rule for target.
+slam_data_generator/fast:
+	$(MAKE) -f slam_data_generator/CMakeFiles/slam_data_generator.dir/build.make slam_data_generator/CMakeFiles/slam_data_generator.dir/build
+.PHONY : slam_data_generator/fast
+
+#=============================================================================
 # Target rules for targets named wifi_ekf
 
 # Build rule for target.
@@ -1042,6 +1055,7 @@ help:
 	@echo "... tf_generate_messages_cpp"
 	@echo "... tf_generate_messages_lisp"
 	@echo "... tf_generate_messages_py"
+	@echo "... slam_data_generator"
 	@echo "... wifi_ekf"
 	@echo "... wifi_estimator"
 .PHONY : help
