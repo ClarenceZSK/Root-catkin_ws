@@ -10,9 +10,9 @@
 
 #include "wifi_ekf.h"
 //simulation
-//#define G_CNT 0
+#define G_CNT 0
 //experiments
-#define G_CNT 500
+//#define G_CNT 500
 
 #include <queue>
 using namespace std;
@@ -49,9 +49,9 @@ void imu_callback(const sensor_msgs::ImuConstPtr &imu_msg)
         sum_g += acc;
         gravity_cnt++;
 		//for simulation
-        //wifi_ekf.init(imu_msg->header.stamp.toSec(), Eigen::Vector3d(0.0, 0.0, -9.8));
+        wifi_ekf.init(imu_msg->header.stamp.toSec(), Eigen::Vector3d(0.0, 0.0, -9.73));
 		//for experiments
-        wifi_ekf.init(imu_msg->header.stamp.toSec(), sum_g/gravity_cnt);
+        //wifi_ekf.init(imu_msg->header.stamp.toSec(), sum_g/gravity_cnt);
         filter_start = true;
         return;
     }
