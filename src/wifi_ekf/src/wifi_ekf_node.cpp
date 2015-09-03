@@ -10,9 +10,9 @@
 
 #include "wifi_ekf.h"
 //simulation
-#define G_CNT 0
+//#define G_CNT 0
 //experiments
-//#define G_CNT 500
+#define G_CNT 500
 
 #include <queue>
 using namespace std;
@@ -24,6 +24,7 @@ ros::Publisher pub_odometry;
 ros::Publisher pub_pose;
 ros::Publisher pub_ap;
 ros::Publisher pub_v;
+ros::Publisher pub_p;
 nav_msgs::Path path;
 
 
@@ -49,9 +50,9 @@ void imu_callback(const sensor_msgs::ImuConstPtr &imu_msg)
         sum_g += acc;
         gravity_cnt++;
 		//for simulation
-        wifi_ekf.init(imu_msg->header.stamp.toSec(), Eigen::Vector3d(0.0, 0.0, -9.73));
+        //wifi_ekf.init(imu_msg->header.stamp.toSec(), Eigen::Vector3d(0.0, 0.0, -9.8));
 		//for experiments
-        //wifi_ekf.init(imu_msg->header.stamp.toSec(), sum_g/gravity_cnt);
+        wifi_ekf.init(imu_msg->header.stamp.toSec(), sum_g/gravity_cnt);
         filter_start = true;
         return;
     }
@@ -109,6 +110,12 @@ void process()
 	p_v.z = wifi_ekf.v(2);
 	pub_v.publish(p_v);
 
+	geometry_msgs::Point32 p_p;
+	p_p.x = wifi_ekf.p(0);
+	p_p.y = wifi_ekf.p(1);
+	p_p.z = wifi_ekf.p(2);
+	pub_p.publish(p_p);
+
     nav_msgs::Odometry odometry;
 	sensor_msgs::PointCloud point_cloud;
 	geometry_msgs::Point32 p_ap;
@@ -156,6 +163,7 @@ int main(int argc, char **argv)
     pub_pose     = n.advertise<geometry_msgs::PoseStamped>("pose", 1000);
 	pub_ap 		 = n.advertise<sensor_msgs::PointCloud>("ap", 1000);
 	pub_v 		 = n.advertise<geometry_msgs::Point32>("velocity", 1000);
+	pub_p 		 = n.advertise<geometry_msgs::Point32>("position", 1000);
 
     path.header.frame_id = "world";
 

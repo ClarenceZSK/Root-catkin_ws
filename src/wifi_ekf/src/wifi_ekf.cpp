@@ -35,12 +35,12 @@ void WifiEkf::init(double t, const Eigen::Vector3d &_g)
     q = Eigen::Quaterniond::FromTwoVectors(_g, Eigen::Vector3d(0.0, 0.0, -1.0)).toRotationMatrix(); // R^w_b
     g = q * _g;
     ROS_INFO_STREAM("aligned g world: " << g.transpose());
-    p = Eigen::Vector3d(2, 0, -0.1);
+    p = Eigen::Vector3d(2, 0, 0);
     //p = Eigen::Vector3d(10, 10, 10);
     v.setZero();
     ap = Eigen::Vector3d(0, 0, 0);
     //ap = Eigen::Vector3d(10, -10, 10);
-    P.block<3, 3>(9, 9) = 0.0001 * Eigen::Matrix3d::Identity();
+    P.block<3, 3>(9, 9) = 0.001 * Eigen::Matrix3d::Identity();
 }
 
 void WifiEkf::predict(double t, const Eigen::Vector3d &linear_acceleration_body, const Eigen::Vector3d &angular_velocity_body)
